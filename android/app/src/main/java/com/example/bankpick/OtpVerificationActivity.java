@@ -2,8 +2,10 @@ package com.example.bankpick;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,13 +15,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Locale;
+
 public class OtpVerificationActivity extends AppCompatActivity {
 
     private EditText[] otpFields;
     private Button btnVerify;
     private ImageView ivBack;
-    private TextView tvResend;
+    private TextView tvResend, tvDescription;
     private String dummyOtp;
+    private CountDownTimer resendTimer;
+    private boolean canResend = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +34,13 @@ public class OtpVerificationActivity extends AppCompatActivity {
 
         initViews();
         setupOtpFields();
+        startResendTimer();
 
         dummyOtp = getIntent().getStringExtra("dummyOtp");
         if (dummyOtp != null) {
-            Toast.makeText(this, "Dummy OTP: " + dummyOtp, Toast.LENGTH_LONG).show();
+            // In a real app, this would be an email/SMS. 
+            // We display it in a toast for this dummy implementation.
+            Toast.makeText(this, "DEBUG: Your OTP is " + dummyOtp, Toast.LENGTH_LONG).show();
         }
 
         ivBack.setOnClickListener(v -> finish());
@@ -48,24 +57,28 @@ public class OtpVerificationActivity extends AppCompatActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    Toast.makeText(this, "Invalid OTP", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Invalid OTP. Please try again.", Toast.LENGTH_SHORT).show();
+                    clearOtpFields();
                 }
             });
         });
 
         tvResend.setOnClickListener(v -> {
-            DatabaseHelper.getInstance().sendOtp("user@example.com", new DatabaseHelper.OtpCallback() {
-                @Override
-                public void onSuccess(String otp) {
-                    dummyOtp = otp;
-                    Toast.makeText(OtpVerificationActivity.this, "New Dummy OTP: " + otp, Toast.LENGTH_LONG).show();
-                }
+            if (canResend) {
+                DatabaseHelper.getInstance().sendOtp("user@example.com", new DatabaseHelper.OtpCallback() {
+                    @Override
+                    public void onSuccess(String otp) {
+                        dummyOtp = otp;
+                        Toast.makeText(OtpVerificationActivity.this, "New OTP sent: " + otp, Toast.LENGTH_LONG).show();
+                        startResendTimer();
+                    }
 
-                @Override
-                public void onFailure(String error) {
-                    Toast.makeText(OtpVerificationActivity.this, error, Toast.LENGTH_SHORT).show();
-                }
-            });
+                    @Override
+                    public void onFailure(String error) {
+                        Toast.makeText(OtpVerificationActivity.this, error, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
     }
 
@@ -81,6 +94,7 @@ public class OtpVerificationActivity extends AppCompatActivity {
         btnVerify = findViewById(R.id.btnVerify);
         ivBack = findViewById(R.id.ivBack);
         tvResend = findViewById(R.id.tvResend);
+        tvDescription = findViewById(R.id.tvDescription);
     }
 
     private void setupOtpFields() {
@@ -98,13 +112,44 @@ public class OtpVerificationActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s) {
-                    if (s.length() == 0 && index > 0) {
+                public void afterTextChanged(Editable s) {}
+            });
+
+            otpFields[i].setOnKeyListener((v, keyCode, event) -> {
+                if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (otpFields[index].getText().toString().isEmpty() && index > 0) {
                         otpFields[index - 1].requestFocus();
+                        otpFields[index - 1].setText("");
+                        return true;
                     }
                 }
+                return false;
             });
         }
+    }
+
+    private void startResendTimer() {
+        canResend = false;
+        tvResend.setEnabled(false);
+        tvResend.setTextColor(getResources().getColor(R.color.gray_400));
+        
+        if (resendTimer != null) resendTimer.cancel();
+        
+        resendTimer = new CountDownTimer(30000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                tvResend.setText(String.format(Locale.getDefault(), "Resend code in %02d:%02d", 
+                    (millisUntilFinished / 1000) / 60, (millisUntilFinished / 1000) % 60));
+            }
+
+            @Override
+            public void onFinish() {
+                canResend = true;
+                tvResend.setEnabled(true);
+                tvResend.setText("Resend Code");
+                tvResend.setTextColor(getResources().getColor(R.color.primary));
+            }
+        }.start();
     }
 
     private String getEnteredOtp() {
@@ -113,5 +158,18 @@ public class OtpVerificationActivity extends AppCompatActivity {
             sb.append(field.getText().toString());
         }
         return sb.toString();
+    }
+
+    private void clearOtpFields() {
+        for (EditText field : otpFields) {
+            field.setText("");
+        }
+        otpFields[0].requestFocus();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (resendTimer != null) resendTimer.cancel();
     }
 }

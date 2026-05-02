@@ -1,7 +1,6 @@
 package com.example.bankpick;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,7 +24,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import androidx.annotation.NonNull;
 
-import java.util.List;
 import java.util.Map;
 
 public class SendMoneyActivity extends AppCompatActivity {
@@ -35,14 +35,25 @@ public class SendMoneyActivity extends AppCompatActivity {
     ProgressBar progressBar;
     LinearLayout llContactsContainer;
 
-    // Resolved from current user
     String activeCardId;
     double currentBalance = 0;
 
     String selectedRecipientUid = null;
     String selectedRecipientName = null;
+    double pendingAmount = 0;
 
     private ValueEventListener cardListener;
+
+    private final ActivityResultLauncher<Intent> otpLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    processTransfer();
+                } else {
+                    Toast.makeText(this, "Verification failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,47 +107,66 @@ public class SendMoneyActivity extends AppCompatActivity {
                 return;
             }
 
-            double amount;
             try {
-                amount = Double.parseDouble(amountStr);
+                pendingAmount = Double.parseDouble(amountStr);
             } catch (NumberFormatException e) {
                 Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (amount <= 0) {
+            if (pendingAmount <= 0) {
                 Toast.makeText(this, "Amount must be greater than 0", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (amount > currentBalance) {
+            if (pendingAmount > currentBalance) {
                 Toast.makeText(this, "Insufficient funds", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            btnSend.setEnabled(false);
+            // Trigger OTP before transfer
             if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+            DatabaseHelper.getInstance().sendOtp("user@example.com", new DatabaseHelper.OtpCallback() {
+                @Override
+                public void onSuccess(String otp) {
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    Intent intent = new Intent(SendMoneyActivity.this, OtpVerificationActivity.class);
+                    intent.putExtra("dummyOtp", otp);
+                    otpLauncher.launch(intent);
+                }
 
-            DatabaseHelper.getInstance().sendMoney(
-                    activeCardId, selectedRecipientUid, selectedRecipientName, amount,
-                    (success, info) -> runOnUiThread(() -> {
-                        btnSend.setEnabled(true);
-                        if (progressBar != null) progressBar.setVisibility(View.GONE);
-
-                        if (success) {
-                            Intent intent = new Intent(this, TransactionSuccessActivity.class);
-                            intent.putExtra("type",          "Sent to " + selectedRecipientName);
-                            intent.putExtra("amount",        String.format("%.2f", amount));
-                            intent.putExtra("recipient",     selectedRecipientName);
-                            intent.putExtra("transactionId", info);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(this, "Transfer failed: " + info, Toast.LENGTH_LONG).show();
-                        }
-                    })
-            );
+                @Override
+                public void onFailure(String error) {
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    Toast.makeText(SendMoneyActivity.this, error, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
+    }
+
+    private void processTransfer() {
+        btnSend.setEnabled(false);
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+
+        DatabaseHelper.getInstance().sendMoney(
+                activeCardId, selectedRecipientUid, selectedRecipientName, pendingAmount,
+                (success, info) -> runOnUiThread(() -> {
+                    btnSend.setEnabled(true);
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+
+                    if (success) {
+                        Intent intent = new Intent(this, TransactionSuccessActivity.class);
+                        intent.putExtra("type",          "Sent to " + selectedRecipientName);
+                        intent.putExtra("amount",        String.format("%.2f", pendingAmount));
+                        intent.putExtra("recipient",     selectedRecipientName);
+                        intent.putExtra("transactionId", info);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Transfer failed: " + info, Toast.LENGTH_LONG).show();
+                    }
+                })
+        );
     }
 
     private void loadContacts(String uid) {
@@ -159,7 +189,6 @@ public class SendMoneyActivity extends AppCompatActivity {
             selectedRecipientUid = contactUid;
             selectedRecipientName = name;
             
-            // Highlight selection (simple logic)
             for (int i = 0; i < llContactsContainer.getChildCount(); i++) {
                 llContactsContainer.getChildAt(i).findViewById(R.id.ivContactIcon)
                         .setBackgroundResource(R.drawable.bg_circle);

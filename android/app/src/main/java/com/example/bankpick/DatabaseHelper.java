@@ -199,6 +199,59 @@ public class DatabaseHelper {
         return String.format("%02d/%d", 1 + new Random().nextInt(12), 2027 + new Random().nextInt(4));
     }
 
+    // --- OTP Feature Implementation ---
+
+    /**
+     * Sends a dummy OTP to the specified email (for now just stores in DB).
+     */
+    public void sendOtp(String email, OtpCallback callback) {
+        // Generating a dummy 6-digit OTP
+        String otp = String.format(Locale.getDefault(), "%06d", new Random().nextInt(1000000));
+        
+        // Storing it under the current user for verification
+        String uid = getCurrentUserId();
+        if (uid == null) {
+            callback.onFailure("User not logged in");
+            return;
+        }
+
+        userRef(uid).child("currentOtp").setValue(otp)
+            .addOnSuccessListener(aVoid -> callback.onSuccess(otp))
+            .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    /**
+     * Verifies the entered OTP against the one stored in the database.
+     */
+    public void verifyOtp(String enteredOtp, OtpVerifyCallback callback) {
+        String uid = getCurrentUserId();
+        if (uid == null) {
+            callback.onResult(false);
+            return;
+        }
+
+        userRef(uid).child("currentOtp").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String storedOtp = snapshot.getValue(String.class);
+                if (storedOtp != null && storedOtp.equals(enteredOtp)) {
+                    // Correct OTP, clear it from database
+                    snapshot.getRef().removeValue();
+                    callback.onResult(true);
+                } else {
+                    callback.onResult(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onResult(false);
+            }
+        });
+    }
+
+    public interface OtpCallback { void onSuccess(String otp); void onFailure(String error); }
+    public interface OtpVerifyCallback { void onResult(boolean isCorrect); }
     public interface SendMoneyCallback { void onResult(boolean success, String info); }
     public interface FindUserCallback { void onResult(String uid, String name); }
     public interface ContactsCallback { void onResult(List<Map<String, String>> contacts); }

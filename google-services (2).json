@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "102683910443",
+    "project_id": "bankpick-f77e2",
+    "storage_bucket": "bankpick-f77e2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102683910443:android:5322e913488428298de56e",
+        "android_client_info": {
+          "package_name": "com.example.bankpick"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgXYhTTD1ND9h2Edv-AxulhiBw2NwKybE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

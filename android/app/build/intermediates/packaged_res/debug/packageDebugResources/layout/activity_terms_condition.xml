@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/white" android:orientation="vertical" android:padding="24dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginBottom="32dp">
+        <ImageView android:id="@+id/ivBack" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bg_circle"
+            android:src="@android:drawable/ic_menu_revert" android:padding="8dp" android:contentDescription="Back" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/terms_conditions" style="@style/HeaderTitle" android:gravity="center" />
+        <View android:layout_width="40dp" android:layout_height="40dp" />
+    </LinearLayout>
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="1. Terms\n\nBy accessing this application, you are agreeing to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.\n\n2. Use License\n\nPermission is granted to temporarily download one copy of the materials on BankPick's app for personal, non-commercial transitory viewing only.\n\n3. Disclaimer\n\nThe materials within BankPick's app are provided on an 'as is' basis. BankPick makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.\n\n4. Limitations\n\nIn no event shall BankPick or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on BankPick's app."
+            android:textSize="14sp" android:textColor="@color/text_secondary" android:lineSpacingExtra="6dp" />
+    </ScrollView>
+</LinearLayout>

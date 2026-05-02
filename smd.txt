@@ -1,0 +1,3310 @@
+package com.example.smd_6a_2;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+    // hooks
+    EditText etID;
+    Button btnCancel, btnSubmit;
+    TextView tvResult;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        init();
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String id = etID.getText().toString().trim();
+
+                if(id.length()!=13)
+                {
+                    //etID.setError("ID length must be equal to 13");
+                    Toast.makeText(MainActivity.this, "ID length must be equal to 13", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String rawDob = id.substring(0, 6);
+
+                String year = "20"+rawDob.substring(0, 2); // 2019
+                int day = Integer.parseInt(rawDob.substring(4, 6));
+                String []months = {"", "January", "February", "March", "April"};
+                String dob = day+"/"+months[Integer.parseInt(rawDob.substring(2, 4))]+"/"+year;
+                String gender;
+
+                if(Integer.parseInt(String.valueOf(id.charAt(6)))<5)
+                {
+                    gender = "Female";
+                }
+                else
+                {
+                    gender = "Male";
+                }
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("Date of Birth : ").append(dob).append("\n").append("Gender : ").append(gender);
+                tvResult.setText(sb.toString());
+
+            }
+        });
+
+    }
+
+    private void init()
+    {
+        etID = findViewById(R.id.etID);
+        btnCancel = findViewById(R.id.btnCancel);
+        btnSubmit = findViewById(R.id.btnSubmit);
+        tvResult = findViewById(R.id.tvResult);
+    }
+}
+
+
+package com.example.smd_6a_2;
+
+import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class Dashboard extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_dashboard);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+    }
+}
+
+
+package com.example.smd_6a_s26_3;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class GetInfoActivity extends AppCompatActivity {
+    EditText etName, etUrl, etAddress, etPhone;
+    Button btnSubmit, btnCancel;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_get_info);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        init();
+
+        btnCancel.setOnClickListener((v)->{
+            setResult(RESULT_CANCELED);
+            finish();
+        });
+
+        btnSubmit.setOnClickListener((v)->{
+            String name = etName.getText().toString().trim();
+            String url = etUrl.getText().toString().trim();
+            String address = etAddress.getText().toString().trim();
+            String phone = etPhone.getText().toString().trim();
+
+            Intent i = new Intent();
+            i.putExtra("name_key", name);
+            i.putExtra("url_key", url);
+            i.putExtra("address_key", address);
+            i.putExtra("phone_key", phone);
+            setResult(RESULT_OK, i);
+            finish();
+        });
+
+    }
+
+    private void init()
+    {
+        etUrl = findViewById(R.id.etUrl);
+        etAddress = findViewById(R.id.etAddress);
+        etName = findViewById(R.id.etName);
+        etPhone = findViewById(R.id.etPhone);
+        btnCancel = findViewById(R.id.btnCancel);
+        btnSubmit = findViewById(R.id.btnSubmit);
+    }
+}
+
+package com.example.smd_6a_s26_3;
+
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.textfield.TextInputEditText;
+
+public class MainActivity extends AppCompatActivity {
+
+    Button btnOpenSecondActiivty, btnGetInfo;
+    TextInputEditText tietName;
+    TextView tvSecondName;
+    ImageView ivCall, ivMap, ivBrowser;
+
+    ActivityResultLauncher<Intent> getInfoLauncher;
+    String name, url, phone, address;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        init();
+
+        getInfoLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result->{
+                    if(result.getResultCode() == RESULT_CANCELED)
+                    {
+                        Toast.makeText(this, "You have to give the information", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(result.getResultCode()==RESULT_OK && result.getData()!=null)
+                    {
+                        Intent i = result.getData();
+                        name = i.getStringExtra("name_key");
+                        url = i.getStringExtra("url_key");
+                        address = i.getStringExtra("address_key");
+                        phone = i.getStringExtra("phone_key");
+
+                        ivBrowser.setVisibility(VISIBLE);
+                        tvSecondName.setVisibility(VISIBLE);
+                        ivCall.setVisibility(VISIBLE);
+                        ivMap.setVisibility(VISIBLE);
+                        tvSecondName.setText(name);
+                    }
+                }
+        );
+
+        btnOpenSecondActiivty.setOnClickListener((view)->{
+            String name = tietName.getText().toString().trim();
+            if(name.length()==0)
+            {
+                tietName.setError("Name can't be empty.");
+                return;
+            }
+
+            Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+            intent.putExtra("name_key", name);
+            startActivity(intent);
+            finish();
+        });
+
+        btnGetInfo.setOnClickListener((v)->{
+            getInfoLauncher.launch(new Intent(MainActivity.this, GetInfoActivity.class));
+        });
+
+        ivBrowser.setOnClickListener((v)->{
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        });
+
+        ivCall.setOnClickListener((v)->{
+            Intent i = new Intent(Intent.ACTION_DIAL);
+            i.setData(Uri.parse("tel:"+phone));
+            startActivity(i);
+        });
+
+        ivMap.setOnClickListener((v)->{
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse("google.navigation:q="+address));
+            i.setPackage("com.google.android.apps.maps");
+            startActivity(i);
+        });
+    }
+
+    private void init()
+    {
+        btnOpenSecondActiivty = findViewById(R.id.btnOpenSecondActiivty);
+        tietName = findViewById(R.id.tietName);
+        tvSecondName = findViewById(R.id.tvSecondName);
+        ivBrowser = findViewById(R.id.ivBrowser);
+        ivCall = findViewById(R.id.ivCall);
+        ivMap = findViewById(R.id.ivMap);
+        btnGetInfo = findViewById(R.id.btnGetInfo);
+
+        tvSecondName.setVisibility(GONE);
+        ivMap.setVisibility(GONE);
+        ivCall.setVisibility(GONE);
+        ivBrowser.setVisibility(GONE);
+    }
+
+}
+
+package com.example.smd_6a_s26_3;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class SecondActivity extends AppCompatActivity {
+    TextView tvName;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_second);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        tvName = findViewById(R.id.tvName);
+
+        Intent intent = getIntent();
+        if(intent!=null)
+        {
+            String name = intent.getStringExtra("name_key");
+            tvName.setText("Welcome back! "+name);
+        }
+
+    }
+}
+
+package com.example.smd_6a_s26_4;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
+
+import java.util.ArrayList;
+
+public class Dashboard extends AppCompatActivity implements ListFrag.OnItemClicked {
+
+    ArrayList<String> items;
+    TextView tvDetail;
+
+    View view, isPortrait;
+
+    DetailFrag detailFrag ;
+
+    FragmentManager manager;
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_dashboard);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        manager = getSupportFragmentManager();
+        detailFrag = (DetailFrag) manager.findFragmentById(R.id.detail_frag);
+        view = detailFrag.requireView();
+
+
+        tvDetail = view.findViewById(R.id.tvDetail);
+        isPortrait = findViewById(R.id.portrait);
+        if (isPortrait!=null) {
+            // hide detail fragment and show list fragment
+            manager.beginTransaction()
+                    .hide(detailFrag)
+                    .show(manager.findFragmentById(R.id.list_frag))
+                    .commit();
+        }
+        else
+        {
+            // show detail fragment and show list fragment
+            manager.beginTransaction()
+                    .show(detailFrag)
+                    .show(manager.findFragmentById(R.id.list_frag))
+                    .commit();
+        }
+
+        items = new ArrayList<>();
+        items.add("Description Item 1");
+        items.add("Description Item 2");
+        items.add("Description Item 3");
+        items.add("Description Item 4");
+        items.add("Description Item 5");
+        items.add("Description Item 6");
+        items.add("Description Item 7");
+
+
+    }
+
+    @Override
+    public void onClick(int index) {
+        tvDetail.setText(items.get(index));
+        if(isPortrait != null)
+        {
+            manager.beginTransaction()
+                    .show(detailFrag)
+                    .hide(manager.findFragmentById(R.id.list_frag))
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+}
+
+package com.example.smd_6a_s26_4;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link DetailFrag#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class DetailFrag extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public DetailFrag() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment DetailFrag.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static DetailFrag newInstance(String param1, String param2) {
+        DetailFrag fragment = new DetailFrag();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_detail, container, false);
+    }
+}
+
+package com.example.smd_6a_s26_4;
+
+import android.content.Context;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link ListFrag#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ListFrag extends ListFragment {
+
+    public interface OnItemClicked{
+        public void onClick(int index);
+    }
+
+    OnItemClicked parentActivity;
+
+    public ListFrag() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        parentActivity = (OnItemClicked) context;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ArrayList<String> items = new ArrayList<>();
+        items.add("Item 1");
+        items.add("Item 2");
+        items.add("Item 3");
+        items.add("Item 4");
+        items.add("Item 5");
+        items.add("Item 6");
+        items.add("Item 7");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, items);
+
+        setListAdapter(adapter);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_list, container, false);
+    }
+
+    @Override
+    public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        parentActivity.onClick(position);
+    }
+}
+
+package com.example.smd_6a_s26_4;
+
+import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+    }
+}
+
+
+package com.example.smd_6a_s26_4;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class Splash extends AppCompatActivity {
+
+    View firstLine, secondLine, thirdLine, fourthLine;
+    Animation top_to_bottom, bouncing_ball;
+    ImageView ivLogo;
+    TextView tvSlogan;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_splash);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        init();
+        applyAnimation();
+        moveToDashboard();
+    }
+
+    private void moveToDashboard() {
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                startActivity(new Intent(Splash.this, Dashboard.class));
+//                finish();
+//            }
+//        }, 5000);
+
+        new Handler().postDelayed(()->{
+                startActivity(new Intent(Splash.this, Dashboard.class));
+                finish();
+        }, 5000);
+
+
+    }
+
+    private void applyAnimation() {
+        firstLine.setAnimation(top_to_bottom);
+        secondLine.setAnimation(top_to_bottom);
+        thirdLine.setAnimation(top_to_bottom);
+        fourthLine.setAnimation(top_to_bottom);
+        ivLogo.setAnimation(bouncing_ball);
+    }
+
+    private void init()
+    {
+        firstLine = findViewById(R.id.firstLine);
+        secondLine = findViewById(R.id.secondLine);
+        thirdLine = findViewById(R.id.thirdLine);
+        fourthLine = findViewById(R.id.fourthLine);
+        ivLogo = findViewById(R.id.ivLogo);
+        tvSlogan = findViewById(R.id.tvSlogan);
+        top_to_bottom = AnimationUtils.loadAnimation(this, R.anim.top_to_bottom);
+        bouncing_ball = AnimationUtils.loadAnimation(this, R.anim.bouncing_ball);
+    }
+}
+
+
+package com.example.smd_6a_s26_5;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link AddPersonFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class AddPersonFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public AddPersonFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment AddPersonFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static AddPersonFragment newInstance(String param1, String param2) {
+        AddPersonFragment fragment = new AddPersonFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_add_person, container, false);
+    }
+}
+
+package com.example.smd_6a_s26_5;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link DetailFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class DetailFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public DetailFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment DetailFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static DetailFragment newInstance(String param1, String param2) {
+        DetailFragment fragment = new DetailFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_detail, container, false);
+    }
+}
+
+package com.example.smd_6a_s26_5;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.telephony.SmsManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
+
+public class MainActivity extends AppCompatActivity implements NamesFragment.OnNameClicked {
+
+    final int REQUEST_CODE_SMS = 1;
+    final int REQUEST_CAMERA = 2;
+    Person person;
+    FragmentManager manager;
+    DetailFragment detailFragment;
+    NamesFragment namesFragment;
+    AddPersonFragment addPersonFragment;
+    View detailFragView, addPersonFragView;
+    Button btnCall, btnMessage, btnDelete, btnEdit, btnSetProfile;
+    ImageView ivLogo;
+    ActivityResultLauncher<Intent> launcherForLogo;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        init();
+
+        btnCall.setOnClickListener((v)->{
+            openDialer(person.getPhone());
+        });
+        btnMessage.setOnClickListener((v)->{
+            checkPermissionForMessage();
+        });
+        btnSetProfile.setOnClickListener((v)->{
+            checkPermissionForCamera();
+        });
+
+    }
+
+    private void checkPermissionForCamera() {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+        ==PackageManager.PERMISSION_GRANTED)
+        {
+            openCamera();
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+        }
+
+    }
+
+    private void openCamera() {
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        launcherForLogo.launch(i);
+    }
+
+    private void checkPermissionForMessage() {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                == PackageManager.PERMISSION_GRANTED)
+        {
+            sendSms();
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    REQUEST_CODE_SMS);
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == REQUEST_CODE_SMS)
+        {
+            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                sendSms();
+            }
+
+        }
+        else if(requestCode == REQUEST_CAMERA)
+        {
+            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                openCamera();
+            }
+        }
+
+    }
+
+    private void sendSms() {
+
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.add_person_dialog_design, null);
+        EditText etMessageDialog = dialogView.findViewById(R.id.etMessageDialog);
+        EditText etPhoneDialog = dialogView.findViewById(R.id.etPhoneDialog);
+        etPhoneDialog.setText(person.getPhone());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Send a message")
+                .setView(dialogView)
+                .setPositiveButton("Send", (a, b)->{
+                    SmsManager
+                            .getDefault()
+                            .sendTextMessage(etPhoneDialog.getText().toString().trim(),
+                            null,
+                            etMessageDialog.getText().toString().trim(),
+                                    null, null);
+
+                    Toast.makeText(this, "Message Sent", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", (a, b)->{});
+        builder.create().show();
+    }
+
+    private void openDialer(String phone) {
+        Intent i = new Intent(Intent.ACTION_DIAL);
+        i.setData(Uri.parse("tel:"+phone));
+        startActivity(i);
+    }
+
+    private void init()
+    {
+        manager = getSupportFragmentManager();
+        detailFragment = (DetailFragment) manager.findFragmentById(R.id.detailFragment);
+        namesFragment = (NamesFragment) manager.findFragmentById(R.id.namesFragment);
+        addPersonFragment = (AddPersonFragment) manager.findFragmentById(R.id.addPersonFragment);
+        detailFragView = detailFragment.requireView();
+        addPersonFragView = addPersonFragment.requireView();
+
+        btnCall = detailFragView.findViewById(R.id.btnCall);
+        btnDelete = detailFragView.findViewById(R.id.btnDelete);
+        btnEdit = detailFragView.findViewById(R.id.btnEdit);
+        btnMessage = detailFragView.findViewById(R.id.btnMessage);
+        btnSetProfile = detailFragView.findViewById(R.id.btnSetProfile);
+        ivLogo = detailFragView.findViewById(R.id.ivLogo);
+
+        launcherForLogo = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                (result)->{
+                    Bitmap bits = (Bitmap) result.getData().getExtras().get("data");
+                    ivLogo.setImageBitmap(bits);
+                }
+        );
+
+
+        toggleButtons(0);
+
+    }
+
+    private void toggleButtons(int i) {
+        if(i==0)
+        {
+            btnMessage.setVisibility(GONE);
+            btnEdit.setVisibility(GONE);
+            btnCall.setVisibility(GONE);
+            btnDelete.setVisibility(GONE);
+            btnSetProfile.setVisibility(GONE);
+            ivLogo.setVisibility(GONE);
+        }
+        else
+        {
+            btnMessage.setVisibility(VISIBLE);
+            btnEdit.setVisibility(VISIBLE);
+            btnCall.setVisibility(VISIBLE);
+            btnDelete.setVisibility(VISIBLE);
+            btnSetProfile.setVisibility(VISIBLE);
+            ivLogo.setVisibility(VISIBLE);
+        }
+    }
+
+
+    @Override
+    public void onNameClicked(Person p)
+    {
+        // pass
+        person = p;
+        toggleButtons(1);
+    }
+}
+
+package com.example.smd_6a_s26_5;
+
+import android.app.Application;
+
+import java.util.ArrayList;
+
+public class MyApplication extends Application {
+    public static ArrayList<Person> persons;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        persons = new ArrayList<>();
+        persons.add(new Person("Jahangir", "03344313333", null));
+        persons.add(new Person("Jahangir", "03344313333", null));
+        persons.add(new Person("Jahangir", "03344313333", null));
+
+
+    }
+}
+
+
+package com.example.smd_6a_s26_5;
+
+import android.content.Context;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+public class NamesFragment extends ListFragment {
+
+    public interface OnNameClicked{
+        public void onNameClicked(Person p);
+    }
+    OnNameClicked parentActivity;
+
+    public NamesFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        parentActivity = (MainActivity) context;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ArrayList<String> names= new ArrayList<>();
+        for(Person p: MyApplication.persons)
+        {
+            names.add(p.getName());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, names);
+        setListAdapter(adapter);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_names, container, false);
+    }
+
+    @Override
+    public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        parentActivity.onNameClicked(MyApplication.persons.get(position));
+    }
+}
+
+
+package com.example.smd_6a_s26_5;
+
+public class Person {
+    private String name;
+    private String phone;
+    private String lastMsg;
+
+    public Person() {
+    }
+
+    public Person(String name, String phone, String lastMsg) {
+        this.name = name;
+        this.phone = phone;
+        this.lastMsg = lastMsg;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getLastMsg() {
+        return lastMsg;
+    }
+
+    public void setLastMsg(String lastMsg) {
+        this.lastMsg = lastMsg;
+    }
+}
+
+
+package com.example.smd_6a_s26_6;
+
+public class Course {
+    String code;
+    String name;
+    int creditHours;
+
+    public Course(String code, String name, int creditHours) {
+        this.code = code;
+        this.name = name;
+        this.creditHours = creditHours;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getCreditHours() {
+        return creditHours;
+    }
+
+    public void setCreditHours(int creditHours) {
+        this.creditHours = creditHours;
+    }
+}
+
+
+package com.example.smd_6a_s26_6;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.List;
+
+public class CourseAdapter extends ArrayAdapter<Course> {
+    Context context;
+    Course selectedCourse;
+    View dialogView;
+    AlertDialog dialog;
+    public CourseAdapter(@NonNull Context context, @NonNull List<Course> objects) {
+        super(context, 0, objects);
+        this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+            convertView = LayoutInflater.from(context)
+                    .inflate(R.layout.course_single_item_design, parent, false);
+
+        Course course = getItem(position);
+
+        TextView tvCC = convertView.findViewById(R.id.tvCC);
+        TextView tvCH = convertView.findViewById(R.id.tvCH);
+        TextView tvCN = convertView.findViewById(R.id.tvCN);
+        ImageView ivDel = convertView.findViewById(R.id.ivDel);
+        ImageView ivEdit = convertView.findViewById(R.id.ivEdit);
+
+        tvCC.setText(course.getCode());
+        tvCN.setText(course.getName());
+        tvCH.setText(String.valueOf(course.getCreditHours()));
+
+        ivDel.setOnClickListener((v)->{
+            remove(course);
+            Toast.makeText(context, "Course deleted succesfully", Toast.LENGTH_SHORT).show();
+        });
+
+        ivEdit.setOnClickListener((v)->{
+            editCourse(course);
+        });
+
+
+        return convertView;
+    }
+
+    private void editCourse(Course course) {
+        selectedCourse = course;
+        if (dialog == null) {
+            dialogView = LayoutInflater.from(context)
+                    .inflate(R.layout.add_update_course_dialog_design, null);
+            dialog = new AlertDialog.Builder(context)
+                    .setTitle("Edit Course")
+                    .setView(dialogView)
+                    .create();
+            Button btnCancel = dialogView.findViewById(R.id.btnDialogCancel);
+            Button btnEdit = dialogView.findViewById(R.id.btnDialogAdd);
+            btnEdit.setText("Edit");
+
+            EditText etCC = dialogView.findViewById(R.id.etCC);
+            EditText etCH = dialogView.findViewById(R.id.etCH);
+            EditText etCN = dialogView.findViewById(R.id.etCN);
+
+            btnEdit.setOnClickListener(v1->{
+                selectedCourse.setCode(etCC.getText().toString());
+                selectedCourse.setName(etCN.getText().toString());
+                selectedCourse.setCreditHours(Integer.parseInt(etCH.getText().toString()));
+                notifyDataSetChanged();
+                dialog.dismiss();
+            });
+
+            btnCancel.setOnClickListener(v1->{
+                dialog.dismiss();
+            });
+        }
+        EditText etCC = dialogView.findViewById(R.id.etCC);
+        EditText etCH = dialogView.findViewById(R.id.etCH);
+        EditText etCN = dialogView.findViewById(R.id.etCN);
+
+        etCH.setText(String.valueOf(course.getCreditHours()));
+        etCC.setText(course.getCode());
+        etCN.setText(course.getName());
+
+        dialog.show();
+    }
+
+    @Override
+    public int getCount() {
+        return super.getCount();
+    }
+}
+
+
+package com.example.smd_6a_s26_6;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+    FloatingActionButton btnAddNewCourse;
+    ListView lvCourses;
+    ArrayList<Course> courses;
+    CourseAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        btnAddNewCourse = findViewById(R.id.btnAddNewCourse);
+        lvCourses = findViewById(R.id.lvCourse);
+        courses = new ArrayList<>();
+        courses.add(new Course("CS101", "PF", 3));
+        courses.add(new Course("CS101", "PF", 3));
+        courses.add(new Course("CS101", "PF", 3));
+
+        adapter =
+                new CourseAdapter(this, courses);
+
+        lvCourses.setAdapter(adapter);
+
+        btnAddNewCourse.setOnClickListener((v)->{
+            addNewCourse();
+        });
+
+
+    }
+
+    private void addNewCourse() {
+
+        View v = LayoutInflater.from(this)
+                .inflate(R.layout.add_update_course_dialog_design, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Adding New Course")
+                .setView(v);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button btnAdd = v.findViewById(R.id.btnDialogAdd);
+        Button btnCancel = v.findViewById(R.id.btnDialogCancel);
+        EditText etCC = v.findViewById(R.id.etCC);
+        EditText etCN = v.findViewById(R.id.etCN);
+        EditText etCH = v.findViewById(R.id.etCH);
+
+        btnAdd.setOnClickListener((v1)->{
+            courses.add(new Course(etCC.getText().toString().trim(),
+                    etCN.getText().toString().trim(),
+                    Integer.parseInt(etCH.getText().toString())));
+            Toast.makeText(this, "New course added...", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+            adapter.notifyDataSetChanged();
+        });
+
+        btnCancel.setOnClickListener((v1)->{
+            dialog.dismiss();
+        });
+    }
+}
+
+package com.example.smd_6a_s26_7;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link CallsFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class CallsFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public CallsFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment CallsFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static CallsFragment newInstance(String param1, String param2) {
+        CallsFragment fragment = new CallsFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_calls, container, false);
+    }
+}
+
+package com.example.smd_6a_s26_7;
+
+import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.PRINT_SERVICE;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link ChatsFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ChatsFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public ChatsFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment ChatsFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static ChatsFragment newInstance(String param1, String param2) {
+        ChatsFragment fragment = new ChatsFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_chats, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Button btnLogout = view.findViewById(R.id.btnLogout);
+
+
+        btnLogout.setOnClickListener((v)->{
+            requireActivity()
+                    .getSharedPreferences("user", MODE_PRIVATE)
+                    .edit()
+                    .putBoolean("isLogin", false)
+                    .commit();
+
+            startActivity(new Intent(requireContext(), Login.class));
+            requireActivity().finish();
+        });
+    }
+}
+
+package com.example.smd_6a_s26_7;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.security.Signature;
+
+public class Login extends AppCompatActivity {
+
+    EditText etUsername, etPassword;
+    TextView tvSignup;
+    Button btnCancel, btnLogin;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_login);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        init();
+        tvSignup.setOnClickListener((v)->{
+            startActivity(new Intent(Login.this, Singup.class));
+            finish();
+        });
+
+        btnCancel.setOnClickListener((v)->{
+            finish();
+        });
+
+        btnLogin.setOnClickListener((v)->{
+            String username = etUsername.getText().toString().trim();
+            String pass = etPassword.getText().toString();
+            SharedPreferences sPref = getSharedPreferences("user", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sPref.edit();
+            if(!username.isEmpty() && username.equals(sPref.getString("key_username", ""))
+            && !pass.isEmpty() && pass.equals(sPref.getString("key_password", "")))
+            {
+                editor.putBoolean("isLogin", true);
+                editor.commit();
+
+                startActivity(new Intent(Login.this, MainActivity.class));
+                finish();
+                return;
+            }
+
+            Toast.makeText(this, "Something is invalid", Toast.LENGTH_SHORT).show();
+
+        });
+
+
+    }
+
+    private void init()
+    {
+        btnCancel = findViewById(R.id.btnCancel);
+        btnLogin = findViewById(R.id.btnLogin);
+        tvSignup = findViewById(R.id.tvSignup);
+        etPassword = findViewById(R.id.etPassword);
+        etUsername = findViewById(R.id.etUsername);
+    }
+}
+
+package com.example.smd_6a_s26_7;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+public class MainActivity extends AppCompatActivity {
+
+    TabLayout tabLayout;
+    ViewPager2 viewPager2;
+    ViewPagerAdapter adapter;
+    boolean isFirst;
+    TabLayoutMediator mediator;
+
+    SharedPreferences sPref;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        init();
+
+        if(!sPref.getBoolean("isLogin", false))
+        {
+            startActivity(new Intent(MainActivity.this, Login.class));
+            finish();
+        }
+
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+                if(isFirst) {   
+                    TabLayout.Tab tab = tabLayout.getTabAt(position);
+                    BadgeDrawable badge = tab.getOrCreateBadge();
+                    badge.setNumber(0);
+                    badge.setVisible(false);
+                }
+                else {
+                    isFirst = true;
+                }
+
+
+            }
+        });
+    }
+
+    private void init()
+    {
+        tabLayout = findViewById(R.id.tablayout);
+        viewPager2 = findViewById(R.id.viewpager);
+        adapter = new ViewPagerAdapter(this);
+        sPref = getSharedPreferences("user", MODE_PRIVATE);
+
+        viewPager2.setAdapter(adapter);
+
+        isFirst = false;
+        mediator = new TabLayoutMediator(
+                tabLayout,
+                viewPager2,
+                (tab, position)->{
+                    switch (position)
+                    {
+                        case 0:
+                            tab.setText("Chats");
+                            tab.setIcon(R.drawable.chats_icon);
+                            BadgeDrawable badgeDrawable = tab.getOrCreateBadge();
+                            badgeDrawable.setNumber(100);
+                            badgeDrawable.setMaxCharacterCount(3);
+                            break;
+                        case 1:
+                            tab.setText("Status");
+                            tab.setIcon(R.drawable.status_icon);
+                            break;
+                        case 2:
+                            tab.setText("Calls");
+                            BadgeDrawable badgeDrawable1 = tab.getOrCreateBadge();
+                            badgeDrawable1.setNumber(9);
+                            badgeDrawable1.setMaxCharacterCount(3);
+                            tab.setIcon(R.drawable.calls_icon);
+                            break;
+                    }
+                }
+        );
+
+        mediator.attach();
+    }
+}
+
+
+package com.example.smd_6a_s26_7;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class Singup extends AppCompatActivity {
+
+    EditText etUsername, etPassword, etConfirmPassword;
+    TextView tvLogin;
+    Button btnCancel, btnSignup;
+    SharedPreferences sPref;
+    SharedPreferences.Editor editor;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_singup);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        init();
+
+        tvLogin.setOnClickListener((v)->{
+            startActivity(new Intent(Singup.this, Login.class));
+            finish();
+        });
+
+        btnCancel.setOnClickListener((v)->{
+            finish();
+        });
+
+        btnSignup.setOnClickListener((v)->{
+
+            String username = etUsername.getText().toString().trim();
+            String pass = etPassword.getText().toString().trim();
+            String cpass = etConfirmPassword.getText().toString().trim();
+
+            if(pass.equals(cpass))
+            {
+                editor.putString("key_username", username);
+                editor.putString("key_password", pass);
+                editor.putBoolean("isLogin", true);
+                editor.commit();
+                Toast.makeText(this, "Registered", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(Singup.this, MainActivity.class));
+                finish();
+
+                return;
+            }
+
+            Toast.makeText(this, "Password mis-match", Toast.LENGTH_SHORT).show();
+
+        });
+
+    }
+
+    private void init()
+    {
+        btnCancel = findViewById(R.id.btnCancel);
+        btnSignup = findViewById(R.id.btnSignup);
+        tvLogin = findViewById(R.id.tvLogin);
+        etPassword = findViewById(R.id.etPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        etUsername = findViewById(R.id.etUsername);
+        sPref = getSharedPreferences("user", MODE_PRIVATE);
+        editor = sPref.edit();
+    }
+}
+
+
+package com.example.smd_6a_s26_7;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link StatusFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class StatusFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public StatusFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment StatusFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static StatusFragment newInstance(String param1, String param2) {
+        StatusFragment fragment = new StatusFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_status, container, false);
+    }
+}
+
+
+
+package com.example.smd_6a_s26_7;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+public class ViewPagerAdapter extends FragmentStateAdapter {
+    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+        super(fragmentActivity);
+    }
+
+    @NonNull
+    @Override
+    public Fragment createFragment(int position) {
+        switch (position)
+        {
+            case 0:
+                return new ChatsFragment();
+            case 1:
+                return new StatusFragment();
+            case 2:
+                return new CallsFragment();
+            default:
+                return new ChatsFragment();
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return 3;
+    }
+}
+
+
+
+package com.example.smd_6a_s26_8;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    RecyclerView rvPassengers;
+    FloatingActionButton fabAddNewPassenger;
+
+    ArrayList<Passenger> passengers;
+
+    PassengerAdapter adapter;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        init();
+
+        fabAddNewPassenger.setOnClickListener((v)->{
+            addNewPassenger();
+        });
+
+    }
+
+    private void addNewPassenger() {
+
+        View view
+                 = LayoutInflater.from(this)
+                .inflate(R.layout.add_update_passenger_dialog, null);
+
+        TextInputEditText etName = view.findViewById(R.id.etName);
+        TextInputEditText etPhone = view.findViewById(R.id.etPhone);
+        TextInputEditText etPref = view.findViewById(R.id.etPref);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("New Passenger")
+                .setView(view)
+                .setPositiveButton("Add", (a,b)->{
+                    passengers.add(
+                            new Passenger(
+                                    etName.getText().toString().trim(),
+                                    etPhone.getText().toString().trim(),
+                                    etPref.getText().toString().trim()
+                            )
+                    );
+
+                    adapter.notifyItemInserted(passengers.size()-1);
+                })
+                .setNegativeButton("Cancel", null);
+
+        builder.create().show();
+    }
+
+    private void init()
+    {
+        rvPassengers = findViewById(R.id.rvPassengers);
+        fabAddNewPassenger = findViewById(R.id.fabAddNewPassenger);
+
+        rvPassengers.setHasFixedSize(true);
+
+        passengers = new ArrayList<>();
+
+        adapter = new PassengerAdapter(this, passengers);
+
+        rvPassengers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        //rvPassengers.setLayoutManager(new (this, 3));
+        rvPassengers.setAdapter(adapter);
+    }
+}
+
+
+package com.example.smd_6a_s26_8;
+
+public class Passenger {
+    String name;
+    String phone;
+    String preference; // bus, train, plane
+
+    public Passenger(String name, String phone, String preference) {
+        this.name = name;
+        this.phone = phone;
+        this.preference = preference;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPreference() {
+        return preference;
+    }
+
+    public void setPreference(String preference) {
+        this.preference = preference;
+    }
+}
+
+
+package com.example.smd_6a_s26_8;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
+
+public class PassengerAdapter extends RecyclerView.Adapter<PassengerAdapter.PassengerViewHolder> {
+
+    Context context;
+    ArrayList<Passenger> passengers;
+    public PassengerAdapter(Context context, ArrayList<Passenger> passengers)
+    {
+        this.context = context;
+        this.passengers = passengers;
+    }
+
+
+    @NonNull
+    @Override
+    public PassengerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.single_passenger_item_design, parent, false);
+        return new PassengerViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull PassengerViewHolder holder, int position) {
+        Passenger passenger = passengers.get(position);
+        holder.tvName.setText(passenger.getName());
+        holder.tvPhone.setText(passenger.getPhone());
+        String preference = passenger.getPreference();
+        if(preference.equals("bus"))
+        {
+            holder.ivPref.setImageDrawable(context.getDrawable(R.drawable.icon_bus));
+        }
+        else if(preference.equals("train"))
+        {
+            holder.ivPref.setImageDrawable(context.getDrawable(R.drawable.icon_train));
+        }
+        else if(preference.equals("plane"))
+        {
+            holder.ivPref.setImageDrawable(context.getDrawable(R.drawable.icon_plane));
+        }
+
+
+        holder.itemView.setOnClickListener((v)->{
+            AlertDialog.Builder confirmationBuilder = new AlertDialog.Builder(context)
+                    .setTitle("Confirmation")
+                    .setMessage("What you want?")
+                    .setPositiveButton("Update", (a, b)->{
+                        updatePassenger(passenger, position);
+                    })
+                    .setNegativeButton("Delete", (a,b)->{
+                        passengers.remove(passenger);
+                        notifyItemRemoved(position);
+                    });
+
+            confirmationBuilder.create().show();
+        });
+    }
+
+    private void updatePassenger(Passenger passenger, int position) {
+
+        View view
+                = LayoutInflater.from(context)
+                .inflate(R.layout.add_update_passenger_dialog, null);
+
+        TextInputEditText etName = view.findViewById(R.id.etName);
+        TextInputEditText etPhone = view.findViewById(R.id.etPhone);
+        TextInputEditText etPref = view.findViewById(R.id.etPref);
+
+        etName.setText(passenger.getName());
+        etPhone.setText(passenger.getPhone());
+        etPref.setText(passenger.getPreference());
+
+        androidx.appcompat.app.AlertDialog.Builder builder =
+                new androidx.appcompat.app.AlertDialog.Builder(context)
+                .setTitle("Update Passenger")
+                .setView(view)
+                .setPositiveButton("Save", (a,b)->{
+
+                                   passenger.setName(etName.getText().toString().trim());
+                                    passenger.setPhone(etPhone.getText().toString().trim());
+                                    passenger.setPreference(etPref.getText().toString().trim());
+                                    notifyItemChanged(position);
+                })
+                .setNegativeButton("Cancel", null);
+
+        builder.create().show();
+    }
+
+    @Override
+    public int getItemCount() {
+        return passengers.size();
+    }
+
+    public class PassengerViewHolder extends RecyclerView.ViewHolder
+    {
+        ImageView ivPref;
+        TextView tvName;
+        TextView tvPhone;
+
+        public PassengerViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ivPref = itemView.findViewById(R.id.ivPref);
+            tvName = itemView.findViewById(R.id.tvName);
+            tvPhone = itemView.findViewById(R.id.tvPhone);
+        }
+    }
+}
+
+
+package com.example.smd_6a_s26_9;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link HomeFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class HomeFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public HomeFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment HomeFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static HomeFragment newInstance(String param1, String param2) {
+        HomeFragment fragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_home, container, false);
+    }
+}
+
+package com.example.smd_6a_s26_9;
+
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.navigation.NavigationView;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
+    ActionBarDrawerToggle toggle;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        drawerLayout = findViewById(R.id.main);
+        navigationView = findViewById(R.id.navigationview);
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+        toggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView tvName = headerView.findViewById(R.id.tvUserName);
+        TextView tvEmail = headerView.findViewById(R.id.tvUserEmail);
+
+        tvName.setText("Waqas");
+        tvEmail.setText("waqas11@gmail.com");
+
+        if(savedInstanceState == null)
+        {
+            loadFragment(new HomeFragment(), "Home");
+            navigationView.setCheckedItem(R.id.nav_home);
+        }
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        Fragment selected = null;
+        String title = "";
+
+        if(id == R.id.nav_home)
+        {
+            selected = new HomeFragment();
+            title = "Home";
+        }
+        else if(id == R.id.nav_profile)
+        {
+            selected = new ProfileFragment();
+            title = "Profile";
+        }
+        else if(id == R.id.nav_settings)
+        {
+            selected = new SettingFragment();
+            title = "Settings";
+        }
+        else if(id == R.id.nav_messages)
+        {
+            selected = new MessagesFragment();
+            title = "Messages";
+        }
+        else if(id == R.id.nav_logout)
+        {
+            performLogout();
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        }
+
+        if(selected!=null)
+        {
+            loadFragment(selected, title);
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void loadFragment(Fragment fragment, String title)
+    {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainer, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+        if(getSupportActionBar()!=null)
+        {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    private void performLogout()
+    {
+        finish(); // move to login screen
+    }
+}
+
+
+package com.example.smd_6a_s26_9;
+
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.navigation.NavigationView;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
+    ActionBarDrawerToggle toggle;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        drawerLayout = findViewById(R.id.main);
+        navigationView = findViewById(R.id.navigationview);
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+        toggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView tvName = headerView.findViewById(R.id.tvUserName);
+        TextView tvEmail = headerView.findViewById(R.id.tvUserEmail);
+
+        tvName.setText("Waqas");
+        tvEmail.setText("waqas11@gmail.com");
+
+        if(savedInstanceState == null)
+        {
+            loadFragment(new HomeFragment(), "Home");
+            navigationView.setCheckedItem(R.id.nav_home);
+        }
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        Fragment selected = null;
+        String title = "";
+
+        if(id == R.id.nav_home)
+        {
+            selected = new HomeFragment();
+            title = "Home";
+        }
+        else if(id == R.id.nav_profile)
+        {
+            selected = new ProfileFragment();
+            title = "Profile";
+        }
+        else if(id == R.id.nav_settings)
+        {
+            selected = new SettingFragment();
+            title = "Settings";
+        }
+        else if(id == R.id.nav_messages)
+        {
+            selected = new MessagesFragment();
+            title = "Messages";
+        }
+        else if(id == R.id.nav_logout)
+        {
+            performLogout();
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        }
+
+        if(selected!=null)
+        {
+            loadFragment(selected, title);
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void loadFragment(Fragment fragment, String title)
+    {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainer, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+        if(getSupportActionBar()!=null)
+        {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    private void performLogout()
+    {
+        finish(); // move to login screen
+    }
+}
+
+package com.example.smd_6a_s26_9;
+
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.navigation.NavigationView;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
+    ActionBarDrawerToggle toggle;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        drawerLayout = findViewById(R.id.main);
+        navigationView = findViewById(R.id.navigationview);
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+        toggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView tvName = headerView.findViewById(R.id.tvUserName);
+        TextView tvEmail = headerView.findViewById(R.id.tvUserEmail);
+
+        tvName.setText("Waqas");
+        tvEmail.setText("waqas11@gmail.com");
+
+        if(savedInstanceState == null)
+        {
+            loadFragment(new HomeFragment(), "Home");
+            navigationView.setCheckedItem(R.id.nav_home);
+        }
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        Fragment selected = null;
+        String title = "";
+
+        if(id == R.id.nav_home)
+        {
+            selected = new HomeFragment();
+            title = "Home";
+        }
+        else if(id == R.id.nav_profile)
+        {
+            selected = new ProfileFragment();
+            title = "Profile";
+        }
+        else if(id == R.id.nav_settings)
+        {
+            selected = new SettingFragment();
+            title = "Settings";
+        }
+        else if(id == R.id.nav_messages)
+        {
+            selected = new MessagesFragment();
+            title = "Messages";
+        }
+        else if(id == R.id.nav_logout)
+        {
+            performLogout();
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        }
+
+        if(selected!=null)
+        {
+            loadFragment(selected, title);
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void loadFragment(Fragment fragment, String title)
+    {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainer, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+        if(getSupportActionBar()!=null)
+        {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    private void performLogout()
+    {
+        finish(); // move to login screen
+    }
+}
+
+
+package com.example.smd_6a_s26_9;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link SettingFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class SettingFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public SettingFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment SettingFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static SettingFragment newInstance(String param1, String param2) {
+        SettingFragment fragment = new SettingFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_setting, container, false);
+    }
+}
+
+package com.example.smd_6a_s26_10;
+
+public class Book {
+    private int bookId;
+    private String bookName;
+    private String bookAuthor;
+    private String publicationDate;
+
+
+    public Book()
+    {
+
+    }
+
+    public Book(int bookId, String bookName, String bookAuthor, String publicationDate) {
+        this.bookId = bookId;
+        this.bookName = bookName;
+        this.bookAuthor = bookAuthor;
+        this.publicationDate = publicationDate;
+    }
+
+    public Book(String bookName, String bookAuthor, String publicationDate) {
+        this.bookName = bookName;
+        this.bookAuthor = bookAuthor;
+        this.publicationDate = publicationDate;
+    }
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public String getBookAuthor() {
+        return bookAuthor;
+    }
+
+    public void setBookAuthor(String bookAuthor) {
+        this.bookAuthor = bookAuthor;
+    }
+
+    public String getPublicationDate() {
+        return publicationDate;
+    }
+
+    public void setPublicationDate(String publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
+
+}
+
+
+package com.example.smd_6a_s26_10;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+
+public class DatabaseManager {
+    static final String DATABASE_NAME = "LibraryDB";
+    static final int DATABASE_VERSION = 2;
+    static final String TABLE_BOOK = "books";
+    static final String COLUMN_ID = "book_id";
+    static final String COLUMN_NAME = "book_name";
+    static final String COLUMN_AUTHOR = "book_author";
+    static final String COLUMN_DATE = "publication_date";
+
+    Context context;
+    DBHelper helper;
+
+
+
+    public DatabaseManager(Context context)
+    {
+        this.context = context;
+    }
+
+    public void open()
+    {
+        helper = new DBHelper(context);
+    }
+
+    public long insertBook(Book book)
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_NAME, book.getBookName());
+        cv.put(COLUMN_AUTHOR, book.getBookAuthor());
+        cv.put(COLUMN_DATE, book.getPublicationDate());
+        long id = db.insert(TABLE_BOOK, null, cv);
+        db.close();
+        return id;
+    }
+
+    public Book getBookById(int id)
+    {
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_BOOK,
+                null,
+                COLUMN_ID+"=?",
+                new String[]{String.valueOf(id)},
+                null, null, null);
+
+        Book book = null;
+
+        if(cursor!=null && cursor.moveToFirst())
+        {
+            int index_name = cursor.getColumnIndex(COLUMN_NAME);
+            int index_author = cursor.getColumnIndex(COLUMN_AUTHOR);
+            int index_date = cursor.getColumnIndex(COLUMN_DATE);
+
+            book = new Book();
+            book.setBookId(id);
+            book.setBookName(cursor.getString(index_name));
+            book.setBookAuthor(cursor.getString(index_author));
+            book.setPublicationDate(cursor.getString(index_date));
+            cursor.close();
+        }
+        db.close();
+        return book;
+    }
+
+    public ArrayList<Book> getAllBooks()
+    {
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_BOOK,
+                null,
+                null,
+                null,
+                null, null, null);
+
+        ArrayList<Book> books = new ArrayList<>();
+
+        if(cursor!=null && cursor.moveToFirst())
+        {
+            do {
+                int index_name = cursor.getColumnIndex(COLUMN_NAME);
+                int index_id = cursor.getColumnIndex(COLUMN_ID);
+                int index_author = cursor.getColumnIndex(COLUMN_AUTHOR);
+                int index_date = cursor.getColumnIndex(COLUMN_DATE);
+
+                Book book = new Book();
+                book.setBookId(cursor.getInt(index_id));
+                book.setBookName(cursor.getString(index_name));
+                book.setBookAuthor(cursor.getString(index_author));
+                book.setPublicationDate(cursor.getString(index_date));
+                books.add(book);
+            }while(cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        db.close();
+        return books;
+    }
+
+    public int update(Book book)
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_NAME, book.getBookName());
+        cv.put(COLUMN_AUTHOR, book.getBookAuthor());
+        cv.put(COLUMN_DATE, book.getPublicationDate());
+        int id = db.update(TABLE_BOOK,
+                cv,
+                COLUMN_ID+"=?",
+                new String[]{String.valueOf(book.getBookId())});
+        db.close();
+        return id;
+    }
+
+    public int deleteBook(int id)
+    {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        int count = db.delete(TABLE_BOOK, COLUMN_ID+"=?",
+                new String[]{String.valueOf(id)});
+        db.close();
+        return count;
+    }
+
+    public void close()
+    {
+        helper.close();
+    }
+
+
+    private class DBHelper extends SQLiteOpenHelper
+    {
+
+        public DBHelper(@Nullable Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase sqLiteDatabase) {
+            // schema
+            String createTable = "CREATE TABLE "+TABLE_BOOK+"("
+                    +COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    +COLUMN_NAME+" TEXT, "
+                    +COLUMN_AUTHOR+" TEXT, "
+                    +COLUMN_DATE+" TEXT)";
+            sqLiteDatabase.execSQL(createTable);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+            // backup data
+            // drop
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE_BOOK);
+            onCreate(sqLiteDatabase);
+        }
+    }
+
+}
+
+
+
+package com.example.smd_6a_s26_10;
+
+import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+
+/*
+Structured Format
+Database Engines - CRUD
+SQLite Database
+ - SQL language
+Model Class
+Database Helper
+SQLiteOpenHelper
+CRUD - insert, single vs all records, update, delete
+ */
+
+public class MainActivity extends AppCompatActivity {
+
+    TextView tvBook;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        tvBook = findViewById(R.id.tvBook);
+
+        DatabaseManager manager = new DatabaseManager(this);
+        manager.open();
+       // long id= manager.insertBook(new Book("C++ Programming", "Ahmad Kamal", "30-March-2026"));
+//        if(id>0)
+//        {
+//            Toast.makeText(this, "Book inserted", Toast.LENGTH_SHORT).show();
+//        }
+//        else
+//        {
+//            Toast.makeText(this, "Book not inserted", Toast.LENGTH_SHORT).show();
+//        }
+
+        Book book = manager.getBookById(1);
+        if(book!=null)
+            tvBook.setText(book.getBookName()+"\n"+book.getBookAuthor());
+
+        ArrayList<Book> books = new ArrayList<>();
+        books = manager.getAllBooks();
+        if(books.size()>0)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (Book b: books) {
+                sb.append(b.getBookName()).append("\n");
+            }
+            tvBook.setText(sb.toString());
+        }
+//
+//        Book book = books.get(0);
+//        book.setBookName("JAVA Programming");
+//        int id = manager.update(book);
+//        if(id>0)
+//        {
+//            Toast.makeText(this, "Records updated", Toast.LENGTH_SHORT).show();
+//        }
+
+//        int id = manager.deleteBook(1);
+//        if(id>0)
+//        {
+//            Toast.makeText(this, "Book deleted", Toast.LENGTH_SHORT).show();
+//        }
+
+        manager.close();
+
+    }
+}
+
+
+package com.example.smd_6a_s26_10;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
+public class Login extends AppCompatActivity {
+
+    FirebaseAuth auth;
+    TextInputEditText etUsername, etPassword;
+    Button btnLogin;
+    TextView tvSignup;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_login);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        auth = FirebaseAuth.getInstance();
+        etUsername = findViewById(R.id.etUsername);
+        etPassword = findViewById(R.id.etPassword);
+        btnLogin = findViewById(R.id.btnLogin);
+        tvSignup = findViewById(R.id.tvSignup);
+
+        btnLogin.setOnClickListener((v)->{
+            String email = etUsername.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+
+            auth.signInWithEmailAndPassword(email, password)
+                    .addOnSuccessListener((result)->{
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    })
+                    .addOnFailureListener((e)->{
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        });
+
+        tvSignup.setOnClickListener((v)->{
+            startActivity(new Intent(this, Signup.class));
+            finish();
+                }
+        );
+    }
+}
+
+package com.example.smd_6a_s26_10;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+
+public class MainActivity extends AppCompatActivity {
+
+    FirebaseAuth auth;
+    FirebaseUser user;
+
+    FirebaseDatabase database;
+    DatabaseReference reference;
+
+    TextView textView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        textView =  findViewById(R.id.tvShowResult);
+
+        if(user==null)
+        {
+            startActivity(new Intent(MainActivity.this, Login.class));
+            finish();
+        }
+
+        if(!user.isEmailVerified())
+        {
+            Toast.makeText(this, "Verify Email to proceed", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(this, "Email verified", Toast.LENGTH_SHORT).show();
+        }
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference();
+
+//        HashMap<String, Object> data = new HashMap<>();
+//        data.put("id", 2);
+//        data.put("name", "Raza Ali");
+//
+
+//                .child("Students")
+//                .push()
+//                .setValue(data)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void unused) {
+//                        Toast.makeText(MainActivity.this, "Student added", Toast.LENGTH_SHORT).show();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+
+
+//        reference.child("Students").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                StringBuilder sb = new StringBuilder();
+//                String id, name;
+//
+//                for(DataSnapshot data: snapshot.getChildren())
+//                {
+//                    id = data.child("id").getValue().toString();
+//                    name = data.child("name").getValue().toString();
+//                    sb.append("ID : ").append(id).append(" : ").append("NAME : ").append(name).append("\n");
+//                }
+//
+//                textView.setText(sb.toString());
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
+        reference.child("Students").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                StringBuilder sb = new StringBuilder();
+                String id, name;
+
+                for(DataSnapshot data: snapshot.getChildren())
+                {
+                    id = data.child("id").getValue().toString();
+                    name = data.child("name").getValue().toString();
+                    sb.append("ID : ").append(id).append(" : ").append("NAME : ").append(name).append("\n");
+                }
+
+                textView.setText(sb.toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+
+    }
+
+}
+
+
+package com.example.smd_6a_s26_10;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
+public class Signup extends AppCompatActivity {
+
+    FirebaseAuth auth;
+    TextInputEditText etUsername, etPassword, etCPassword;
+    Button btnSignup;
+    TextView tvLogin;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_signup);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        auth = FirebaseAuth.getInstance();
+        etUsername = findViewById(R.id.etUsername);
+        etPassword = findViewById(R.id.etPassword);
+        etCPassword = findViewById(R.id.etCPassword);
+        btnSignup = findViewById(R.id.btnSignup);
+        tvLogin = findViewById(R.id.tvLogin);
+
+        btnSignup.setOnClickListener((v)->{
+            String email = etUsername.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+            String cpassword = etCPassword.getText().toString().trim();
+
+            if(cpassword.equals(password))
+            {
+                auth.createUserWithEmailAndPassword(email, password)
+                        .addOnSuccessListener((authResult) ->{
+                                startActivity(new Intent(this, MainActivity.class));
+                                finish();
+                                authResult.getUser().sendEmailVerification();
+                        });
+            }
+
+        });
+
+        tvLogin.setOnClickListener((v)->{
+                    startActivity(new Intent(this, Login.class));
+                    finish();
+                }
+        );
+
+    }
+}
+

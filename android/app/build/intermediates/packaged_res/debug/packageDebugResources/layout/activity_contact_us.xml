@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/white" android:orientation="vertical" android:padding="24dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginBottom="32dp">
+        <ImageView android:id="@+id/ivBack" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bg_circle"
+            android:src="@android:drawable/ic_menu_revert" android:padding="8dp" android:contentDescription="Back" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/contact_us_title" style="@style/HeaderTitle" android:gravity="center" />
+        <View android:layout_width="40dp" android:layout_height="40dp" />
+    </LinearLayout>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/full_name" style="@style/LabelText" android:layout_marginBottom="8dp" />
+    <EditText android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/InputFieldStyle" android:paddingStart="16dp" android:layout_marginBottom="20dp" android:importantForAutofill="no" />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/email_address" style="@style/LabelText" android:layout_marginBottom="8dp" />
+    <EditText android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/InputFieldStyle" android:paddingStart="16dp" android:inputType="textEmailAddress" android:layout_marginBottom="20dp" android:importantForAutofill="no" />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/message" style="@style/LabelText" android:layout_marginBottom="8dp" />
+    <EditText android:layout_width="match_parent" android:layout_height="120dp" style="@style/InputFieldStyle" android:paddingStart="16dp" android:inputType="textMultiLine" android:gravity="top|start" android:layout_marginBottom="32dp" android:importantForAutofill="no" />
+
+    <Button android:id="@+id/btnSend" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/ButtonPrimary" android:text="@string/send" />
+</LinearLayout>

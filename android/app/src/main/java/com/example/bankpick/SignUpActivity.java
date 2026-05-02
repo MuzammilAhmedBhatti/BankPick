@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    EditText etFullName, etPhone, etEmail, etPassword;
+    EditText etFullName, etPhone, etEmail, etPassword, etConfirmPassword;
     Button btnSignUp;
     TextView tvSignIn;
     ImageView ivBack, ivTogglePassword;
@@ -38,7 +38,8 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, ime.bottom > 0 ? ime.bottom : systemBars.bottom);
             return insets;
         });
 
@@ -73,6 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
         String phone    = etPhone.getText().toString().trim();
         String email    = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String confirmPassword = etConfirmPassword.getText().toString().trim();
 
         // ── Validation ────────────────────────────────────────────────────
         if (TextUtils.isEmpty(fullName)) {
@@ -88,6 +90,11 @@ public class SignUpActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(password) || password.length() < 6) {
             etPassword.setError("Password must be at least 6 characters");
             etPassword.requestFocus();
+            return;
+        }
+        if (!password.equals(confirmPassword)) {
+            etConfirmPassword.setError("Passwords do not match");
+            etConfirmPassword.requestFocus();
             return;
         }
 
@@ -134,6 +141,7 @@ public class SignUpActivity extends AppCompatActivity {
         etPhone          = findViewById(R.id.etPhone);
         etEmail          = findViewById(R.id.etEmail);
         etPassword       = findViewById(R.id.etPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnSignUp        = findViewById(R.id.btnSignUp);
         tvSignIn         = findViewById(R.id.tvSignIn);
         ivBack           = findViewById(R.id.ivBack);
@@ -145,5 +153,6 @@ public class SignUpActivity extends AppCompatActivity {
         etPhone.setText("");
         etEmail.setText("");
         etPassword.setText("");
+        etConfirmPassword.setText("");
     }
 }

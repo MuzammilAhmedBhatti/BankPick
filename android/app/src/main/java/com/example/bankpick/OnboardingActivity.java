@@ -73,6 +73,7 @@ public class OnboardingActivity extends AppCompatActivity {
         dotsLayout = findViewById(R.id.dotsLayout);
         btnNext = findViewById(R.id.btnNext);
         tvSkip = findViewById(R.id.tvSkip);
+        tvSkip.setText(R.string.skip);
 
         titles = new String[]{
                 getString(R.string.onboarding_title_1),

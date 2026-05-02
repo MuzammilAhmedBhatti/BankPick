@@ -7,26 +7,40 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import android.widget.FrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNav;
+    FrameLayout fragmentContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+
+        init();
+
+        // Apply insets correctly:
+        // - status bar top padding → fragmentContainer (so content isn't behind status bar)
+        // - navigation bar bottom padding → bottomNav (so it isn't hidden behind gesture bar)
+        ViewCompat.setOnApplyWindowInsetsListener(fragmentContainer, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(0, systemBars.top, 0, 0);
             return insets;
         });
-        init();
+
+        ViewCompat.setOnApplyWindowInsetsListener(bottomNav, (v, insets) -> {
+            Insets navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            v.setPadding(0, 0, 0, navBar.bottom);
+            return insets;
+        });
 
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
+            bottomNav.setSelectedItemId(R.id.nav_home);
         }
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -50,5 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         bottomNav = findViewById(R.id.bottomNav);
+        fragmentContainer = findViewById(R.id.fragmentContainer);
     }
 }

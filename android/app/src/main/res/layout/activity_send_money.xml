@@ -1,68 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/white" android:fillViewport="true">
-<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp">
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginBottom="32dp">
-        <ImageView android:id="@+id/ivBack" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bg_circle"
-            android:src="@android:drawable/ic_menu_revert" android:padding="8dp" android:contentDescription="Back" />
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/send_money" style="@style/HeaderTitle" android:gravity="center" />
-        <View android:layout_width="40dp" android:layout_height="40dp" />
-    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <!-- Card -->
-    <LinearLayout android:layout_width="match_parent" android:layout_height="180dp" android:background="@drawable/bg_card_gradient"
-        android:orientation="vertical" android:padding="24dp" android:layout_marginBottom="24dp">
-        <View android:layout_width="40dp" android:layout_height="28dp" android:layout_marginBottom="20dp" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="4562 1122 4595 7852"
-            android:textSize="20sp" android:textColor="@color/white" android:letterSpacing="0.1" android:layout_marginBottom="12dp" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AR Jonson"
-            android:textSize="12sp" android:textColor="#B0FFFFFF" />
-    </LinearLayout>
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="32dp">
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_circle"
+                android:src="@android:drawable/ic_menu_revert"
+                android:padding="8dp"
+                android:contentDescription="Back" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/send_money"
+                style="@style/HeaderTitle"
+                android:gravity="center" />
+            <View android:layout_width="40dp" android:layout_height="40dp" />
+        </LinearLayout>
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/send_to"
-        android:textSize="14sp" android:textColor="@color/text_secondary" android:layout_marginBottom="12dp" />
+        <!-- Card Preview -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@drawable/bg_card_gradient"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginBottom="8dp">
+            <View
+                android:layout_width="40dp"
+                android:layout_height="28dp"
+                android:layout_marginBottom="16dp" />
+            <TextView
+                android:id="@+id/tvCardNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4562 1122 4595 7852"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="8dp" />
+            <TextView
+                android:id="@+id/tvCardHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AR Jonson"
+                android:textSize="12sp"
+                android:textColor="#B0FFFFFF" />
+        </LinearLayout>
 
-    <!-- Contacts row -->
-    <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:scrollbars="none" android:layout_marginBottom="24dp">
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="12dp">
-                <ImageView android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/bg_circle_blue" android:src="@android:drawable/ic_input_add"
-                    android:padding="12dp" android:contentDescription="Add" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Add" android:textSize="12sp" android:layout_marginTop="4dp" />
+        <!-- Balance row -->
+        <TextView
+            android:id="@+id/tvCardBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Balance: $0.00"
+            android:textSize="13sp"
+            android:textColor="@color/green_500"
+            android:gravity="end"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send_to"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Contacts row -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginBottom="24dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!-- Add -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginEnd="12dp">
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_circle_blue"
+                        android:src="@android:drawable/ic_input_add"
+                        android:padding="12dp"
+                        android:contentDescription="Add" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Yamilet -->
+                <LinearLayout
+                    android:id="@+id/contactYamilet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginEnd="12dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_contact_selected"
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        android:padding="12dp"
+                        android:contentDescription="Yamilet" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Yamilet"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Alexa -->
+                <LinearLayout
+                    android:id="@+id/contactAlexa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginEnd="12dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_circle"
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        android:padding="12dp"
+                        android:contentDescription="Alexa" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alexa"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Yakub -->
+                <LinearLayout
+                    android:id="@+id/contactYakub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginEnd="12dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_circle"
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        android:padding="12dp"
+                        android:contentDescription="Yakub" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Yakub"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
             </LinearLayout>
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="12dp">
-                <ImageView android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/bg_contact_selected" android:src="@android:drawable/ic_menu_myplaces"
-                    android:padding="12dp" android:contentDescription="Yamilet" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Yamilet" android:textSize="12sp" android:layout_marginTop="4dp" />
+        </HorizontalScrollView>
+
+        <!-- Amount Box -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_rect"
+            android:padding="24dp"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/enter_your_amount"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/change_currency"
+                    android:textSize="14sp"
+                    android:textColor="@color/red_500" />
             </LinearLayout>
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="12dp">
-                <ImageView android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/bg_circle" android:src="@android:drawable/ic_menu_myplaces"
-                    android:padding="12dp" android:contentDescription="Alexa" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Alexa" android:textSize="12sp" android:layout_marginTop="4dp" />
-            </LinearLayout>
-            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="12dp">
-                <ImageView android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/bg_circle" android:src="@android:drawable/ic_menu_myplaces"
-                    android:padding="12dp" android:contentDescription="Yakub" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Yakub" android:textSize="12sp" android:layout_marginTop="4dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="USD "
+                    android:textSize="24sp"
+                    android:textColor="@color/text_hint" />
+                <EditText
+                    android:id="@+id/etAmount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:textSize="36sp"
+                    android:textStyle="bold"
+                    android:inputType="numberDecimal"
+                    android:hint="0.00"
+                    android:importantForAutofill="no" />
             </LinearLayout>
         </LinearLayout>
-    </HorizontalScrollView>
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_rounded_rect"
-        android:padding="24dp" android:orientation="vertical" android:layout_marginBottom="24dp">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp">
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/enter_your_amount" android:textSize="14sp" android:textColor="@color/text_secondary" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/change_currency" android:textSize="14sp" android:textColor="@color/red_500" />
-        </LinearLayout>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="USD " android:textSize="24sp" android:textColor="@color/text_hint" />
-            <EditText android:id="@+id/etAmount" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                android:background="@android:color/transparent" android:textSize="36sp" android:textStyle="bold" android:inputType="numberDecimal"
-                android:hint="0.00" android:importantForAutofill="no" />
-        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ButtonPrimary"
+            android:text="@string/send_money" />
+
     </LinearLayout>
-
-    <Button android:id="@+id/btnSend" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/ButtonPrimary" android:text="@string/send_money" />
-</LinearLayout>
 </ScrollView>

@@ -26,6 +26,9 @@ public class SplashActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Seed Firebase with demo data on first install
+        DatabaseHelper.getInstance().seedDummyDataIfAbsent();
+
         new Handler().postDelayed(() -> {
             startActivity(new Intent(SplashActivity.this, OnboardingActivity.class));
             finish();

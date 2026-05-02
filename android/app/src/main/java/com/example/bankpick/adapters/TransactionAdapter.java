@@ -45,15 +45,29 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             holder.tvAmount.setTextColor(context.getResources().getColor(R.color.text_primary, null));
         }
 
-        // Set icon emoji based on type
         String icon = transaction.getIcon();
         if (icon != null) {
             switch (icon) {
-                case "apple": holder.tvIcon.setText("🍎"); break;
-                case "music": holder.tvIcon.setText("🎵"); break;
-                case "transfer": holder.tvIcon.setText("💸"); break;
-                case "grocery": holder.tvIcon.setText("🛒"); break;
-                default: holder.tvIcon.setText("💰"); break;
+                case "apple": 
+                    holder.tvIcon.setText("🍎"); 
+                    holder.tvIcon.setBackgroundResource(R.drawable.bg_rounded_rect_gray);
+                    break;
+                case "music": 
+                    holder.tvIcon.setText("🎵"); 
+                    holder.tvIcon.setBackgroundResource(R.drawable.bg_circle_blue); // Close enough for green-100 without a custom shape
+                    break;
+                case "transfer": 
+                    holder.tvIcon.setText("💸"); 
+                    holder.tvIcon.setBackgroundResource(R.drawable.bg_rounded_rect_gray);
+                    break;
+                case "grocery": 
+                    holder.tvIcon.setText("🛒"); 
+                    holder.tvIcon.setBackgroundResource(R.drawable.bg_circle_white); // Use circle
+                    break;
+                default: 
+                    holder.tvIcon.setText("💰"); 
+                    holder.tvIcon.setBackgroundResource(R.drawable.bg_circle);
+                    break;
             }
         }
 

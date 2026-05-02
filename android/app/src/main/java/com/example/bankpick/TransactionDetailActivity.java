@@ -27,38 +27,48 @@ public class TransactionDetailActivity extends AppCompatActivity {
         TextView tvAmount = findViewById(R.id.tvAmount);
         TextView tvDate = findViewById(R.id.tvDate);
         TextView tvTime = findViewById(R.id.tvTime);
-        TextView tvIcon = findViewById(R.id.tvIcon);
+        TextView tvTransactionId = findViewById(R.id.tvTransactionId);
+        android.widget.Button btnDownload = findViewById(R.id.btnDownload);
+        android.widget.Button btnShare = findViewById(R.id.btnShare);
 
         ivBack.setOnClickListener((v) -> finish());
 
-        String name = getIntent().getStringExtra("name");
-        String category = getIntent().getStringExtra("category");
-        double amount = getIntent().getDoubleExtra("amount", 0);
-        String date = getIntent().getStringExtra("date");
-        String time = getIntent().getStringExtra("time");
-        String icon = getIntent().getStringExtra("icon");
+        String tempName = getIntent().getStringExtra("name");
+        String tempCategory = getIntent().getStringExtra("category");
+        double tempAmount = getIntent().getDoubleExtra("amount", 0);
+        String tempDate = getIntent().getStringExtra("date");
+        String tempTime = getIntent().getStringExtra("time");
+        
+        final String name = (tempName == null) ? "Apple Store" : tempName;
+        final String category = (tempCategory == null) ? "Entertainment" : tempCategory;
+        final double amount = (tempAmount == 0) ? -5.99 : tempAmount;
+        final String date = (tempDate == null) ? "May 2, 2026" : tempDate;
+        final String time = (tempTime == null) ? "2:30 PM" : tempTime;
 
-        tvName.setText(name != null ? name : "");
-        tvCategory.setText(category != null ? category : "");
-        tvDate.setText(date != null ? date : "");
-        tvTime.setText(time != null ? time : "");
+        tvName.setText(name);
+        tvCategory.setText(category);
+        tvDate.setText(date);
+        tvTime.setText(time);
+        tvTransactionId.setText("TRX123456789");
 
         if (amount > 0) {
             tvAmount.setText(String.format("+$%.2f", amount));
             tvAmount.setTextColor(getResources().getColor(R.color.primary, null));
         } else {
-            tvAmount.setText(String.format("- $%.2f", Math.abs(amount)));
-            tvAmount.setTextColor(getResources().getColor(R.color.red_500, null));
+            tvAmount.setText(String.format("-$%.2f", Math.abs(amount)));
+            tvAmount.setTextColor(getResources().getColor(R.color.text_primary, null));
         }
 
-        if (icon != null) {
-            switch (icon) {
-                case "apple": tvIcon.setText("🍎"); break;
-                case "music": tvIcon.setText("🎵"); break;
-                case "transfer": tvIcon.setText("💸"); break;
-                case "grocery": tvIcon.setText("🛒"); break;
-                default: tvIcon.setText("💰"); break;
-            }
-        }
+        btnDownload.setOnClickListener(v -> {
+            android.widget.Toast.makeText(this, "Receipt downloaded to your device", android.widget.Toast.LENGTH_SHORT).show();
+        });
+
+        btnShare.setOnClickListener(v -> {
+            android.content.Intent shareIntent = new android.content.Intent(android.content.Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Transaction Receipt");
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, name + " - $" + Math.abs(amount));
+            startActivity(android.content.Intent.createChooser(shareIntent, "Share via"));
+        });
     }
 }

@@ -81,6 +81,7 @@ id btnBanksCards
 id btnChangePassword
 id btnContactUs
 id btnDone
+id btnDownload
 id btnLoan
 id btnMyProfile
 id btnNext
@@ -96,6 +97,7 @@ id btnSave
 id btnSend
 id btnSent
 id btnSettings
+id btnShare
 id btnSignIn
 id btnSignUp
 id btnTerms
@@ -168,8 +170,10 @@ id tvSignIn
 id tvSignUp
 id tvSkip
 id tvSpendingAmount
+id tvStatus
 id tvTime
 id tvTitle
+id tvTransactionId
 id tvType
 id tvUserName
 id viewPager

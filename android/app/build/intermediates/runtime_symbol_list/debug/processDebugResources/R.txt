@@ -3298,6 +3298,7 @@ int id btnBanksCards 0x7f08006b
 int id btnChangePassword 0x7f08006c
 int id btnContactUs 0x7f08006d
 int id btnDone 0x7f08006e
+int id btnDownload 0x7f080260
 int id btnLoan 0x7f08006f
 int id btnMyProfile 0x7f080070
 int id btnNext 0x7f080071
@@ -3313,6 +3314,7 @@ int id btnSave 0x7f080076
 int id btnSend 0x7f080077
 int id btnSent 0x7f080078
 int id btnSettings 0x7f080079
+int id btnShare 0x7f080261
 int id btnSignIn 0x7f08007a
 int id btnSignUp 0x7f08007b
 int id btnTerms 0x7f08007c
@@ -3764,8 +3766,10 @@ int id tvSignIn 0x7f08022b
 int id tvSignUp 0x7f08022c
 int id tvSkip 0x7f08022d
 int id tvSpendingAmount 0x7f08022e
+int id tvStatus 0x7f080262
 int id tvTime 0x7f08022f
 int id tvTitle 0x7f080230
+int id tvTransactionId 0x7f080263
 int id tvType 0x7f080231
 int id tvUserName 0x7f080232
 int id unchecked 0x7f080233

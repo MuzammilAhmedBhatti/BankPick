@@ -124,16 +124,16 @@
         "source": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-main-41:\\drawable\\bg_dot_active.xml"
     },
     {
-        "merged": "com.example.bankpick.app-debug-39:/layout_activity_topup.xml.flat",
-        "source": "com.example.bankpick.app-main-41:/layout/activity_topup.xml"
-    },
-    {
         "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-debug-39:\\drawable_ic_logo_splash.xml.flat",
         "source": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-main-41:\\drawable\\ic_logo_splash.xml"
     },
     {
         "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-debug-39:\\layout_activity_language.xml.flat",
         "source": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-main-41:\\layout\\activity_language.xml"
+    },
+    {
+        "merged": "com.example.bankpick.app-debug-39:/layout_activity_main.xml.flat",
+        "source": "com.example.bankpick.app-main-41:/layout/activity_main.xml"
     },
     {
         "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-debug-39:\\layout_item_onboarding_slide.xml.flat",
@@ -172,10 +172,6 @@
         "source": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-main-41:\\layout\\activity_notifications.xml"
     },
     {
-        "merged": "com.example.bankpick.app-debug-39:/layout_activity_add_new_card.xml.flat",
-        "source": "com.example.bankpick.app-main-41:/layout/activity_add_new_card.xml"
-    },
-    {
         "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-debug-39:\\layout_activity_topup.xml.flat",
         "source": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-main-41:\\layout\\activity_topup.xml"
     },
@@ -206,9 +202,5 @@
     {
         "merged": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-debug-39:\\color_bottom_nav_item_color.xml.flat",
         "source": "C:\\Users\\dell\\.gradle\\daemon\\8.6\\com.example.bankpick.app-main-41:\\color\\bottom_nav_item_color.xml"
-    },
-    {
-        "merged": "com.example.bankpick.app-debug-39:/layout_activity_request_money.xml.flat",
-        "source": "com.example.bankpick.app-main-41:/layout/activity_request_money.xml"
     }
 ]

@@ -3,6 +3,7 @@ package com.example.bankpick;
 import android.os.Bundle;
 import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -11,6 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bankpick.adapters.TransactionAdapter;
 import com.example.bankpick.models.Transaction;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class TransactionHistoryActivity extends AppCompatActivity {
@@ -18,6 +22,9 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     ImageView ivBack;
     ArrayList<Transaction> transactions;
     TransactionAdapter adapter;
+
+    private String currentCardId;
+    private ValueEventListener txnListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,18 +39,50 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         init();
         ivBack.setOnClickListener((v) -> finish());
 
-        // Mock Transactions from TransactionHistory.tsx
-        transactions.clear();
-        transactions.add(new Transaction("1", "Apple Store", "Entertainment", -5.99, "apple", "Today", "10:00 AM"));
-        transactions.add(new Transaction("2", "Spotify", "Music", -12.99, "music", "Today", "11:30 AM"));
-        transactions.add(new Transaction("3", "Money Transfer", "Transaction", 300, "transfer", "Today", "1:00 PM"));
-        transactions.add(new Transaction("4", "Grocery", "Shopping", -88, "grocery", "Today", "4:45 PM"));
-        transactions.add(new Transaction("5", "Apple Store", "Entertainment", -5.99, "apple", "Today", "9:00 AM"));
-        transactions.add(new Transaction("6", "Spotify", "Music", -12.99, "music", "Today", "2:00 PM"));
-        transactions.add(new Transaction("7", "Money Transfer", "Transaction", 300, "transfer", "Today", "4:00 PM"));
-        transactions.add(new Transaction("8", "Spotify", "Music", -12.99, "music", "Today", "8:00 AM"));
-        transactions.add(new Transaction("9", "Grocery", "Shopping", -88, "grocery", "Today", "6:00 PM"));
-        adapter.notifyDataSetChanged();
+        // Resolve current user's primary card
+        String uid = DatabaseHelper.getInstance().getCurrentUserId();
+        if (uid != null) {
+            currentCardId = uid + "_card_001";
+            loadTransactions();
+        }
+    }
+
+    private void loadTransactions() {
+        DatabaseHelper db = DatabaseHelper.getInstance();
+
+        txnListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                transactions.clear();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String cardId = child.child("cardId").getValue(String.class);
+                    if (!currentCardId.equals(cardId)) continue;
+
+                    String id       = child.child("transactionId").getValue(String.class);
+                    String name     = child.child("name").getValue(String.class);
+                    String category = child.child("category").getValue(String.class);
+                    Double amount   = child.child("amount").getValue(Double.class);
+                    String icon     = child.child("icon").getValue(String.class);
+                    String date     = child.child("date").getValue(String.class);
+                    String time     = child.child("time").getValue(String.class);
+
+                    if (id != null) {
+                        transactions.add(0, new Transaction(id, name, category,
+                                amount != null ? amount : 0, icon, date, time));
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        };
+        db.transactionsRef().addValueEventListener(txnListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (txnListener != null)
+            DatabaseHelper.getInstance().transactionsRef().removeEventListener(txnListener);
     }
 
     private void init() {

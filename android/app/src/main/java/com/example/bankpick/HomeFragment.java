@@ -30,7 +30,11 @@ public class HomeFragment extends Fragment {
     ArrayList<Transaction> transactions;
     TransactionAdapter adapter;
 
-    // Keep listener references so we can remove them on destroy
+    // Current user's IDs (resolved dynamically)
+    private String currentUserId;
+    private String currentCardId;
+
+    // Listener references for cleanup
     private ValueEventListener userListener;
     private ValueEventListener cardListener;
     private ValueEventListener txnListener;
@@ -41,6 +45,12 @@ public class HomeFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_home, container, false);
         init();
+
+        currentUserId = DatabaseHelper.getInstance().getCurrentUserId();
+        if (currentUserId == null) return rootView; // shouldn't happen if auth gate works
+
+        currentCardId = currentUserId + "_card_001"; // primary card convention
+
         attachFirebaseListeners();
 
         ivSearch.setOnClickListener((v) -> startActivity(new Intent(requireContext(), SearchActivity.class)));
@@ -55,7 +65,7 @@ public class HomeFragment extends Fragment {
     private void attachFirebaseListeners() {
         DatabaseHelper db = DatabaseHelper.getInstance();
 
-        // ── User name ──────────────────────────────────────────────────────
+        // ── User name (real-time) ──────────────────────────────────────────
         userListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -64,37 +74,37 @@ public class HomeFragment extends Fragment {
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}
         };
-        db.userRef(DatabaseHelper.DEMO_USER_ID).addValueEventListener(userListener);
+        db.userRef(currentUserId).addValueEventListener(userListener);
 
-        // ── Primary card (live balance updates) ────────────────────────────
+        // ── Primary card (live balance) ────────────────────────────────────
         cardListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String number = snapshot.child("cardNumber").getValue(String.class);
-                String holder = snapshot.child("holderName").getValue(String.class);
-                String expiry = snapshot.child("expiryDate").getValue(String.class);
-                String cvv    = snapshot.child("cvv").getValue(String.class);
+                String number  = snapshot.child("cardNumber").getValue(String.class);
+                String holder  = snapshot.child("holderName").getValue(String.class);
+                String expiry  = snapshot.child("expiryDate").getValue(String.class);
+                String cvv     = snapshot.child("cvv").getValue(String.class);
                 Double balance = snapshot.child("balance").getValue(Double.class);
 
                 if (tvCardNumber != null && number != null)  tvCardNumber.setText(number);
                 if (tvCardHolder != null && holder != null)  tvCardHolder.setText(holder);
-                if (tvExpiry     != null && expiry  != null) tvExpiry.setText(expiry);
-                if (tvCvv        != null && cvv     != null) tvCvv.setText(cvv);
+                if (tvExpiry     != null && expiry != null)  tvExpiry.setText(expiry);
+                if (tvCvv        != null && cvv    != null)  tvCvv.setText(cvv);
                 if (tvBalance    != null && balance != null)
                     tvBalance.setText(String.format("$%.2f", balance));
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}
         };
-        db.cardRef(DatabaseHelper.DEMO_CARD_ID).addValueEventListener(cardListener);
+        db.cardRef(currentCardId).addValueEventListener(cardListener);
 
-        // ── Transactions (real-time, all txns for card_001) ────────────────
+        // ── Transactions (filter to current user's card) ───────────────────
         txnListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 transactions.clear();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     String cardId = child.child("cardId").getValue(String.class);
-                    if (!DatabaseHelper.DEMO_CARD_ID.equals(cardId)) continue;
+                    if (!currentCardId.equals(cardId)) continue;
 
                     String id       = child.child("transactionId").getValue(String.class);
                     String name     = child.child("name").getValue(String.class);
@@ -119,30 +129,29 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Remove Firebase listeners to avoid memory leaks
         DatabaseHelper db = DatabaseHelper.getInstance();
-        if (userListener != null)
-            db.userRef(DatabaseHelper.DEMO_USER_ID).removeEventListener(userListener);
-        if (cardListener != null)
-            db.cardRef(DatabaseHelper.DEMO_CARD_ID).removeEventListener(cardListener);
+        if (userListener != null && currentUserId != null)
+            db.userRef(currentUserId).removeEventListener(userListener);
+        if (cardListener != null && currentCardId != null)
+            db.cardRef(currentCardId).removeEventListener(cardListener);
         if (txnListener != null)
             db.transactionsRef().removeEventListener(txnListener);
     }
 
     private void init() {
-        tvUserName   = rootView.findViewById(R.id.tvUserName);
-        tvSeeAll     = rootView.findViewById(R.id.tvSeeAll);
-        tvCardNumber = rootView.findViewById(R.id.tvCardNumber);
-        tvCardHolder = rootView.findViewById(R.id.tvCardHolder);
-        tvExpiry     = rootView.findViewById(R.id.tvExpiry);
-        tvCvv        = rootView.findViewById(R.id.tvCvv);
-        tvBalance    = rootView.findViewById(R.id.tvBalance);
-        ivSearch     = rootView.findViewById(R.id.ivSearch);
+        tvUserName     = rootView.findViewById(R.id.tvUserName);
+        tvSeeAll       = rootView.findViewById(R.id.tvSeeAll);
+        tvCardNumber   = rootView.findViewById(R.id.tvCardNumber);
+        tvCardHolder   = rootView.findViewById(R.id.tvCardHolder);
+        tvExpiry       = rootView.findViewById(R.id.tvExpiry);
+        tvCvv          = rootView.findViewById(R.id.tvCvv);
+        tvBalance      = rootView.findViewById(R.id.tvBalance);
+        ivSearch       = rootView.findViewById(R.id.ivSearch);
         rvTransactions = rootView.findViewById(R.id.rvTransactions);
-        btnSent    = rootView.findViewById(R.id.btnSent);
-        btnReceive = rootView.findViewById(R.id.btnReceive);
-        btnLoan    = rootView.findViewById(R.id.btnLoan);
-        btnTopup   = rootView.findViewById(R.id.btnTopup);
+        btnSent        = rootView.findViewById(R.id.btnSent);
+        btnReceive     = rootView.findViewById(R.id.btnReceive);
+        btnLoan        = rootView.findViewById(R.id.btnLoan);
+        btnTopup       = rootView.findViewById(R.id.btnTopup);
 
         transactions = new ArrayList<>();
         adapter = new TransactionAdapter(requireContext(), transactions);

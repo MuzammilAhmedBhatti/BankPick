@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,6 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bankpick.adapters.CardAdapter;
 import com.example.bankpick.models.Card;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class AllCardsActivity extends AppCompatActivity {
@@ -21,6 +25,9 @@ public class AllCardsActivity extends AppCompatActivity {
     Button btnAddCard;
     ArrayList<Card> cards;
     CardAdapter adapter;
+
+    private String currentUserId;
+    private ValueEventListener cardListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +46,42 @@ public class AllCardsActivity extends AppCompatActivity {
             btnAddCard.setOnClickListener((v) -> startActivity(new Intent(this, AddNewCardActivity.class)));
         }
 
-        // Mock Cards from AllCards.tsx
-        cards.clear();
-        cards.add(new Card("1", "4562 1122 4595 7852", "AR Jonson", "24/2000", "6986", "Mastercard", 0));
-        cards.add(new Card("2", "4562 1122 4595 7852", "Smith Jonson", "24/2000", "6986", "VISA", 1)); // 1 could mean blue gradient
-        adapter.notifyDataSetChanged();
+        currentUserId = DatabaseHelper.getInstance().getCurrentUserId();
+        if (currentUserId != null) {
+            loadCards();
+        }
+    }
+
+    private void loadCards() {
+        DatabaseHelper db = DatabaseHelper.getInstance();
+        cardListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                cards.clear();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String userId = child.child("userId").getValue(String.class);
+                    if (currentUserId.equals(userId)) {
+                        Card card = child.getValue(Card.class);
+                        if (card != null) {
+                            cards.add(card);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        };
+        db.cardsRef().addValueEventListener(cardListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cardListener != null) {
+            DatabaseHelper.getInstance().cardsRef().removeEventListener(cardListener);
+        }
     }
 
     private void init() {

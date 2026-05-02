@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bankpick.adapters.TransactionAdapter;
 import com.example.bankpick.models.Transaction;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class MyCardsFragment extends Fragment {
@@ -25,11 +28,21 @@ public class MyCardsFragment extends Fragment {
     ArrayList<Transaction> transactions;
     TransactionAdapter adapter;
 
+    private String currentUserId;
+    private String currentCardId;
+    private ValueEventListener cardListener;
+    private ValueEventListener txnListener;
+
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_my_cards, container, false);
         init();
-        loadData();
+
+        currentUserId = DatabaseHelper.getInstance().getCurrentUserId();
+        if (currentUserId != null) {
+            currentCardId = currentUserId + "_card_001";
+            attachFirebaseListeners();
+        }
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar s, int progress, boolean fromUser) {
@@ -45,17 +58,56 @@ public class MyCardsFragment extends Fragment {
         return rootView;
     }
 
-    private void loadData() {
-        tvCardNumber.setText("4562 1122 4595 7852");
-        tvCardHolder.setText("AR Jonson");
-        tvExpiry.setText("24/2000");
-        tvCvv.setText("6986");
+    private void attachFirebaseListeners() {
+        DatabaseHelper db = DatabaseHelper.getInstance();
 
-        transactions.clear();
-        transactions.add(new Transaction("1", "Apple Store", "Entertainment", -5.99, "apple", "Today", "10:00 AM"));
-        transactions.add(new Transaction("2", "Spotify", "Music", -12.99, "music", "Yesterday", "11:30 AM"));
-        transactions.add(new Transaction("3", "Grocery", "Shopping", -88, "grocery", "Yesterday", "4:45 PM"));
-        adapter.notifyDataSetChanged();
+        // Load primary card info
+        cardListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String number = snapshot.child("cardNumber").getValue(String.class);
+                String holder = snapshot.child("holderName").getValue(String.class);
+                String expiry = snapshot.child("expiryDate").getValue(String.class);
+                String cvv    = snapshot.child("cvv").getValue(String.class);
+
+                if (tvCardNumber != null && number != null) tvCardNumber.setText(number);
+                if (tvCardHolder != null && holder != null) tvCardHolder.setText(holder);
+                if (tvExpiry     != null && expiry != null) tvExpiry.setText(expiry);
+                if (tvCvv        != null && cvv    != null) tvCvv.setText(cvv);
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        };
+        db.cardRef(currentCardId).addValueEventListener(cardListener);
+
+        // Load transactions for this card
+        txnListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                transactions.clear();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    String cardId = child.child("cardId").getValue(String.class);
+                    if (!currentCardId.equals(cardId)) continue;
+
+                    Transaction txn = child.getValue(Transaction.class);
+                    if (txn != null) {
+                        transactions.add(0, txn); // Most recent first
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        };
+        db.transactionsRef().addValueEventListener(txnListener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        DatabaseHelper db = DatabaseHelper.getInstance();
+        if (cardListener != null && currentCardId != null)
+            db.cardRef(currentCardId).removeEventListener(cardListener);
+        if (txnListener != null)
+            db.transactionsRef().removeEventListener(txnListener);
     }
 
     private void init() {

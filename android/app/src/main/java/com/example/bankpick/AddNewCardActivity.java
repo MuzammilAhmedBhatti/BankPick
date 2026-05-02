@@ -7,10 +7,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class AddNewCardActivity extends AppCompatActivity {
     EditText etCardNumber, etHolderName, etExpiry, etCvv;
@@ -78,11 +82,23 @@ public class AddNewCardActivity extends AppCompatActivity {
         tvPreviewExpiry = findViewById(R.id.tvPreviewExpiry);
         tvPreviewCvv = findViewById(R.id.tvPreviewCvv);
 
-        // TSX Mock State
-        etHolderName.setText("Tanya Myroniuk");
-        etExpiry.setText("09/06/2024");
-        etCvv.setText("6986");
-        etCardNumber.setText("4562 1122 4595 7852");
+        // Pre-fill holder name from Firebase user profile
+        String uid = DatabaseHelper.getInstance().getCurrentUserId();
+        if (uid != null) {
+            DatabaseHelper.getInstance().userRef(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String name = snapshot.child("fullName").getValue(String.class);
+                    if (name != null && etHolderName != null) {
+                        etHolderName.setText(name);
+                        updatePreview();
+                    }
+                }
+                @Override public void onCancelled(@NonNull DatabaseError error) {}
+            });
+        }
+
         updatePreview();
     }
 }
+

@@ -35,4 +35,11 @@
         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/terms_conditions" android:textSize="16sp" />
         <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" android:contentDescription="Go" />
     </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/gray_100" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" />
+
+    <LinearLayout android:id="@+id/btnLogout" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:gravity="center_vertical">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Log Out" android:textSize="16sp" android:textColor="@color/red_500" />
+        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" android:contentDescription="Logout" />
+    </LinearLayout>
 </LinearLayout>

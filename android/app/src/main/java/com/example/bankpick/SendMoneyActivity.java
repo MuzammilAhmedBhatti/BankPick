@@ -28,11 +28,10 @@ public class SendMoneyActivity extends AppCompatActivity {
     TextView tvCardNumber, tvCardHolder, tvCardBalance;
     ProgressBar progressBar;
 
-    // Active card
-    String activeCardId = DatabaseHelper.DEMO_CARD_ID;
+    // Resolved from current user
+    String activeCardId;
     double currentBalance = 0;
 
-    // Selected recipient (default = Yamilet, first in list)
     String selectedContact = "Yamilet";
 
     private ValueEventListener cardListener;
@@ -49,7 +48,14 @@ public class SendMoneyActivity extends AppCompatActivity {
         });
 
         init();
-        listenToCard();
+
+        // Resolve current user's primary card
+        String uid = DatabaseHelper.getInstance().getCurrentUserId();
+        if (uid != null) {
+            activeCardId = uid + "_card_001";
+            listenToCard();
+        }
+
         setupContactSelection();
 
         ivBack.setOnClickListener((v) -> finish());
@@ -74,13 +80,17 @@ public class SendMoneyActivity extends AppCompatActivity {
                 return;
             }
 
+            if (activeCardId == null) {
+                Toast.makeText(this, "No card available", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (amount > currentBalance) {
                 Toast.makeText(this, "Insufficient funds (balance: $" +
                         String.format("%.2f", currentBalance) + ")", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            // Disable button & show progress while Firebase processes
             btnSend.setEnabled(false);
             if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
 
@@ -107,7 +117,6 @@ public class SendMoneyActivity extends AppCompatActivity {
         });
     }
 
-    /** Listen to Firebase card node for real-time balance updates */
     private void listenToCard() {
         cardListener = new ValueEventListener() {
             @Override
@@ -157,7 +166,7 @@ public class SendMoneyActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (cardListener != null)
+        if (cardListener != null && activeCardId != null)
             DatabaseHelper.getInstance().cardRef(activeCardId).removeEventListener(cardListener);
     }
 }

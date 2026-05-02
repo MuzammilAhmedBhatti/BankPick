@@ -80,6 +80,14 @@
                 android:src="@android:drawable/ic_menu_view" android:layout_gravity="end|center_vertical" android:layout_marginEnd="14dp" android:contentDescription="Toggle" />
         </FrameLayout>
 
+        <ProgressBar
+            android:id="@+id/progressBarSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
         <Button android:id="@+id/btnSignUp" android:layout_width="match_parent" android:layout_height="wrap_content"
             style="@style/ButtonPrimary" android:text="@string/sign_up" />
 

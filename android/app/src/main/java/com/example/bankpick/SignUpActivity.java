@@ -2,10 +2,14 @@ package com.example.bankpick;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,13 +17,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class SignUpActivity extends AppCompatActivity {
 
     EditText etFullName, etPhone, etEmail, etPassword;
     Button btnSignUp;
     TextView tvSignIn;
     ImageView ivBack, ivTogglePassword;
+    ProgressBar progressBar;
     boolean passwordVisible = false;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +41,12 @@ public class SignUpActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        mAuth = FirebaseAuth.getInstance();
         init();
 
         ivBack.setOnClickListener((v) -> {
-            startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+            startActivity(new Intent(this, SignInActivity.class));
             finish();
         });
 
@@ -48,31 +60,90 @@ public class SignUpActivity extends AppCompatActivity {
             etPassword.setSelection(etPassword.getText().length());
         });
 
-        btnSignUp.setOnClickListener((v) -> {
-            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-            finish();
-        });
+        btnSignUp.setOnClickListener((v) -> attemptSignUp());
 
         tvSignIn.setOnClickListener((v) -> {
-            startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+            startActivity(new Intent(this, SignInActivity.class));
             finish();
         });
     }
 
-    private void init() {
-        etFullName = findViewById(R.id.etFullName);
-        etPhone = findViewById(R.id.etPhone);
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
-        btnSignUp = findViewById(R.id.btnSignUp);
-        tvSignIn = findViewById(R.id.tvSignIn);
-        ivBack = findViewById(R.id.ivBack);
-        ivTogglePassword = findViewById(R.id.ivTogglePassword);
+    private void attemptSignUp() {
+        String fullName = etFullName.getText().toString().trim();
+        String phone    = etPhone.getText().toString().trim();
+        String email    = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
 
-        // Match TSX initial state
-        etFullName.setText("Tanya Myroniuk");
-        etPhone.setText("+8801712663389");
-        etEmail.setText("tanyamyroniuk@gmail.com");
-        etPassword.setText("........");
+        // ── Validation ────────────────────────────────────────────────────
+        if (TextUtils.isEmpty(fullName)) {
+            etFullName.setError("Name is required");
+            etFullName.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(email)) {
+            etEmail.setError("Email is required");
+            etEmail.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(password) || password.length() < 6) {
+            etPassword.setError("Password must be at least 6 characters");
+            etPassword.requestFocus();
+            return;
+        }
+
+        // ── Show progress ─────────────────────────────────────────────────
+        btnSignUp.setEnabled(false);
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+
+        // ── Firebase Auth create user ─────────────────────────────────────
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            String uid = firebaseUser.getUid();
+
+                            // Provision user data in Realtime Database
+                            DatabaseHelper.getInstance()
+                                    .createNewUser(uid, fullName, email, phone);
+
+                            Toast.makeText(this,
+                                    "Welcome, " + fullName + "!",
+                                    Toast.LENGTH_SHORT).show();
+
+                            // Go to main screen
+                            Intent intent = new Intent(this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } else {
+                        btnSignUp.setEnabled(true);
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+
+                        String error = task.getException() != null
+                                ? task.getException().getMessage()
+                                : "Sign up failed";
+                        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void init() {
+        etFullName       = findViewById(R.id.etFullName);
+        etPhone          = findViewById(R.id.etPhone);
+        etEmail          = findViewById(R.id.etEmail);
+        etPassword       = findViewById(R.id.etPassword);
+        btnSignUp        = findViewById(R.id.btnSignUp);
+        tvSignIn         = findViewById(R.id.tvSignIn);
+        ivBack           = findViewById(R.id.ivBack);
+        ivTogglePassword = findViewById(R.id.ivTogglePassword);
+        progressBar      = findViewById(R.id.progressBarSignUp);
+
+        // Clear defaults — let user enter their own details
+        etFullName.setText("");
+        etPhone.setText("");
+        etEmail.setText("");
+        etPassword.setText("");
     }
 }

@@ -10,10 +10,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SplashActivity extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +26,17 @@ public class SplashActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Seed Firebase with demo data on first install
-        DatabaseHelper.getInstance().seedDummyDataIfAbsent();
-
         new Handler().postDelayed(() -> {
-            startActivity(new Intent(SplashActivity.this, OnboardingActivity.class));
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            if (currentUser != null) {
+                // Already logged in → go straight to home
+                startActivity(new Intent(this, MainActivity.class));
+            } else {
+                // Not logged in → onboarding / sign-in flow
+                startActivity(new Intent(this, OnboardingActivity.class));
+            }
             finish();
-        }, 2500);
+        }, 2000);
     }
 }

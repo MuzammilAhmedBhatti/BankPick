@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/white" android:orientation="vertical" android:padding="24dp">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginBottom="32dp">
+        <View android:layout_width="40dp" android:layout_height="40dp" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/settings" style="@style/HeaderTitle" android:gravity="center" />
+        <View android:layout_width="40dp" android:layout_height="40dp" />
+    </LinearLayout>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/general"
+        android:textSize="14sp" android:textColor="@color/text_hint" android:letterSpacing="0.1" android:layout_marginBottom="16dp" />
+
+    <LinearLayout android:id="@+id/btnMyProfile" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:gravity="center_vertical">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/my_profile" android:textSize="16sp" />
+        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" android:contentDescription="Go" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/btnContactUs" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:gravity="center_vertical">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/contact_us" android:textSize="16sp" />
+        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" android:contentDescription="Go" />
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/gray_100" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/security"
+        android:textSize="14sp" android:textColor="@color/text_hint" android:letterSpacing="0.1" android:layout_marginBottom="16dp" />
+
+    <LinearLayout android:id="@+id/btnChangePassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:gravity="center_vertical">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/change_password" android:textSize="16sp" />
+        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" android:contentDescription="Go" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/btnTerms" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:gravity="center_vertical">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/terms_conditions" android:textSize="16sp" />
+        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@android:drawable/ic_media_play" android:contentDescription="Go" />
+    </LinearLayout>
+</LinearLayout>

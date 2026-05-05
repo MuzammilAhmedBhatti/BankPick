@@ -1,45 +1,288 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/white" android:fillViewport="true">
-<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/app_background">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:layout_marginBottom="32dp">
-        <ImageView android:id="@+id/ivBack" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bg_circle"
-            android:src="@android:drawable/ic_menu_revert" android:padding="8dp" android:contentDescription="Back" />
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/edit_profile" style="@style/HeaderTitle" android:gravity="center" />
-        <View android:layout_width="40dp" android:layout_height="40dp" />
-    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_horizontal" android:orientation="vertical" android:layout_marginBottom="32dp">
-        <ImageView android:layout_width="96dp" android:layout_height="96dp" android:background="@drawable/bg_circle" android:src="@android:drawable/ic_menu_myplaces"
-            android:padding="16dp" android:layout_marginBottom="16dp" android:contentDescription="Profile" />
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle"
+            android:src="@drawable/ic_chevron_left"
+            android:padding="8dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/back" />
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/full_name" style="@style/LabelText" android:layout_marginBottom="8dp" />
-    <EditText android:id="@+id/etFullName" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/InputFieldStyle"
-        android:paddingStart="16dp" android:layout_marginBottom="20dp" android:importantForAutofill="no" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Profile"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/email_address" style="@style/LabelText" android:layout_marginBottom="8dp" />
-    <EditText android:id="@+id/etEmail" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/InputFieldStyle"
-        android:paddingStart="16dp" android:inputType="textEmailAddress" android:layout_marginBottom="20dp" android:importantForAutofill="no" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/phone_number" style="@style/LabelText" android:layout_marginBottom="8dp" />
-    <EditText android:id="@+id/etPhone" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/InputFieldStyle"
-        android:paddingStart="16dp" android:inputType="phone" android:layout_marginBottom="20dp" android:importantForAutofill="no" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="32dp">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/birth_date" style="@style/LabelText" android:layout_marginBottom="8dp" />
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="24dp">
-        <EditText android:id="@+id/etDay" android:layout_width="80dp" android:layout_height="wrap_content" style="@style/InputFieldStyle"
-            android:paddingStart="16dp" android:gravity="center" android:hint="DD" android:layout_marginEnd="12dp" android:importantForAutofill="no" />
-        <EditText android:id="@+id/etMonth" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" style="@style/InputFieldStyle"
-            android:paddingStart="16dp" android:hint="Month" android:layout_marginEnd="12dp" android:importantForAutofill="no" />
-        <EditText android:id="@+id/etYear" android:layout_width="96dp" android:layout_height="wrap_content" style="@style/InputFieldStyle"
-            android:paddingStart="16dp" android:gravity="center" android:hint="YYYY" android:importantForAutofill="no" />
-    </LinearLayout>
+            <!-- Avatar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="32dp">
 
-    <Button android:id="@+id/btnSave" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/ButtonPrimary" android:text="@string/save" />
+                <FrameLayout
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:layout_marginBottom="12dp">
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/joined" android:textColor="@color/text_hint"
-        android:gravity="center" android:layout_marginTop="16dp" android:textSize="14sp" />
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/ivProfilePhoto"
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
+                        android:src="@drawable/ic_profile_placeholder"
+                        android:contentDescription="Profile photo" />
+
+                    <ImageView
+                        android:id="@+id/ivEditPhoto"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/bg_circle_primary"
+                        android:src="@drawable/ic_edit"
+                        android:padding="5dp"
+                        android:contentDescription="Edit photo" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tvProfileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+
+                <TextView
+                    android:id="@+id/tvProfileTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BankPick User"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_secondary" />
+            </LinearLayout>
+
+            <!-- Full Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full Name"
+                android:textSize="13sp"
+                android:textColor="@color/text_hint"
+                android:layout_marginBottom="8dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp">
+
+                <EditText
+                    android:id="@+id/etFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="textPersonName"
+                    android:hint="Full Name"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:importantForAutofill="no" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="14dp"
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="Person icon" />
+            </FrameLayout>
+
+            <!-- Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email Address"
+                android:textSize="13sp"
+                android:textColor="@color/text_hint"
+                android:layout_marginBottom="8dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp">
+
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="textEmailAddress"
+                    android:hint="Email Address"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:importantForAutofill="no" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="14dp"
+                    android:src="@drawable/ic_mail"
+                    android:contentDescription="Mail icon" />
+            </FrameLayout>
+
+            <!-- Phone -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone Number"
+                android:textSize="13sp"
+                android:textColor="@color/text_hint"
+                android:layout_marginBottom="8dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp">
+
+                <EditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="48dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="phone"
+                    android:hint="Phone Number"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:importantForAutofill="no" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="14dp"
+                    android:src="@drawable/ic_phone"
+                    android:contentDescription="Phone icon" />
+            </FrameLayout>
+
+            <!-- Birth Date -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Birth Date"
+                android:textSize="13sp"
+                android:textColor="@color/text_hint"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <EditText
+                    android:id="@+id/etDay"
+                    android:layout_width="72dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_input_field"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:text="28"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:layout_marginEnd="8dp"
+                    android:importantForAutofill="no" />
+
+                <EditText
+                    android:id="@+id/etMonth"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_input_field"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"
+                    android:text="September"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:layout_marginEnd="8dp"
+                    android:importantForAutofill="no" />
+
+                <EditText
+                    android:id="@+id/etYear"
+                    android:layout_width="80dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_input_field"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:text="2000"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Joined 28 Jan 2021"
+                android:textSize="13sp"
+                android:textColor="@color/text_hint"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginBottom="24dp" />
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Save Changes"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_button_primary" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
 </LinearLayout>
-</ScrollView>

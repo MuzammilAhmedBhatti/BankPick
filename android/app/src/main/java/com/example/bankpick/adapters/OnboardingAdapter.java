@@ -50,7 +50,7 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.Sl
         public SlideViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
-            tvDescription = itemView.findViewById(R.id.tvDescription);
+            tvDescription = itemView.findViewById(R.id.tvSubtitle);
             ivIllustration = itemView.findViewById(R.id.ivIllustration);
         }
     }

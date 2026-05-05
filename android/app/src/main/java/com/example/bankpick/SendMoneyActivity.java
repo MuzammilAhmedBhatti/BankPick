@@ -29,7 +29,7 @@ import java.util.Map;
 public class SendMoneyActivity extends AppCompatActivity {
 
     EditText etAmount, etRecipientEmail;
-    Button btnSend, btnAddContact;
+    Button btnSend;
     ImageView ivBack;
     TextView tvCardNumber, tvCardHolder, tvCardBalance;
     ProgressBar progressBar;
@@ -60,13 +60,14 @@ public class SendMoneyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_send_money);
+
+        init();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        init();
 
         String uid = DatabaseHelper.getInstance().getCurrentUserId();
         if (uid != null) {
@@ -77,33 +78,10 @@ public class SendMoneyActivity extends AppCompatActivity {
 
         ivBack.setOnClickListener((v) -> finish());
 
-        btnAddContact.setOnClickListener(v -> {
-            String email = etRecipientEmail.getText().toString().trim();
-            if (TextUtils.isEmpty(email)) {
-                Toast.makeText(this, "Enter email", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            DatabaseHelper.getInstance().findUserByEmail(email, (foundUid, name) -> {
-                if (foundUid != null) {
-                    DatabaseHelper.getInstance().addContact(uid, foundUid, name);
-                    etRecipientEmail.setText("");
-                    loadContacts(uid);
-                    Toast.makeText(this, "Added " + name, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
-
         btnSend.setOnClickListener((v) -> {
             String amountStr = etAmount.getText().toString().trim();
             if (TextUtils.isEmpty(amountStr)) {
                 Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (selectedRecipientUid == null) {
-                Toast.makeText(this, "Please select a recipient", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -124,23 +102,46 @@ public class SendMoneyActivity extends AppCompatActivity {
                 return;
             }
 
-            // Trigger OTP before transfer
-            if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
-            DatabaseHelper.getInstance().sendOtp("user@example.com", new DatabaseHelper.OtpCallback() {
-                @Override
-                public void onSuccess(String otp) {
-                    if (progressBar != null) progressBar.setVisibility(View.GONE);
-                    Intent intent = new Intent(SendMoneyActivity.this, OtpVerificationActivity.class);
-                    intent.putExtra("dummyOtp", otp);
-                    otpLauncher.launch(intent);
+            if (selectedRecipientUid != null) {
+                startOtpProcess();
+            } else {
+                String email = etRecipientEmail.getText().toString().trim();
+                if (TextUtils.isEmpty(email)) {
+                    Toast.makeText(this, "Select a beneficiary or enter an email", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                
+                if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+                DatabaseHelper.getInstance().findUserByEmail(email, (foundUid, name) -> {
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    if (foundUid != null) {
+                        selectedRecipientUid = foundUid;
+                        selectedRecipientName = name;
+                        startOtpProcess();
+                    } else {
+                        Toast.makeText(this, "Recipient email not found in BankPick", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
 
-                @Override
-                public void onFailure(String error) {
-                    if (progressBar != null) progressBar.setVisibility(View.GONE);
-                    Toast.makeText(SendMoneyActivity.this, error, Toast.LENGTH_SHORT).show();
-                }
-            });
+    private void startOtpProcess() {
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        DatabaseHelper.getInstance().sendOtp("user@example.com", new DatabaseHelper.OtpCallback() {
+            @Override
+            public void onSuccess(String otp) {
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                Intent intent = new Intent(SendMoneyActivity.this, OtpVerificationActivity.class);
+                intent.putExtra("dummyOtp", otp);
+                otpLauncher.launch(intent);
+            }
+
+            @Override
+            public void onFailure(String error) {
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                Toast.makeText(SendMoneyActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -155,6 +156,10 @@ public class SendMoneyActivity extends AppCompatActivity {
                     if (progressBar != null) progressBar.setVisibility(View.GONE);
 
                     if (success) {
+                        // Automatically add to beneficiary list
+                        String currentUid = DatabaseHelper.getInstance().getCurrentUserId();
+                        DatabaseHelper.getInstance().addContact(currentUid, selectedRecipientUid, selectedRecipientName);
+
                         Intent intent = new Intent(this, TransactionSuccessActivity.class);
                         intent.putExtra("type",          "Sent to " + selectedRecipientName);
                         intent.putExtra("amount",        String.format("%.2f", pendingAmount));
@@ -170,6 +175,7 @@ public class SendMoneyActivity extends AppCompatActivity {
     }
 
     private void loadContacts(String uid) {
+        if (llContactsContainer == null) return;
         DatabaseHelper.getInstance().getContacts(uid, contacts -> {
             llContactsContainer.removeAllViews();
             for (Map<String, String> contact : contacts) {
@@ -188,6 +194,7 @@ public class SendMoneyActivity extends AppCompatActivity {
         view.setOnClickListener(v -> {
             selectedRecipientUid = contactUid;
             selectedRecipientName = name;
+            etRecipientEmail.setText(""); // Clear email if contact is selected
             
             for (int i = 0; i < llContactsContainer.getChildCount(); i++) {
                 llContactsContainer.getChildAt(i).findViewById(R.id.ivContactIcon)
@@ -223,16 +230,15 @@ public class SendMoneyActivity extends AppCompatActivity {
     }
 
     private void init() {
-        ivBack            = findViewById(R.id.ivBack);
+        ivBack            = findViewById(R.id.btnBack);
         etAmount          = findViewById(R.id.etAmount);
         etRecipientEmail  = findViewById(R.id.etRecipientEmail);
-        btnAddContact     = findViewById(R.id.btnAddContact);
-        btnSend           = findViewById(R.id.btnSend);
+        btnSend           = findViewById(R.id.btnSendMoney);
+        llContactsContainer = findViewById(R.id.llContacts);
         tvCardNumber      = findViewById(R.id.tvCardNumber);
         tvCardHolder      = findViewById(R.id.tvCardHolder);
         tvCardBalance     = findViewById(R.id.tvCardBalance);
         progressBar       = findViewById(R.id.progressBar);
-        llContactsContainer = findViewById(R.id.llContactsContainer);
     }
 
     @Override

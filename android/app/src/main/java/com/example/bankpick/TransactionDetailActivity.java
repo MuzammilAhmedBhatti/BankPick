@@ -15,14 +15,15 @@ public class TransactionDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_transaction_detail);
+        
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        ImageView ivBack = findViewById(R.id.ivBack);
-        TextView tvName = findViewById(R.id.tvName);
+        ImageView ivBack = findViewById(R.id.btnBack);
+        TextView tvName = findViewById(R.id.tvMerchant);
         TextView tvCategory = findViewById(R.id.tvCategory);
         TextView tvAmount = findViewById(R.id.tvAmount);
         TextView tvDate = findViewById(R.id.tvDate);

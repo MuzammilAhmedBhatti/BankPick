@@ -1,9 +1,11 @@
 package com.example.bankpick;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -19,9 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EditProfileActivity extends AppCompatActivity {
-    EditText etFullName, etEmail, etPhone, etDay, etMonth, etYear;
-    ImageView ivBack;
-    Button btnSave;
+    private EditText etFullName, etEmail, etPhone, etDay, etMonth, etYear;
+    private android.widget.TextView tvProfileName;
+    private ImageView ivBack;
+    private Button btnSave;
 
     private String currentUserId;
     private ValueEventListener userListener;
@@ -31,14 +34,21 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_edit_profile);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        
         init();
 
-        ivBack.setOnClickListener((v) -> finish());
+        View mainView = findViewById(R.id.main);
+        if (mainView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            });
+        }
+
+        if (ivBack != null) {
+            ivBack.setOnClickListener((v) -> finish());
+        }
 
         // Load current user data from Firebase
         loadUserData();
@@ -59,7 +69,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 String email = snapshot.child("email").getValue(String.class);
                 String phone = snapshot.child("phone").getValue(String.class);
 
-                if (name  != null && etFullName != null) etFullName.setText(name);
+                if (name  != null && etFullName != null) {
+                    etFullName.setText(name);
+                    if (tvProfileName != null) tvProfileName.setText(name);
+                }
                 if (email != null && etEmail    != null) etEmail.setText(email);
                 if (phone != null && etPhone    != null) etPhone.setText(phone);
             }
@@ -68,19 +81,17 @@ public class EditProfileActivity extends AppCompatActivity {
         DatabaseHelper.getInstance().userRef(currentUserId).addListenerForSingleValueEvent(userListener);
     }
 
-    /** Saves edits back to Firebase */
     private void saveProfile() {
         if (currentUserId == null) return;
 
+        String name = etFullName.getText().toString().trim();
         Map<String, Object> updates = new HashMap<>();
-        updates.put("fullName", etFullName.getText().toString().trim());
+        updates.put("fullName", name);
         updates.put("email",    etEmail.getText().toString().trim());
         updates.put("phone",    etPhone.getText().toString().trim());
 
-        // Also update the card holder name on the primary card
         String cardId = currentUserId + "_card_001";
-        DatabaseHelper.getInstance().cardRef(cardId).child("holderName")
-                .setValue(etFullName.getText().toString().trim());
+        DatabaseHelper.getInstance().cardRef(cardId).child("holderName").setValue(name);
 
         DatabaseHelper.getInstance().userRef(currentUserId).updateChildren(updates)
                 .addOnSuccessListener(unused -> {
@@ -99,13 +110,14 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void init() {
-        ivBack     = findViewById(R.id.ivBack);
+        ivBack     = findViewById(R.id.btnBack);
         etFullName = findViewById(R.id.etFullName);
         etEmail    = findViewById(R.id.etEmail);
         etPhone    = findViewById(R.id.etPhone);
         etDay      = findViewById(R.id.etDay);
         etMonth    = findViewById(R.id.etMonth);
         etYear     = findViewById(R.id.etYear);
+        tvProfileName = findViewById(R.id.tvProfileName);
         btnSave    = findViewById(R.id.btnSave);
     }
 }

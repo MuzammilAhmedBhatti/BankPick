@@ -31,12 +31,14 @@ public class TopupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_topup);
+        
+        init();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        init();
 
         ivBack.setOnClickListener((v) -> finish());
 
@@ -106,24 +108,24 @@ public class TopupActivity extends AppCompatActivity {
     }
 
     private void init() {
-        ivBack = findViewById(R.id.ivBack);
+        ivBack = findViewById(R.id.btnBack);
         etAmount = findViewById(R.id.etAmount);
         btnTopup = findViewById(R.id.btnTopup);
 
-        btnQuick50 = findViewById(R.id.btnQuick50);
-        btnQuick100 = findViewById(R.id.btnQuick100);
-        btnQuick200 = findViewById(R.id.btnQuick200);
-        btnQuick500 = findViewById(R.id.btnQuick500);
+        btnQuick50 = findViewById(R.id.btn50);
+        btnQuick100 = findViewById(R.id.btn100);
+        btnQuick200 = findViewById(R.id.btn200);
+        btnQuick500 = findViewById(R.id.btn500);
 
         llMethodCard = findViewById(R.id.llMethodCard);
         llMethodBank = findViewById(R.id.llMethodBank);
         llMethodWallet = findViewById(R.id.llMethodWallet);
         llMethodPaypal = findViewById(R.id.llMethodPaypal);
 
-        ivCheckCard = findViewById(R.id.ivCheckCard);
-        ivCheckBank = findViewById(R.id.ivCheckBank);
-        ivCheckWallet = findViewById(R.id.ivCheckWallet);
-        ivCheckPaypal = findViewById(R.id.ivCheckPaypal);
+        ivCheckCard = findViewById(R.id.ivRadioCard);
+        ivCheckBank = findViewById(R.id.ivRadioBank); // Added if exists
+        ivCheckWallet = findViewById(R.id.ivRadioWallet); // Added if exists
+        ivCheckPaypal = findViewById(R.id.ivRadioPaypal); // Added if exists
 
         etAmount.setText("100.00");
     }

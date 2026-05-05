@@ -34,6 +34,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         holder.tvExpiry.setText(card.getExpiryDate());
         holder.tvType.setText(card.getType());
         holder.tvBalance.setText(String.format("$%,.2f", card.getBalance()));
+        
+        holder.itemView.setOnClickListener(v -> {
+            String uid = com.example.bankpick.DatabaseHelper.getInstance().getCurrentUserId();
+            if (uid != null) {
+                com.example.bankpick.DatabaseHelper.getInstance().setPrimaryCard(uid, card.getCardId());
+            }
+            if (context instanceof android.app.Activity) {
+                ((android.app.Activity) context).finish();
+            }
+        });
     }
 
     @Override public int getItemCount() { return cards.size(); }

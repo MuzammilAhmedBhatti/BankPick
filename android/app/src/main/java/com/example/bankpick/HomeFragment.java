@@ -23,7 +23,7 @@ public class HomeFragment extends Fragment {
 
     View rootView;
     TextView tvUserName, tvSeeAll, tvCardNumber, tvCardHolder, tvExpiry, tvCvv, tvBalance;
-    ImageView ivSearch;
+    ImageView ivNotification, ivMenuHamburger;
     RecyclerView rvTransactions;
     View btnSent, btnReceive, btnLoan, btnTopup;
 
@@ -49,15 +49,25 @@ public class HomeFragment extends Fragment {
         currentUserId = DatabaseHelper.getInstance().getCurrentUserId();
         if (currentUserId == null) return rootView; // shouldn't happen if auth gate works
 
-        currentCardId = currentUserId + "_card_001"; // primary card convention
+        // currentCardId will be resolved dynamically in attachFirebaseListeners
+
 
         attachFirebaseListeners();
 
-        ivSearch.setOnClickListener((v) -> startActivity(new Intent(requireContext(), SearchActivity.class)));
+        ivNotification.setOnClickListener((v) ->
+                startActivity(new Intent(requireContext(), NotificationsActivity.class)));
         tvSeeAll.setOnClickListener((v) -> startActivity(new Intent(requireContext(), TransactionHistoryActivity.class)));
         btnSent.setOnClickListener((v) -> startActivity(new Intent(requireContext(), SendMoneyActivity.class)));
         btnReceive.setOnClickListener((v) -> startActivity(new Intent(requireContext(), RequestMoneyActivity.class)));
         btnTopup.setOnClickListener((v) -> startActivity(new Intent(requireContext(), TopupActivity.class)));
+
+        if (ivMenuHamburger != null) {
+            ivMenuHamburger.setOnClickListener(v -> {
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).openDrawer();
+                }
+            });
+        }
 
         return rootView;
     }
@@ -80,31 +90,55 @@ public class HomeFragment extends Fragment {
         cardListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String number  = snapshot.child("cardNumber").getValue(String.class);
-                String holder  = snapshot.child("holderName").getValue(String.class);
-                String expiry  = snapshot.child("expiryDate").getValue(String.class);
-                String cvv     = snapshot.child("cvv").getValue(String.class);
-                Double balance = snapshot.child("balance").getValue(Double.class);
+                DataSnapshot primaryCardSnap = null;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    primaryCardSnap = ds; // fallback to last if none is primary
+                    if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) {
+                        break;
+                    }
+                }
 
-                if (tvCardNumber != null && number != null)  tvCardNumber.setText(number);
-                if (tvCardHolder != null && holder != null)  tvCardHolder.setText(holder);
-                if (tvExpiry     != null && expiry != null)  tvExpiry.setText(expiry);
-                if (tvCvv        != null && cvv    != null)  tvCvv.setText(cvv);
-                if (tvBalance    != null && balance != null)
-                    tvBalance.setText(String.format("$%.2f", balance));
+                if (primaryCardSnap != null) {
+                    String newCardId = primaryCardSnap.getKey();
+                    
+                    String number  = primaryCardSnap.child("cardNumber").getValue(String.class);
+                    String holder  = primaryCardSnap.child("holderName").getValue(String.class);
+                    String expiry  = primaryCardSnap.child("expiryDate").getValue(String.class);
+                    String cvv     = primaryCardSnap.child("cvv").getValue(String.class);
+                    Double balance = primaryCardSnap.child("balance").getValue(Double.class);
+
+                    if (tvCardNumber != null && number != null)  tvCardNumber.setText(number);
+                    if (tvCardHolder != null && holder != null)  tvCardHolder.setText(holder);
+                    if (tvExpiry     != null && expiry != null)  tvExpiry.setText(expiry);
+                    if (tvCvv        != null && cvv    != null)  tvCvv.setText(cvv);
+                    if (tvBalance    != null && balance != null)
+                        tvBalance.setText(String.format("$%.2f", balance));
+
+                    // If card changed, reload transactions
+                    if (newCardId != null && !newCardId.equals(currentCardId)) {
+                        currentCardId = newCardId;
+                        loadTransactionsForCard(currentCardId);
+                    }
+                }
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}
         };
-        db.cardRef(currentCardId).addValueEventListener(cardListener);
+        db.cardsRef().orderByChild("userId").equalTo(currentUserId).addValueEventListener(cardListener);
+    }
 
-        // ── Transactions (filter to current user's card) ───────────────────
+    private void loadTransactionsForCard(String cardId) {
+        DatabaseHelper db = DatabaseHelper.getInstance();
+        if (txnListener != null) {
+            db.transactionsRef().removeEventListener(txnListener);
+        }
+
         txnListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 transactions.clear();
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    String cardId = child.child("cardId").getValue(String.class);
-                    if (!currentCardId.equals(cardId)) continue;
+                    String cId = child.child("cardId").getValue(String.class);
+                    if (!cardId.equals(cId)) continue;
 
                     String id       = child.child("transactionId").getValue(String.class);
                     String name     = child.child("name").getValue(String.class);
@@ -114,9 +148,13 @@ public class HomeFragment extends Fragment {
                     String date     = child.child("date").getValue(String.class);
                     String time     = child.child("time").getValue(String.class);
 
+                    if (name != null && (name.contains("Welcome Bonus") || name.contains("Apple Store") || name.contains("Netflix") || name.contains("Spotify") || name.contains("Dribbble") || name.contains("Figma"))) {
+                        child.getRef().removeValue();
+                        continue;
+                    }
+
                     if (id != null) {
-                        transactions.add(0, new Transaction(id, name, category,
-                                amount != null ? amount : 0, icon, date, time));
+                        transactions.add(0, new Transaction(id, name, category, amount != null ? amount : 0, icon, date, time));
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -132,8 +170,8 @@ public class HomeFragment extends Fragment {
         DatabaseHelper db = DatabaseHelper.getInstance();
         if (userListener != null && currentUserId != null)
             db.userRef(currentUserId).removeEventListener(userListener);
-        if (cardListener != null && currentCardId != null)
-            db.cardRef(currentCardId).removeEventListener(cardListener);
+        if (cardListener != null && currentUserId != null)
+            db.cardsRef().orderByChild("userId").equalTo(currentUserId).removeEventListener(cardListener);
         if (txnListener != null)
             db.transactionsRef().removeEventListener(txnListener);
     }
@@ -146,7 +184,8 @@ public class HomeFragment extends Fragment {
         tvExpiry       = rootView.findViewById(R.id.tvExpiry);
         tvCvv          = rootView.findViewById(R.id.tvCvv);
         tvBalance      = rootView.findViewById(R.id.tvBalance);
-        ivSearch       = rootView.findViewById(R.id.ivSearch);
+        ivNotification   = rootView.findViewById(R.id.ivNotification);
+        ivMenuHamburger  = rootView.findViewById(R.id.ivMenuHamburger);
         rvTransactions = rootView.findViewById(R.id.rvTransactions);
         btnSent        = rootView.findViewById(R.id.btnSent);
         btnReceive     = rootView.findViewById(R.id.btnReceive);

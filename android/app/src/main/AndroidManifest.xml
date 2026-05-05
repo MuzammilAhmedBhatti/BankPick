@@ -27,12 +27,14 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".EditProfileActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".AddNewCardActivity" />
         <activity android:name=".AllCardsActivity" />
         <activity android:name=".TransactionHistoryActivity" />
         <activity android:name=".SearchActivity" />
-        <activity android:name=".SendMoneyActivity" />
+        <activity android:name=".SendMoneyActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".RequestMoneyActivity" />
         <activity android:name=".TopupActivity" />
         <activity android:name=".TransactionDetailActivity" />

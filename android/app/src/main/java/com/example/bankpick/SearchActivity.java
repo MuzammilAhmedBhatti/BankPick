@@ -29,12 +29,14 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search);
+        
+        init();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        init();
 
         ivBack.setOnClickListener((v) -> finish());
 
@@ -67,6 +69,9 @@ public class SearchActivity extends AppCompatActivity {
                 etSearch.setText("");
             });
         }
+
+        // Close button in header
+        findViewById(R.id.ivClose).setOnClickListener(v -> finish());
     }
 
     private void filter(String query) {
@@ -81,14 +86,18 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void init() {
-        ivBack = findViewById(R.id.ivBack);
+        ivBack = findViewById(R.id.btnBack);
         etSearch = findViewById(R.id.etSearch);
-        rvTransactions = findViewById(R.id.rvTransactions);
+        ivClearSearch = findViewById(R.id.ivClearSearch);
+        rvTransactions = findViewById(R.id.rvSearchResults);
 
         transactions = new ArrayList<>();
         filteredTransactions = new ArrayList<>();
         adapter = new TransactionAdapter(this, filteredTransactions);
-        rvTransactions.setLayoutManager(new LinearLayoutManager(this));
-        rvTransactions.setAdapter(adapter);
+        
+        if (rvTransactions != null) {
+            rvTransactions.setLayoutManager(new LinearLayoutManager(this));
+            rvTransactions.setAdapter(adapter);
+        }
     }
 }

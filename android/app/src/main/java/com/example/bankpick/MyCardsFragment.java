@@ -40,7 +40,6 @@ public class MyCardsFragment extends Fragment {
 
         currentUserId = DatabaseHelper.getInstance().getCurrentUserId();
         if (currentUserId != null) {
-            currentCardId = currentUserId + "_card_001";
             attachFirebaseListeners();
         }
 
@@ -65,28 +64,51 @@ public class MyCardsFragment extends Fragment {
         cardListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String number = snapshot.child("cardNumber").getValue(String.class);
-                String holder = snapshot.child("holderName").getValue(String.class);
-                String expiry = snapshot.child("expiryDate").getValue(String.class);
-                String cvv    = snapshot.child("cvv").getValue(String.class);
+                DataSnapshot primaryCardSnap = null;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    primaryCardSnap = ds; // fallback to last if none is primary
+                    if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) {
+                        break;
+                    }
+                }
 
-                if (tvCardNumber != null && number != null) tvCardNumber.setText(number);
-                if (tvCardHolder != null && holder != null) tvCardHolder.setText(holder);
-                if (tvExpiry     != null && expiry != null) tvExpiry.setText(expiry);
-                if (tvCvv        != null && cvv    != null) tvCvv.setText(cvv);
+                if (primaryCardSnap != null) {
+                    String newCardId = primaryCardSnap.getKey();
+                    
+                    String number = primaryCardSnap.child("cardNumber").getValue(String.class);
+                    String holder = primaryCardSnap.child("holderName").getValue(String.class);
+                    String expiry = primaryCardSnap.child("expiryDate").getValue(String.class);
+                    String cvv    = primaryCardSnap.child("cvv").getValue(String.class);
+
+                    if (tvCardNumber != null && number != null) tvCardNumber.setText(number);
+                    if (tvCardHolder != null && holder != null) tvCardHolder.setText(holder);
+                    if (tvExpiry     != null && expiry != null) tvExpiry.setText(expiry);
+                    if (tvCvv        != null && cvv    != null) tvCvv.setText(cvv);
+
+                    if (newCardId != null && !newCardId.equals(currentCardId)) {
+                        currentCardId = newCardId;
+                        loadTransactionsForCard(currentCardId);
+                    }
+                }
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}
         };
-        db.cardRef(currentCardId).addValueEventListener(cardListener);
+        db.cardsRef().orderByChild("userId").equalTo(currentUserId).addValueEventListener(cardListener);
+    }
 
-        // Load transactions for this card
+    private void loadTransactionsForCard(String cardId) {
+        DatabaseHelper db = DatabaseHelper.getInstance();
+        if (txnListener != null) {
+            db.transactionsRef().removeEventListener(txnListener);
+        }
+
         txnListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 transactions.clear();
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    String cardId = child.child("cardId").getValue(String.class);
-                    if (!currentCardId.equals(cardId)) continue;
+                    String cId = child.child("cardId").getValue(String.class);
+                    if (!cardId.equals(cId)) continue;
 
                     Transaction txn = child.getValue(Transaction.class);
                     if (txn != null) {
@@ -104,8 +126,8 @@ public class MyCardsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         DatabaseHelper db = DatabaseHelper.getInstance();
-        if (cardListener != null && currentCardId != null)
-            db.cardRef(currentCardId).removeEventListener(cardListener);
+        if (cardListener != null && currentUserId != null)
+            db.cardsRef().orderByChild("userId").equalTo(currentUserId).removeEventListener(cardListener);
         if (txnListener != null)
             db.transactionsRef().removeEventListener(txnListener);
     }

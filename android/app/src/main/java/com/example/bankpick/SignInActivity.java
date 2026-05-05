@@ -35,20 +35,22 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_in);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, ime.bottom > 0 ? ime.bottom : systemBars.bottom);
-            return insets;
-        });
 
         mAuth = FirebaseAuth.getInstance();
         init();
 
-        ivBack.setOnClickListener((v) -> {
-            startActivity(new Intent(this, OnboardingActivity.class));
-            finish();
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
+
+        if (ivBack != null) {
+            ivBack.setOnClickListener((v) -> {
+                startActivity(new Intent(this, OnboardingActivity.class));
+                finish();
+            });
+        }
 
         ivTogglePassword.setOnClickListener((v) -> {
             passwordVisible = !passwordVisible;
@@ -94,6 +96,16 @@ public class SignInActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show();
 
+                        // Write a login notification
+                        String uid = DatabaseHelper.getInstance().getCurrentUserId();
+                        if (uid != null) {
+                            DatabaseHelper.getInstance().writeNotification(
+                                    uid,
+                                    "New Login Alert",
+                                    "A new sign-in was detected on your account.",
+                                    "🔐", "bg-orange-100");
+                        }
+
                         Intent intent = new Intent(this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
@@ -115,9 +127,9 @@ public class SignInActivity extends AppCompatActivity {
         etPassword       = findViewById(R.id.etPassword);
         btnSignIn        = findViewById(R.id.btnSignIn);
         tvSignUp         = findViewById(R.id.tvSignUp);
-        ivBack           = findViewById(R.id.ivBack);
+        ivBack           = findViewById(R.id.btnBack);
         ivTogglePassword = findViewById(R.id.ivTogglePassword);
-        progressBar      = findViewById(R.id.progressBarSignIn);
+        progressBar      = findViewById(R.id.progressBar);
 
         // Clear defaults — user enters their credentials
         etEmail.setText("");

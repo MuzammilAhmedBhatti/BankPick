@@ -31,12 +31,15 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_transaction_history);
+        
+        init();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        init();
+
         ivBack.setOnClickListener((v) -> finish());
 
         // Resolve current user's primary card
@@ -56,7 +59,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                 transactions.clear();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     String cardId = child.child("cardId").getValue(String.class);
-                    if (!currentCardId.equals(cardId)) continue;
+                    if (cardId == null || !currentCardId.equals(cardId)) continue;
 
                     String id       = child.child("transactionId").getValue(String.class);
                     String name     = child.child("name").getValue(String.class);
@@ -86,7 +89,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     }
 
     private void init() {
-        ivBack = findViewById(R.id.ivBack);
+        ivBack = findViewById(R.id.btnBack);
         rvTransactions = findViewById(R.id.rvTransactions);
         transactions = new ArrayList<>();
         adapter = new TransactionAdapter(this, transactions);

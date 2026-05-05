@@ -23,9 +23,10 @@ import androidx.annotation.NonNull;
 
 public class DatabaseHelper {
 
-    public static final String NODE_USERS        = "users";
-    public static final String NODE_CARDS        = "cards";
-    public static final String NODE_TRANSACTIONS = "transactions";
+    public static final String NODE_USERS          = "users";
+    public static final String NODE_CARDS          = "cards";
+    public static final String NODE_TRANSACTIONS   = "transactions";
+    public static final String NODE_NOTIFICATIONS  = "notifications";
 
     private static DatabaseHelper instance;
     private final FirebaseDatabase firebaseDb;
@@ -49,6 +50,8 @@ public class DatabaseHelper {
     public DatabaseReference usersRef() { return firebaseDb.getReference(NODE_USERS); }
     public DatabaseReference cardsRef() { return firebaseDb.getReference(NODE_CARDS); }
     public DatabaseReference transactionsRef() { return firebaseDb.getReference(NODE_TRANSACTIONS); }
+    public DatabaseReference notificationsRef() { return firebaseDb.getReference(NODE_NOTIFICATIONS); }
+    public DatabaseReference userNotificationsRef(String uid) { return notificationsRef().child(uid); }
     public DatabaseReference userRef(String userId) { return usersRef().child(userId); }
     public DatabaseReference cardRef(String cardId) { return cardsRef().child(cardId); }
     public DatabaseReference transactionRef(String txnId) { return transactionsRef().child(txnId); }
@@ -100,6 +103,19 @@ public class DatabaseHelper {
         });
     }
 
+    public void setPrimaryCard(String userId, String cardId) {
+        cardsRef().orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    boolean isTargetCard = ds.getKey().equals(cardId);
+                    ds.getRef().child("isPrimary").setValue(isTargetCard);
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
     public void addContact(String currentUid, String contactUid, String contactName) {
         Map<String, Object> contact = new HashMap<>();
         contact.put("uid", contactUid);
@@ -125,16 +141,28 @@ public class DatabaseHelper {
     }
 
     public void sendMoney(String senderCardId, String recipientUid, String recipientName, double amount, SendMoneyCallback callback) {
-        // Find recipient's card
-        cardsRef().orderByChild("userId").equalTo(recipientUid).addListenerForSingleValueEvent(new ValueEventListener() {
+        String currentUid = getCurrentUserId();
+        if (currentUid == null) {
+            callback.onResult(false, "User not authenticated");
+            return;
+        }
+
+        userRef(currentUid).child("fullName").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String rCardId = null;
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    rCardId = ds.getKey();
-                    if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) break;
-                }
-                if (rCardId == null) { callback.onResult(false, "Recipient card not found"); return; }
+            public void onDataChange(@NonNull DataSnapshot senderSnapshot) {
+                String rawName = senderSnapshot.getValue(String.class);
+                final String finalSenderName = (rawName == null) ? "Unknown" : rawName;
+
+                // Find recipient's card
+                cardsRef().orderByChild("userId").equalTo(recipientUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String rCardId = null;
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            rCardId = ds.getKey();
+                            if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) break;
+                        }
+                        if (rCardId == null) { callback.onResult(false, "Recipient card not found"); return; }
 
                 final String finalRCardId = rCardId;
                 DatabaseReference sRef = cardRef(senderCardId).child("balance");
@@ -163,7 +191,20 @@ public class DatabaseHelper {
                                     String date = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(new Date());
                                     String time = new SimpleDateFormat("h:mm a", Locale.getDefault()).format(new Date());
                                     writeSeedTransaction(id + "_S", senderCardId, recipientName, "Transfer", -amount, "transfer", date, time);
-                                    writeSeedTransaction(id + "_R", finalRCardId, "Received", "Transfer", amount, "transfer", date, time);
+                                    writeSeedTransaction(id + "_R", finalRCardId, finalSenderName, "Transfer", amount, "transfer", date, time);
+
+                                    // Sender notification
+                                    String senderUid = senderCardId.replace("_card_001", "");
+                                    writeNotification(senderUid,
+                                            "Transfer Sent",
+                                            "You sent $" + String.format(Locale.getDefault(), "%.2f", amount) + " to " + recipientName,
+                                            "💸", "bg-blue-100");
+                                    // Recipient notification
+                                    writeNotification(recipientUid,
+                                            "Money Received",
+                                            "You received $" + String.format(Locale.getDefault(), "%.2f", amount) + " from " + finalSenderName,
+                                            "💰", "bg-green-100");
+
                                     callback.onResult(true, id + "_S");
                                 }
                             });
@@ -171,6 +212,9 @@ public class DatabaseHelper {
                             callback.onResult(false, "Transaction failed or insufficient funds");
                         }
                     }
+                });
+            }
+                    @Override public void onCancelled(@NonNull DatabaseError error) { callback.onResult(false, "Network error"); }
                 });
             }
             @Override public void onCancelled(@NonNull DatabaseError error) { callback.onResult(false, "Network error"); }
@@ -190,6 +234,22 @@ public class DatabaseHelper {
         transactionRef(id).setValue(txn);
     }
 
+    /** Writes a notification for a specific user under notifications/{uid}/{notifId} */
+    public void writeNotification(String uid, String title, String message, String icon, String color) {
+        String notifId = "notif_" + System.currentTimeMillis();
+        String timestamp = new SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault()).format(new Date());
+        Map<String, Object> notif = new HashMap<>();
+        notif.put("id",        notifId);
+        notif.put("uid",       uid);
+        notif.put("title",     title);
+        notif.put("message",   message);
+        notif.put("time",      timestamp);
+        notif.put("unread",    true);
+        notif.put("icon",      icon);
+        notif.put("color",     color);
+        userNotificationsRef(uid).child(notifId).setValue(notif);
+    }
+
     private String generateCardNumber() {
         Random r = new Random();
         return String.format("%04d %04d %04d %04d", 4000 + r.nextInt(999), r.nextInt(10000), r.nextInt(10000), r.nextInt(10000));
@@ -205,8 +265,8 @@ public class DatabaseHelper {
      * Sends a dummy OTP to the specified email (for now just stores in DB).
      */
     public void sendOtp(String email, OtpCallback callback) {
-        // Generating a dummy 6-digit OTP
-        String otp = String.format(Locale.getDefault(), "%06d", new Random().nextInt(1000000));
+        // Generating a dummy 4-digit OTP
+        String otp = String.format(Locale.getDefault(), "%04d", new Random().nextInt(10000));
         
         // Storing it under the current user for verification
         String uid = getCurrentUserId();

@@ -52,4 +52,7 @@ dependencies {
     // Glide
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
+
+    // MPAndroidChart
+    implementation(libs.mpandroidchart)
 }

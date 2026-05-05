@@ -16,14 +16,10 @@ public class ContactUsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_contact_us);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        
 
-        ImageView ivBack = findViewById(R.id.ivBack);
-        Button btnSend = findViewById(R.id.btnSend);
+        ImageView ivBack = findViewById(R.id.btnBack);
+        Button btnSend = findViewById(R.id.btnCallNow);
 
         ivBack.setOnClickListener(v -> finish());
         btnSend.setOnClickListener(v -> {
@@ -32,3 +28,4 @@ public class ContactUsActivity extends AppCompatActivity {
         });
     }
 }
+

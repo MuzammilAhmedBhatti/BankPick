@@ -21,12 +21,14 @@ public class RequestMoneyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_request_money);
+        
+        init();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        init();
 
         ivBack.setOnClickListener((v) -> finish());
 
@@ -51,7 +53,7 @@ public class RequestMoneyActivity extends AppCompatActivity {
     }
 
     private void init() {
-        ivBack = findViewById(R.id.ivBack);
+        ivBack = findViewById(R.id.btnBack);
         etAmount = findViewById(R.id.etAmount);
         etPayerName = findViewById(R.id.etPayerName);
         etEmail = findViewById(R.id.etEmail);
@@ -59,7 +61,7 @@ public class RequestMoneyActivity extends AppCompatActivity {
         etDay = findViewById(R.id.etDay);
         etMonth = findViewById(R.id.etMonth);
         etYear = findViewById(R.id.etYear);
-        btnRequest = findViewById(R.id.btnRequest);
+        btnRequest = findViewById(R.id.btnRequestMoney);
 
         etAmount.setText("26.00");
     }

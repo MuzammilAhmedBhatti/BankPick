@@ -32,12 +32,14 @@ public class OnboardingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_onboarding);
+        
+        init();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        init();
 
         tvSkip.setOnClickListener((v) -> {
             startActivity(new Intent(OnboardingActivity.this, SignInActivity.class));
@@ -70,7 +72,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void init() {
         viewPager = findViewById(R.id.viewPager);
-        dotsLayout = findViewById(R.id.dotsLayout);
+        dotsLayout = findViewById(R.id.llDots);
         btnNext = findViewById(R.id.btnNext);
         tvSkip = findViewById(R.id.tvSkip);
         tvSkip.setText(R.string.skip);

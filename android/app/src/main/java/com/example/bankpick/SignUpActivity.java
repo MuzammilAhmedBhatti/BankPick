@@ -36,15 +36,15 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_up);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, ime.bottom > 0 ? ime.bottom : systemBars.bottom);
-            return insets;
-        });
 
         mAuth = FirebaseAuth.getInstance();
         init();
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         ivBack.setOnClickListener((v) -> {
             startActivity(new Intent(this, SignInActivity.class));
@@ -144,9 +144,9 @@ public class SignUpActivity extends AppCompatActivity {
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnSignUp        = findViewById(R.id.btnSignUp);
         tvSignIn         = findViewById(R.id.tvSignIn);
-        ivBack           = findViewById(R.id.ivBack);
+        ivBack           = findViewById(R.id.btnBack);
         ivTogglePassword = findViewById(R.id.ivTogglePassword);
-        progressBar      = findViewById(R.id.progressBarSignUp);
+        progressBar      = findViewById(R.id.progressBar);
 
         // Clear defaults — let user enter their own details
         etFullName.setText("");

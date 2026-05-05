@@ -10,6 +10,7 @@ cardview = "1.0.0"
 firebaseBom = "32.7.0"
 circleimageview = "3.1.0"
 glide = "4.16.0"
+mpandroidchart = "v3.1.0"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -26,6 +27,7 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database" 
 circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

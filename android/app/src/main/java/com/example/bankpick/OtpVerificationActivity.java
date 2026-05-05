@@ -47,8 +47,8 @@ public class OtpVerificationActivity extends AppCompatActivity {
 
         btnVerify.setOnClickListener(v -> {
             String enteredOtp = getEnteredOtp();
-            if (enteredOtp.length() < 6) {
-                Toast.makeText(this, "Please enter 6-digit code", Toast.LENGTH_SHORT).show();
+            if (enteredOtp.length() < 4) {
+                Toast.makeText(this, "Please enter 4-digit code", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -87,14 +87,12 @@ public class OtpVerificationActivity extends AppCompatActivity {
                 findViewById(R.id.etOtp1),
                 findViewById(R.id.etOtp2),
                 findViewById(R.id.etOtp3),
-                findViewById(R.id.etOtp4),
-                findViewById(R.id.etOtp5),
-                findViewById(R.id.etOtp6)
+                findViewById(R.id.etOtp4)
         };
         btnVerify = findViewById(R.id.btnVerify);
-        ivBack = findViewById(R.id.ivBack);
+        ivBack = findViewById(R.id.btnBack);
         tvResend = findViewById(R.id.tvResend);
-        tvDescription = findViewById(R.id.tvDescription);
+        tvDescription = findViewById(R.id.tvOtpSubtitle);
     }
 
     private void setupOtpFields() {
@@ -173,3 +171,5 @@ public class OtpVerificationActivity extends AppCompatActivity {
         if (resendTimer != null) resendTimer.cancel();
     }
 }
+
+

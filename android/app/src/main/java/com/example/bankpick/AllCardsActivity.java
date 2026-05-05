@@ -34,12 +34,15 @@ public class AllCardsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_all_cards);
+        
+        init();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        init();
+
         ivBack.setOnClickListener((v) -> finish());
 
         if (btnAddCard != null) {
@@ -85,10 +88,10 @@ public class AllCardsActivity extends AppCompatActivity {
     }
 
     private void init() {
-        ivBack = findViewById(R.id.ivBack);
+        ivBack = findViewById(R.id.btnBack);
         btnAddCard = findViewById(R.id.btnAddCard);
         
-        rvCards = findViewById(R.id.rvCards);
+        rvCards = findViewById(R.id.rvAllCards);
         cards = new ArrayList<>();
         adapter = new CardAdapter(this, cards);
         rvCards.setLayoutManager(new LinearLayoutManager(this));

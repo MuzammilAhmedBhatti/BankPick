@@ -25,13 +25,15 @@ public class TransactionSuccessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_transaction_success);
+
+        initViews();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        initViews();
         populateData();
         animateCheckCircle();
         setupButtons();
@@ -42,25 +44,24 @@ public class TransactionSuccessActivity extends AppCompatActivity {
         tvSubtitle   = findViewById(R.id.tvSubtitle);
         tvAmount     = findViewById(R.id.tvAmount);
         tvRecipient  = findViewById(R.id.tvRecipient);
-        tvTxnId      = findViewById(R.id.tvTxnId);
+        tvTxnId      = findViewById(R.id.tvTransactionId);
         tvDate       = findViewById(R.id.tvDate);
         tvTime       = findViewById(R.id.tvTime);
         btnDownload  = findViewById(R.id.btnDownload);
         btnShare     = findViewById(R.id.btnShare);
-        btnDone      = findViewById(R.id.btnDone);
+        btnDone      = findViewById(R.id.btnBackToHome);
     }
 
     private void populateData() {
         Intent i = getIntent();
 
-        String type      = i.getStringExtra("type");      // e.g. "Sent to Yamilet"
-        String amount    = i.getStringExtra("amount");    // e.g. "36.00"
-        String recipient = i.getStringExtra("recipient"); // e.g. "Yamilet"
+        String type      = i.getStringExtra("type");
+        String amount    = i.getStringExtra("amount");
+        String recipient = i.getStringExtra("recipient");
         String date      = i.getStringExtra("date");
         String time      = i.getStringExtra("time");
         String txnId     = i.getStringExtra("transactionId");
 
-        // Subtitle: "Your send money has been completed"
         if (type != null && tvSubtitle != null) {
             tvSubtitle.setText("Your " + type.toLowerCase() + " has been completed");
         }
@@ -72,9 +73,10 @@ public class TransactionSuccessActivity extends AppCompatActivity {
         if (time      != null && tvTime      != null) tvTime.setText(time);
     }
 
-    /** Scale-in animation with overshoot — matches TSX zoom-in animation */
     private void animateCheckCircle() {
         if (checkCircle == null) return;
+        checkCircle.setScaleX(0f);
+        checkCircle.setScaleY(0f);
         checkCircle.animate()
                 .scaleX(1f)
                 .scaleY(1f)
@@ -85,13 +87,11 @@ public class TransactionSuccessActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        // Download receipt — shows a toast (same as TSX alert)
         if (btnDownload != null) {
             btnDownload.setOnClickListener((v) ->
                     Toast.makeText(this, "Receipt saved to your device", Toast.LENGTH_SHORT).show());
         }
 
-        // Share receipt
         if (btnShare != null) {
             btnShare.setOnClickListener((v) -> {
                 String amount    = getIntent().getStringExtra("amount");
@@ -111,7 +111,6 @@ public class TransactionSuccessActivity extends AppCompatActivity {
             });
         }
 
-        // Back to Home
         if (btnDone != null) {
             btnDone.setOnClickListener((v) -> {
                 Intent intent = new Intent(this, MainActivity.class);

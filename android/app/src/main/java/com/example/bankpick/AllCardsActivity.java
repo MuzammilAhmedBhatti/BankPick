@@ -62,12 +62,9 @@ public class AllCardsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 cards.clear();
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    String userId = child.child("userId").getValue(String.class);
-                    if (currentUserId.equals(userId)) {
-                        Card card = child.getValue(Card.class);
-                        if (card != null) {
-                            cards.add(card);
-                        }
+                    Card card = child.getValue(Card.class);
+                    if (card != null) {
+                        cards.add(card);
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -76,14 +73,14 @@ public class AllCardsActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         };
-        db.cardsRef().addValueEventListener(cardListener);
+        db.cardsRef().orderByChild("userId").equalTo(currentUserId).addValueEventListener(cardListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (cardListener != null) {
-            DatabaseHelper.getInstance().cardsRef().removeEventListener(cardListener);
+        if (cardListener != null && currentUserId != null) {
+            DatabaseHelper.getInstance().cardsRef().orderByChild("userId").equalTo(currentUserId).removeEventListener(cardListener);
         }
     }
 

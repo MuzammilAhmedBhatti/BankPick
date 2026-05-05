@@ -45,14 +45,41 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         // Resolve current user's primary card
         String uid = DatabaseHelper.getInstance().getCurrentUserId();
         if (uid != null) {
-            currentCardId = uid + "_card_001";
-            loadTransactions();
+            listenToPrimaryCard(uid);
         }
     }
 
-    private void loadTransactions() {
+    private void listenToPrimaryCard(String uid) {
         DatabaseHelper db = DatabaseHelper.getInstance();
+        db.cardsRef().orderByChild("userId").equalTo(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DataSnapshot primaryCardSnap = null;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    primaryCardSnap = ds;
+                    if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) {
+                        break;
+                    }
+                }
 
+                if (primaryCardSnap != null) {
+                    String newCardId = primaryCardSnap.getKey();
+                    if (newCardId != null && !newCardId.equals(currentCardId)) {
+                        currentCardId = newCardId;
+                        loadTransactions();
+                    }
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void loadTransactions() {
+        if (txnListener != null) {
+            DatabaseHelper.getInstance().transactionsRef().removeEventListener(txnListener);
+        }
+
+        DatabaseHelper db = DatabaseHelper.getInstance();
         txnListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -61,17 +88,9 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                     String cardId = child.child("cardId").getValue(String.class);
                     if (cardId == null || !currentCardId.equals(cardId)) continue;
 
-                    String id       = child.child("transactionId").getValue(String.class);
-                    String name     = child.child("name").getValue(String.class);
-                    String category = child.child("category").getValue(String.class);
-                    Double amount   = child.child("amount").getValue(Double.class);
-                    String icon     = child.child("icon").getValue(String.class);
-                    String date     = child.child("date").getValue(String.class);
-                    String time     = child.child("time").getValue(String.class);
-
-                    if (id != null) {
-                        transactions.add(0, new Transaction(id, name, category,
-                                amount != null ? amount : 0, icon, date, time));
+                    Transaction t = child.getValue(Transaction.class);
+                    if (t != null) {
+                        transactions.add(0, t);
                     }
                 }
                 adapter.notifyDataSetChanged();

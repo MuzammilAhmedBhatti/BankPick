@@ -85,6 +85,18 @@ public class MainActivity extends AppCompatActivity {
         navItemStats.setOnClickListener(v -> { loadFragment(new StatisticsFragment()); setActiveTab(2); });
         navItemProfile.setOnClickListener(v -> { startActivity(new Intent(this, ProfileActivity.class)); });
 
+        // Blocked overlay sign-out
+        View btnBlockedSignOut = findViewById(R.id.btnBlockedSignOut);
+        if (btnBlockedSignOut != null) {
+            btnBlockedSignOut.setOnClickListener(v -> {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(this, SignInActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            });
+        }
+
         // Drawer close button
         View ivClose = drawerLayout.findViewById(R.id.ivDrawerClose);
         if (ivClose != null) ivClose.setOnClickListener(v -> closeDrawer());
@@ -115,12 +127,27 @@ public class MainActivity extends AppCompatActivity {
         // Load Firebase data into drawer header
         currentUserId = DatabaseHelper.getInstance().getCurrentUserId();
         if (currentUserId != null) {
-            currentCardId = currentUserId + "_card_001";
             loadDrawerUserData();
-            loadDrawerBalance();
-            loadDrawerTransactionCount();
+            loadDrawerPrimaryCardStats();
             loadDrawerNotifBadge();
+            listenForBlockStatus();
         }
+    }
+
+    /** Monitors the user's isBlocked flag in real-time and shows an overlay if blocked. */
+    private void listenForBlockStatus() {
+        DatabaseHelper.getInstance().userRef(currentUserId).child("isBlocked")
+                .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean blocked = snapshot.getValue(Boolean.class);
+                View blockedOverlay = findViewById(R.id.blockedOverlay);
+                if (blockedOverlay != null) {
+                    blockedOverlay.setVisibility(Boolean.TRUE.equals(blocked) ? View.VISIBLE : View.GONE);
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
     }
 
     private void wireDrawerItem(int viewId, Runnable action) {
@@ -151,27 +178,48 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper.getInstance().userRef(currentUserId).addValueEventListener(userListener);
     }
 
-    private void loadDrawerBalance() {
+    private void loadDrawerPrimaryCardStats() {
+        DatabaseHelper db = DatabaseHelper.getInstance();
         cardListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Double balance = snapshot.child("balance").getValue(Double.class);
-                if (tvDrawerBalance != null && balance != null)
-                    tvDrawerBalance.setText(String.format("$%.0f", balance));
+                DataSnapshot primaryCardSnap = null;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    primaryCardSnap = ds;
+                    if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) {
+                        break;
+                    }
+                }
+
+                if (primaryCardSnap != null) {
+                    String newCardId = primaryCardSnap.getKey();
+                    Double balance = primaryCardSnap.child("balance").getValue(Double.class);
+                    if (tvDrawerBalance != null && balance != null)
+                        tvDrawerBalance.setText(String.format("$%.0f", balance));
+
+                    if (newCardId != null && !newCardId.equals(currentCardId)) {
+                        currentCardId = newCardId;
+                        loadDrawerTransactionCountForCard(currentCardId);
+                    }
+                }
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}
         };
-        DatabaseHelper.getInstance().cardRef(currentCardId).addValueEventListener(cardListener);
+        db.cardsRef().orderByChild("userId").equalTo(currentUserId).addValueEventListener(cardListener);
     }
 
-    private void loadDrawerTransactionCount() {
+    private void loadDrawerTransactionCountForCard(String cardId) {
+        if (txnListener != null) {
+            DatabaseHelper.getInstance().transactionsRef().removeEventListener(txnListener);
+        }
+
         txnListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long count = 0;
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    String cardId = child.child("cardId").getValue(String.class);
-                    if (currentCardId.equals(cardId)) count++;
+                    String cId = child.child("cardId").getValue(String.class);
+                    if (cardId.equals(cId)) count++;
                 }
                 if (tvDrawerTransactions != null)
                     tvDrawerTransactions.setText(String.valueOf(count));
@@ -227,8 +275,8 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper db = DatabaseHelper.getInstance();
         if (userListener != null && currentUserId != null)
             db.userRef(currentUserId).removeEventListener(userListener);
-        if (cardListener != null && currentCardId != null)
-            db.cardRef(currentCardId).removeEventListener(cardListener);
+        if (cardListener != null && currentUserId != null)
+            db.cardsRef().orderByChild("userId").equalTo(currentUserId).removeEventListener(cardListener);
         if (txnListener != null)
             db.transactionsRef().removeEventListener(txnListener);
         if (notifListener != null && currentUserId != null)

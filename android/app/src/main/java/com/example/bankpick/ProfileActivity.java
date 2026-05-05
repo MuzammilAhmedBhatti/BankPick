@@ -15,6 +15,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProfileActivity extends AppCompatActivity {
 
     ImageView ivBack, btnEdit;
@@ -60,8 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (currentUserId != null) {
             currentCardId = currentUserId + "_card_001";
             loadUserData();
-            loadCardStats();
-            loadTransactionCount();
+            loadTotalStats();
             loadNotifBadge();
         }
     }
@@ -84,42 +86,54 @@ public class ProfileActivity extends AppCompatActivity {
         DatabaseHelper.getInstance().userRef(currentUserId).addValueEventListener(userListener);
     }
 
-    private void loadCardStats() {
+    private void loadTotalStats() {
+        DatabaseHelper db = DatabaseHelper.getInstance();
+
+        // 1. Total Balance and Total Cards
         cardListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Double balance = snapshot.child("balance").getValue(Double.class);
-                if (balance != null && tvStatBalance != null)
-                    tvStatBalance.setText(String.format("$%.0f", balance));
+                double totalBalance = 0;
+                long cardCount = 0;
+                List<String> userCardIds = new ArrayList<>();
+
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    Double bal = ds.child("balance").getValue(Double.class);
+                    if (bal != null) totalBalance += bal;
+                    cardCount++;
+                    userCardIds.add(ds.getKey());
+                }
+
+                if (tvStatBalance != null)
+                    tvStatBalance.setText(String.format("$%.0f", totalBalance));
+                if (tvStatCards != null)
+                    tvStatCards.setText(String.valueOf(cardCount));
+
+                // 2. Total Transactions (for all user's cards)
+                loadTotalTransactionCount(userCardIds);
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}
         };
-        DatabaseHelper.getInstance().cardRef(currentCardId).addValueEventListener(cardListener);
-
-        // Count total cards for this user
-        DatabaseHelper.getInstance().cardsRef()
-                .orderByChild("userId").equalTo(currentUserId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (tvStatCards != null)
-                            tvStatCards.setText(String.valueOf(snapshot.getChildrenCount()));
-                    }
-                    @Override public void onCancelled(@NonNull DatabaseError error) {}
-                });
+        db.cardsRef().orderByChild("userId").equalTo(currentUserId).addValueEventListener(cardListener);
     }
 
-    private void loadTransactionCount() {
+    private void loadTotalTransactionCount(List<String> cardIds) {
+        if (txnListener != null) {
+            DatabaseHelper.getInstance().transactionsRef().removeEventListener(txnListener);
+        }
+
         txnListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                long count = 0;
+                long totalCount = 0;
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    String cardId = child.child("cardId").getValue(String.class);
-                    if (currentCardId.equals(cardId)) count++;
+                    String cId = child.child("cardId").getValue(String.class);
+                    if (cardIds.contains(cId)) {
+                        totalCount++;
+                    }
                 }
                 if (tvStatTransactions != null)
-                    tvStatTransactions.setText(String.valueOf(count));
+                    tvStatTransactions.setText(String.valueOf(totalCount));
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}
         };
@@ -157,8 +171,8 @@ public class ProfileActivity extends AppCompatActivity {
         DatabaseHelper db = DatabaseHelper.getInstance();
         if (userListener != null && currentUserId != null)
             db.userRef(currentUserId).removeEventListener(userListener);
-        if (cardListener != null && currentCardId != null)
-            db.cardRef(currentCardId).removeEventListener(cardListener);
+        if (cardListener != null && currentUserId != null)
+            db.cardsRef().orderByChild("userId").equalTo(currentUserId).removeEventListener(cardListener);
         if (txnListener != null)
             db.transactionsRef().removeEventListener(txnListener);
         if (notifListener != null && currentUserId != null)

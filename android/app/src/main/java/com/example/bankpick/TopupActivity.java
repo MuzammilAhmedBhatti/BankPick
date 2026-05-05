@@ -1,37 +1,59 @@
 package com.example.bankpick;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import androidx.annotation.Nullable;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class TopupActivity extends AppCompatActivity {
-    EditText etAmount;
-    Button btnTopup;
-    ImageView ivBack;
-    
-    // TSX Default
-    String selectedMethod = "Credit/Debit Card";
+import com.example.bankpick.models.Card;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
-    TextView btnQuick50, btnQuick100, btnQuick200, btnQuick500;
-    LinearLayout llMethodCard, llMethodBank, llMethodWallet, llMethodPaypal;
-    ImageView ivCheckCard, ivCheckBank, ivCheckWallet, ivCheckPaypal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+public class TopupActivity extends AppCompatActivity {
+
+    private ImageView btnBack;
+    private Spinner spinnerFromCard, spinnerToCard;
+    private EditText etAmount;
+    private Button btnTransfer;
+    
+    // New UI elements for the visual cards
+    private View cardFromView, cardToView;
+    private TextView tvFromCardType, tvFromCardNumber, tvFromBalance;
+    private TextView tvToCardType, tvToCardNumber, tvToBalance;
+    
+    // Quick amount buttons
+    private Button btnAmt50, btnAmt100, btnAmt200, btnAmt500;
+
+    private List<Card> allCards = new ArrayList<>();
+    private List<Card> toCards = new ArrayList<>();
+    private String currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_topup);
-        
+
         init();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -40,93 +62,243 @@ public class TopupActivity extends AppCompatActivity {
             return insets;
         });
 
-        ivBack.setOnClickListener((v) -> finish());
+        currentUserId = DatabaseHelper.getInstance().getCurrentUserId();
+        if (currentUserId != null) {
+            loadCards();
+        }
 
-        setupQuickSelect();
-        setupPaymentMethods();
+        btnBack.setOnClickListener(v -> finish());
 
-        btnTopup.setOnClickListener((v) -> {
-            String amountStr = etAmount.getText().toString().trim();
-            if (amountStr.isEmpty()) { amountStr = "100.00"; } // TSX Default
+        btnTransfer.setOnClickListener(v -> handleTransfer());
 
-            Intent intent = new Intent(this, TransactionSuccessActivity.class);
-            intent.putExtra("type", "Top Up");
-            intent.putExtra("amount", amountStr);
-            intent.putExtra("recipient", selectedMethod);
+        // Visual card click handlers -> Open hidden spinners
+        cardFromView.setOnClickListener(v -> spinnerFromCard.performClick());
+        cardToView.setOnClickListener(v -> spinnerToCard.performClick());
 
-            intent.putExtra("date", java.text.DateFormat.getDateInstance(java.text.DateFormat.LONG).format(new java.util.Date()));
-            intent.putExtra("time", java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(new java.util.Date()));
-            intent.putExtra("transactionId", "TRX" + System.currentTimeMillis());
-
-            startActivity(intent);
+        spinnerFromCard.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                updateToCardSpinner(position);
+                updateFromCardUI(position);
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
-    }
 
-    private void setupQuickSelect() {
-        View.OnClickListener listener = v -> {
-            resetQuickSelect();
-            v.setBackgroundResource(R.drawable.bg_rounded_rect_blue_light);
-            ((TextView) v).setTextColor(getResources().getColor(R.color.primary, null));
-            if (v == btnQuick50) etAmount.setText("50.00");
-            else if (v == btnQuick100) etAmount.setText("100.00");
-            else if (v == btnQuick200) etAmount.setText("200.00");
-            else if (v == btnQuick500) etAmount.setText("500.00");
-        };
-        btnQuick50.setOnClickListener(listener);
-        btnQuick100.setOnClickListener(listener);
-        btnQuick200.setOnClickListener(listener);
-        btnQuick500.setOnClickListener(listener);
-    }
+        spinnerToCard.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                updateToCardUI(position);
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
-    private void resetQuickSelect() {
-        btnQuick50.setBackgroundResource(R.drawable.bg_rounded_rect); btnQuick50.setTextColor(getResources().getColor(R.color.text_primary, null));
-        btnQuick100.setBackgroundResource(R.drawable.bg_rounded_rect); btnQuick100.setTextColor(getResources().getColor(R.color.text_primary, null));
-        btnQuick200.setBackgroundResource(R.drawable.bg_rounded_rect); btnQuick200.setTextColor(getResources().getColor(R.color.text_primary, null));
-        btnQuick500.setBackgroundResource(R.drawable.bg_rounded_rect); btnQuick500.setTextColor(getResources().getColor(R.color.text_primary, null));
-    }
-
-    private void setupPaymentMethods() {
-        View.OnClickListener listener = v -> {
-            resetPaymentMethods();
-            v.setBackgroundResource(R.drawable.bg_rounded_rect_blue_light);
-            if (v == llMethodCard) { ivCheckCard.setImageResource(R.drawable.bg_circle_blue); selectedMethod = "Credit/Debit Card"; }
-            else if (v == llMethodBank) { ivCheckBank.setImageResource(R.drawable.bg_circle_blue); selectedMethod = "Bank Transfer"; }
-            else if (v == llMethodWallet) { ivCheckWallet.setImageResource(R.drawable.bg_circle_blue); selectedMethod = "Digital Wallet"; }
-            else if (v == llMethodPaypal) { ivCheckPaypal.setImageResource(R.drawable.bg_circle_blue); selectedMethod = "PayPal"; }
-        };
-        llMethodCard.setOnClickListener(listener);
-        llMethodBank.setOnClickListener(listener);
-        llMethodWallet.setOnClickListener(listener);
-        llMethodPaypal.setOnClickListener(listener);
-    }
-
-    private void resetPaymentMethods() {
-        llMethodCard.setBackgroundResource(R.drawable.bg_rounded_rect); ivCheckCard.setImageResource(R.drawable.bg_circle);
-        llMethodBank.setBackgroundResource(R.drawable.bg_rounded_rect); ivCheckBank.setImageResource(R.drawable.bg_circle);
-        llMethodWallet.setBackgroundResource(R.drawable.bg_rounded_rect); ivCheckWallet.setImageResource(R.drawable.bg_circle);
-        llMethodPaypal.setBackgroundResource(R.drawable.bg_rounded_rect); ivCheckPaypal.setImageResource(R.drawable.bg_circle);
+        setupQuickAmounts();
     }
 
     private void init() {
-        ivBack = findViewById(R.id.btnBack);
+        btnBack = findViewById(R.id.btnBack);
+        spinnerFromCard = findViewById(R.id.spinnerFromCard);
+        spinnerToCard = findViewById(R.id.spinnerToCard);
         etAmount = findViewById(R.id.etAmount);
-        btnTopup = findViewById(R.id.btnTopup);
+        btnTransfer = findViewById(R.id.btnTransfer);
 
-        btnQuick50 = findViewById(R.id.btn50);
-        btnQuick100 = findViewById(R.id.btn100);
-        btnQuick200 = findViewById(R.id.btn200);
-        btnQuick500 = findViewById(R.id.btn500);
+        cardFromView = findViewById(R.id.cardFromView);
+        tvFromCardType = findViewById(R.id.tvFromCardType);
+        tvFromCardNumber = findViewById(R.id.tvFromCardNumber);
+        tvFromBalance = findViewById(R.id.tvFromBalance);
 
-        llMethodCard = findViewById(R.id.llMethodCard);
-        llMethodBank = findViewById(R.id.llMethodBank);
-        llMethodWallet = findViewById(R.id.llMethodWallet);
-        llMethodPaypal = findViewById(R.id.llMethodPaypal);
+        cardToView = findViewById(R.id.cardToView);
+        tvToCardType = findViewById(R.id.tvToCardType);
+        tvToCardNumber = findViewById(R.id.tvToCardNumber);
+        tvToBalance = findViewById(R.id.tvToBalance);
 
-        ivCheckCard = findViewById(R.id.ivRadioCard);
-        ivCheckBank = findViewById(R.id.ivRadioBank); // Added if exists
-        ivCheckWallet = findViewById(R.id.ivRadioWallet); // Added if exists
-        ivCheckPaypal = findViewById(R.id.ivRadioPaypal); // Added if exists
+        btnAmt50 = findViewById(R.id.btnAmt50);
+        btnAmt100 = findViewById(R.id.btnAmt100);
+        btnAmt200 = findViewById(R.id.btnAmt200);
+        btnAmt500 = findViewById(R.id.btnAmt500);
+    }
 
-        etAmount.setText("100.00");
+    private void setupQuickAmounts() {
+        View.OnClickListener listener = v -> {
+            Button b = (Button) v;
+            String val = b.getText().toString().replace("$", "") + ".00";
+            etAmount.setText(val);
+            
+            // Highlight selected
+            resetQuickAmountStyles();
+            b.setBackgroundResource(R.drawable.bg_quick_amount_selected);
+            b.setTextColor(getResources().getColor(R.color.blue_600));
+        };
+        
+        btnAmt50.setOnClickListener(listener);
+        btnAmt100.setOnClickListener(listener);
+        btnAmt200.setOnClickListener(listener);
+        btnAmt500.setOnClickListener(listener);
+    }
+
+    private void resetQuickAmountStyles() {
+        int defaultColor = getResources().getColor(R.color.text_primary);
+        btnAmt50.setBackgroundResource(R.drawable.bg_quick_amount);
+        btnAmt50.setTextColor(defaultColor);
+        btnAmt100.setBackgroundResource(R.drawable.bg_quick_amount);
+        btnAmt100.setTextColor(defaultColor);
+        btnAmt200.setBackgroundResource(R.drawable.bg_quick_amount);
+        btnAmt200.setTextColor(defaultColor);
+        btnAmt500.setBackgroundResource(R.drawable.bg_quick_amount);
+        btnAmt500.setTextColor(defaultColor);
+    }
+
+    private void loadCards() {
+        DatabaseHelper.getInstance().cardsRef().orderByChild("userId").equalTo(currentUserId)
+                .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                allCards.clear();
+                int primaryIndex = 0;
+                int i = 0;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    Card card = ds.getValue(Card.class);
+                    if (card != null) {
+                        allCards.add(card);
+                        if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) {
+                            primaryIndex = i;
+                        }
+                        i++;
+                    }
+                }
+
+                ArrayAdapter<Card> adapter = new ArrayAdapter<Card>(TopupActivity.this,
+                        R.layout.item_spinner_card, allCards) {
+                    @NonNull @Override
+                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                        return createItemView(position, convertView, parent);
+                    }
+                    @Override
+                    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                        return createItemView(position, convertView, parent);
+                    }
+                    private View createItemView(int position, View convertView, ViewGroup parent) {
+                        View v = convertView != null ? convertView : getLayoutInflater().inflate(R.layout.item_spinner_card, parent, false);
+                        Card c = getItem(position);
+                        if (c != null) {
+                            ((TextView) v.findViewById(R.id.tvSpinnerCardNumber)).setText(c.getCardNumber());
+                            ((TextView) v.findViewById(R.id.tvSpinnerCardBalance)).setText(String.format("$%,.2f", c.getBalance()));
+                        }
+                        return v;
+                    }
+                };
+                spinnerFromCard.setAdapter(adapter);
+                if (allCards.size() > primaryIndex) {
+                    spinnerFromCard.setSelection(primaryIndex);
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void updateFromCardUI(int position) {
+        if (position < allCards.size()) {
+            Card card = allCards.get(position);
+            tvFromCardType.setText(card.getType());
+            tvFromCardNumber.setText(card.getCardNumber());
+            tvFromBalance.setText(String.format(Locale.getDefault(), "$%,.2f", card.getBalance()));
+        }
+    }
+
+    private void updateToCardUI(int position) {
+        if (position < toCards.size()) {
+            Card card = toCards.get(position);
+            tvToCardType.setText(card.getType());
+            tvToCardNumber.setText(card.getCardNumber());
+            tvToBalance.setText(String.format(Locale.getDefault(), "$%,.2f", card.getBalance()));
+        }
+    }
+
+    private void updateToCardSpinner(int fromPosition) {
+        toCards.clear();
+        for (int i = 0; i < allCards.size(); i++) {
+            if (i != fromPosition) {
+                toCards.add(allCards.get(i));
+            }
+        }
+
+        ArrayAdapter<Card> adapter = new ArrayAdapter<Card>(this,
+                R.layout.item_spinner_card, toCards) {
+            @NonNull @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                return createItemView(position, convertView, parent);
+            }
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                return createItemView(position, convertView, parent);
+            }
+            private View createItemView(int position, View convertView, ViewGroup parent) {
+                View v = convertView != null ? convertView : getLayoutInflater().inflate(R.layout.item_spinner_card, parent, false);
+                Card c = getItem(position);
+                if (c != null) {
+                    ((TextView) v.findViewById(R.id.tvSpinnerCardNumber)).setText(c.getCardNumber());
+                    ((TextView) v.findViewById(R.id.tvSpinnerCardBalance)).setText(String.format("$%,.2f", c.getBalance()));
+                }
+                return v;
+            }
+        };
+        spinnerToCard.setAdapter(adapter);
+        
+        if (!toCards.isEmpty()) {
+            updateToCardUI(0);
+        }
+    }
+
+    private void handleTransfer() {
+        if (currentUserId == null) return;
+        DatabaseHelper.getInstance().isUserBlocked(currentUserId, isBlocked -> {
+            if (isBlocked) {
+                Toast.makeText(this, "Your account is blocked. Transfer failed.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (spinnerFromCard.getSelectedItem() == null || spinnerToCard.getSelectedItem() == null) {
+                Toast.makeText(this, "Please select both cards", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        String amountStr = etAmount.getText().toString().trim();
+        if (amountStr.isEmpty()) {
+            etAmount.setError("Enter amount");
+            return;
+        }
+
+        double amount;
+        try {
+            amount = Double.parseDouble(amountStr);
+        } catch (NumberFormatException e) {
+            etAmount.setError("Invalid amount");
+            return;
+        }
+
+        if (amount <= 0) {
+            etAmount.setError("Amount must be greater than 0");
+            return;
+        }
+
+        Card fromCard = allCards.get(spinnerFromCard.getSelectedItemPosition());
+        Card toCard = toCards.get(spinnerToCard.getSelectedItemPosition());
+
+        if (fromCard.getBalance() < amount) {
+            Toast.makeText(this, "Insufficient balance in source card", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        btnTransfer.setEnabled(false);
+        DatabaseHelper.getInstance().transferBetweenCards(fromCard.getCardId(), toCard.getCardId(), amount, (success, message) -> {
+            btnTransfer.setEnabled(true);
+            if (success) {
+                Toast.makeText(this, "Transfer Successful!", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, "Transfer Failed: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+        });
     }
 }

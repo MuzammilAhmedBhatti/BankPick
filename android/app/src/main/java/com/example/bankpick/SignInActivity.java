@@ -90,13 +90,22 @@ public class SignInActivity extends AppCompatActivity {
         btnSignIn.setEnabled(false);
         if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
 
+        // ── Admin Bypass ──────────────────────────────────────────────────
+        if (DatabaseHelper.ADMIN_EMAIL.equalsIgnoreCase(email) && "admin123".equals(password)) {
+            Intent intent = new Intent(this, AdminDashboardActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         // ── Firebase Auth sign in ─────────────────────────────────────────
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+
                         Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show();
 
-                        // Write a login notification
                         String uid = DatabaseHelper.getInstance().getCurrentUserId();
                         if (uid != null) {
                             DatabaseHelper.getInstance().writeNotification(

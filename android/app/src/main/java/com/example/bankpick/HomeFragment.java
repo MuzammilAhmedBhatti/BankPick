@@ -59,6 +59,7 @@ public class HomeFragment extends Fragment {
         tvSeeAll.setOnClickListener((v) -> startActivity(new Intent(requireContext(), TransactionHistoryActivity.class)));
         btnSent.setOnClickListener((v) -> startActivity(new Intent(requireContext(), SendMoneyActivity.class)));
         btnReceive.setOnClickListener((v) -> startActivity(new Intent(requireContext(), RequestMoneyActivity.class)));
+        btnLoan.setOnClickListener((v) -> startActivity(new Intent(requireContext(), LoanRequestActivity.class)));
         btnTopup.setOnClickListener((v) -> startActivity(new Intent(requireContext(), TopupActivity.class)));
 
         if (ivMenuHamburger != null) {

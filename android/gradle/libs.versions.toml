@@ -11,6 +11,8 @@ firebaseBom = "32.7.0"
 circleimageview = "3.1.0"
 glide = "4.16.0"
 mpandroidchart = "v3.1.0"
+javaxMail = "1.6.7"
+dotenv = "3.0.0"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -28,6 +30,10 @@ circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.re
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
+
+javax-mail = { group = "com.sun.mail", name = "android-mail", version.ref = "javaxMail" }
+javax-activation = { group = "com.sun.mail", name = "android-activation", version.ref = "javaxMail" }
+dotenv = { group = "io.github.cdimascio", name = "dotenv-java", version.ref = "dotenv" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

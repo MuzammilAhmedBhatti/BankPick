@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -71,64 +73,105 @@ public class SendMoneyActivity extends AppCompatActivity {
 
         String uid = DatabaseHelper.getInstance().getCurrentUserId();
         if (uid != null) {
-            activeCardId = uid + "_card_001";
-            listenToCard();
+            listenToPrimaryCard(uid);
             loadContacts(uid);
         }
 
         ivBack.setOnClickListener((v) -> finish());
 
         btnSend.setOnClickListener((v) -> {
-            String amountStr = etAmount.getText().toString().trim();
-            if (TextUtils.isEmpty(amountStr)) {
-                Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            try {
-                pendingAmount = Double.parseDouble(amountStr);
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (pendingAmount <= 0) {
-                Toast.makeText(this, "Amount must be greater than 0", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (pendingAmount > currentBalance) {
-                Toast.makeText(this, "Insufficient funds", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            if (selectedRecipientUid != null) {
-                startOtpProcess();
-            } else {
-                String email = etRecipientEmail.getText().toString().trim();
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(this, "Select a beneficiary or enter an email", Toast.LENGTH_SHORT).show();
+            if (uid == null) return;
+            DatabaseHelper.getInstance().isUserBlocked(uid, isBlocked -> {
+                if (isBlocked) {
+                    Toast.makeText(this, "Your account is blocked. Transfer failed.", Toast.LENGTH_LONG).show();
                     return;
                 }
-                
-                if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
-                DatabaseHelper.getInstance().findUserByEmail(email, (foundUid, name) -> {
-                    if (progressBar != null) progressBar.setVisibility(View.GONE);
-                    if (foundUid != null) {
-                        selectedRecipientUid = foundUid;
-                        selectedRecipientName = name;
-                        startOtpProcess();
-                    } else {
-                        Toast.makeText(this, "Recipient email not found in BankPick", Toast.LENGTH_SHORT).show();
+
+                String amountStr = etAmount.getText().toString().trim();
+                if (TextUtils.isEmpty(amountStr)) {
+                    Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                try {
+                    pendingAmount = Double.parseDouble(amountStr);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (pendingAmount <= 0) {
+                    Toast.makeText(this, "Amount must be greater than 0", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (pendingAmount > currentBalance) {
+                    Toast.makeText(this, "Insufficient funds", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (selectedRecipientUid != null) {
+                    startOtpProcess();
+                } else {
+                    String email = etRecipientEmail.getText().toString().trim();
+                    if (TextUtils.isEmpty(email)) {
+                        Toast.makeText(this, "Select a beneficiary or enter an email", Toast.LENGTH_SHORT).show();
+                        return;
                     }
-                });
-            }
+                    
+                    if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+                    DatabaseHelper.getInstance().findUserByEmail(email, (foundUid, name) -> {
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+                        if (foundUid != null) {
+                            selectedRecipientUid = foundUid;
+                            selectedRecipientName = name;
+                            startOtpProcess();
+                        } else {
+                            Toast.makeText(this, "Recipient email not found in BankPick", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
         });
+    }
+
+    private void listenToPrimaryCard(String uid) {
+        DatabaseHelper db = DatabaseHelper.getInstance();
+        cardListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DataSnapshot primaryCardSnap = null;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    primaryCardSnap = ds;
+                    if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) {
+                        break;
+                    }
+                }
+
+                if (primaryCardSnap != null) {
+                    activeCardId = primaryCardSnap.getKey();
+                    String number  = primaryCardSnap.child("cardNumber").getValue(String.class);
+                    String holder  = primaryCardSnap.child("holderName").getValue(String.class);
+                    Double balance = primaryCardSnap.child("balance").getValue(Double.class);
+
+                    if (number  != null && tvCardNumber  != null) tvCardNumber.setText(number);
+                    if (holder  != null && tvCardHolder  != null) tvCardHolder.setText(holder);
+                    if (balance != null) {
+                        currentBalance = balance;
+                        if (tvCardBalance != null)
+                            tvCardBalance.setText(String.format("Balance: $%.2f", balance));
+                    }
+                }
+            }
+
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
+        };
+        db.cardsRef().orderByChild("userId").equalTo(uid).addValueEventListener(cardListener);
     }
 
     private void startOtpProcess() {
         if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
-        DatabaseHelper.getInstance().sendOtp("user@example.com", new DatabaseHelper.OtpCallback() {
+        DatabaseHelper.getInstance().sendOtp(FirebaseAuth.getInstance().getCurrentUser().getEmail(), new DatabaseHelper.OtpCallback() {
             @Override
             public void onSuccess(String otp) {
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
@@ -208,27 +251,6 @@ public class SendMoneyActivity extends AppCompatActivity {
         llContactsContainer.addView(view);
     }
 
-    private void listenToCard() {
-        cardListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String number  = snapshot.child("cardNumber").getValue(String.class);
-                String holder  = snapshot.child("holderName").getValue(String.class);
-                Double balance = snapshot.child("balance").getValue(Double.class);
-
-                if (number  != null && tvCardNumber  != null) tvCardNumber.setText(number);
-                if (holder  != null && tvCardHolder  != null) tvCardHolder.setText(holder);
-                if (balance != null) {
-                    currentBalance = balance;
-                    if (tvCardBalance != null)
-                        tvCardBalance.setText(String.format("Balance: $%.2f", balance));
-                }
-            }
-            @Override public void onCancelled(@NonNull DatabaseError error) {}
-        };
-        DatabaseHelper.getInstance().cardRef(activeCardId).addValueEventListener(cardListener);
-    }
-
     private void init() {
         ivBack            = findViewById(R.id.btnBack);
         etAmount          = findViewById(R.id.etAmount);
@@ -244,7 +266,10 @@ public class SendMoneyActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (cardListener != null && activeCardId != null)
-            DatabaseHelper.getInstance().cardRef(activeCardId).removeEventListener(cardListener);
+        if (cardListener != null) {
+             String uid = DatabaseHelper.getInstance().getCurrentUserId();
+             if (uid != null)
+                DatabaseHelper.getInstance().cardsRef().orderByChild("userId").equalTo(uid).removeEventListener(cardListener);
+        }
     }
 }

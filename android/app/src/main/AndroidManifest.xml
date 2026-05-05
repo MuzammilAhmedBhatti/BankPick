@@ -46,6 +46,17 @@
         <activity android:name=".LanguageActivity" />
         <activity android:name=".OtpVerificationActivity" />
 
+        <!-- Admin Panel -->
+        <activity android:name=".AdminDashboardActivity" />
+        <activity android:name=".AdminUsersListActivity" />
+        <activity android:name=".AdminUserDetailActivity" />
+        <activity android:name=".AdminLoanManagementActivity" />
+        <activity android:name=".AdminBlockedUsersActivity" />
+
+        <!-- User Loan -->
+        <activity android:name=".LoanRequestActivity"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>

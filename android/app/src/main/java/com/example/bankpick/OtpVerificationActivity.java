@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Locale;
 
 public class OtpVerificationActivity extends AppCompatActivity {
@@ -26,7 +28,6 @@ public class OtpVerificationActivity extends AppCompatActivity {
     private String dummyOtp;
     private CountDownTimer resendTimer;
     private boolean canResend = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +66,7 @@ public class OtpVerificationActivity extends AppCompatActivity {
 
         tvResend.setOnClickListener(v -> {
             if (canResend) {
-                DatabaseHelper.getInstance().sendOtp("user@example.com", new DatabaseHelper.OtpCallback() {
+                DatabaseHelper.getInstance().sendOtp(FirebaseAuth.getInstance().getCurrentUser().getEmail(), new DatabaseHelper.OtpCallback() {
                     @Override
                     public void onSuccess(String otp) {
                         dummyOtp = otp;

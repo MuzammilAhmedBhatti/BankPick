@@ -6,150 +6,202 @@
     android:layout_height="match_parent">
 
     <!-- ═══ Main Content ═══ -->
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/app_background">
+        android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/fragment_container"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/app_background">
 
-        <!-- Floating Nav Container -->
-        <FrameLayout
-            android:id="@+id/bottom_nav_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:paddingBottom="16dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-            <LinearLayout
+            <!-- Floating Nav Container -->
+            <FrameLayout
+                android:id="@+id/bottom_nav_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_floating_nav"
-                android:elevation="12dp"
-                android:orientation="horizontal"
-                android:padding="6dp">
+                android:layout_gravity="bottom"
+                android:paddingBottom="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
 
-                <!-- Home -->
                 <LinearLayout
-                    android:id="@+id/navItemHome"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:background="@drawable/bg_nav_active">
-                    <ImageView
-                        android:id="@+id/navIconHome"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_home"
-                        android:tint="#FFFFFF" />
-                    <TextView
-                        android:id="@+id/navTextHome"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Home"
-                        android:textSize="10sp"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:background="@drawable/bg_floating_nav"
+                    android:elevation="12dp"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
 
-                <!-- Cards -->
-                <LinearLayout
-                    android:id="@+id/navItemCards"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:background="@android:color/transparent">
-                    <ImageView
-                        android:id="@+id/navIconCards"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_credit_card"
-                        android:tint="#9CA3AF" />
-                    <TextView
-                        android:id="@+id/navTextCards"
-                        android:layout_width="wrap_content"
+                    <!-- Home -->
+                    <LinearLayout
+                        android:id="@+id/navItemHome"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Cards"
-                        android:textSize="10sp"
-                        android:textColor="#6B7280"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:background="@drawable/bg_nav_active">
+                        <ImageView
+                            android:id="@+id/navIconHome"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_home"
+                            android:tint="#FFFFFF" />
+                        <TextView
+                            android:id="@+id/navTextHome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Home"
+                            android:textSize="10sp"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
-                <!-- Stats -->
-                <LinearLayout
-                    android:id="@+id/navItemStats"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:background="@android:color/transparent">
-                    <ImageView
-                        android:id="@+id/navIconStats"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_pie_chart"
-                        android:tint="#9CA3AF" />
-                    <TextView
-                        android:id="@+id/navTextStats"
-                        android:layout_width="wrap_content"
+                    <!-- Cards -->
+                    <LinearLayout
+                        android:id="@+id/navItemCards"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Stats"
-                        android:textSize="10sp"
-                        android:textColor="#6B7280"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:background="@android:color/transparent">
+                        <ImageView
+                            android:id="@+id/navIconCards"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_credit_card"
+                            android:tint="#9CA3AF" />
+                        <TextView
+                            android:id="@+id/navTextCards"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Cards"
+                            android:textSize="10sp"
+                            android:textColor="#6B7280"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
-                <!-- Profile -->
-                <LinearLayout
-                    android:id="@+id/navItemProfile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:background="@android:color/transparent">
-                    <ImageView
-                        android:id="@+id/navIconProfile"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_person"
-                        android:tint="#9CA3AF" />
-                    <TextView
-                        android:id="@+id/navTextProfile"
-                        android:layout_width="wrap_content"
+                    <!-- Stats -->
+                    <LinearLayout
+                        android:id="@+id/navItemStats"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Profile"
-                        android:textSize="10sp"
-                        android:textColor="#6B7280"
-                        android:textStyle="bold" />
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:background="@android:color/transparent">
+                        <ImageView
+                            android:id="@+id/navIconStats"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_pie_chart"
+                            android:tint="#9CA3AF" />
+                        <TextView
+                            android:id="@+id/navTextStats"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Stats"
+                            android:textSize="10sp"
+                            android:textColor="#6B7280"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Profile -->
+                    <LinearLayout
+                        android:id="@+id/navItemProfile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:background="@android:color/transparent">
+                        <ImageView
+                            android:id="@+id/navIconProfile"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_person"
+                            android:tint="#9CA3AF" />
+                        <TextView
+                            android:id="@+id/navTextProfile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Profile"
+                            android:textSize="10sp"
+                            android:textColor="#6B7280"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </FrameLayout>
-    </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Blocked Account Overlay -->
+        <LinearLayout
+            android:id="@+id/blockedOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#CC000000"
+            android:visibility="gone"
+            android:padding="32dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚫"
+                android:textSize="64sp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Account Blocked"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your account has been suspended. Please contact support to resolve this issue."
+                android:textSize="15sp"
+                android:textColor="#CCFFFFFF"
+                android:gravity="center"
+                android:layout_marginBottom="32dp" />
+
+            <Button
+                android:id="@+id/btnBlockedSignOut"
+                android:layout_width="200dp"
+                android:layout_height="52dp"
+                android:text="Sign Out"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_badge_red"
+                android:elevation="0dp" />
+        </LinearLayout>
+    </FrameLayout>
 
     <!-- ═══ Drawer ═══ -->
     <include

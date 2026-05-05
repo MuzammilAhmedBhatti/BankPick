@@ -57,9 +57,7 @@ public class StatisticsFragment extends Fragment {
         
         String uid = DatabaseHelper.getInstance().getCurrentUserId();
         if (uid != null) {
-            activeCardId = uid + "_card_001";
-            loadRealData();
-            listenToBalance();
+            listenToPrimaryCard(uid);
         }
 
         tvSeeAll.setOnClickListener((v) -> startActivity(new Intent(requireContext(), TransactionHistoryActivity.class)));
@@ -82,14 +80,32 @@ public class StatisticsFragment extends Fragment {
         }
     }
 
-    private void listenToBalance() {
-        DatabaseHelper.getInstance().cardRef(activeCardId).addValueEventListener(new ValueEventListener() {
+    private void listenToPrimaryCard(String uid) {
+        DatabaseHelper db = DatabaseHelper.getInstance();
+        db.cardsRef().orderByChild("userId").equalTo(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!isAdded()) return;
-                Double balance = snapshot.child("balance").getValue(Double.class);
-                if (balance != null) {
-                    tvBalance.setText(String.format(Locale.getDefault(), "$%,.2f", balance));
+                
+                DataSnapshot primaryCardSnap = null;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    primaryCardSnap = ds;
+                    if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) {
+                        break;
+                    }
+                }
+
+                if (primaryCardSnap != null) {
+                    String newCardId = primaryCardSnap.getKey();
+                    Double balance = primaryCardSnap.child("balance").getValue(Double.class);
+                    if (balance != null) {
+                        tvBalance.setText(String.format(Locale.getDefault(), "$%,.2f", balance));
+                    }
+                    
+                    if (newCardId != null && !newCardId.equals(activeCardId)) {
+                        activeCardId = newCardId;
+                        loadRealData();
+                    }
                 }
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}

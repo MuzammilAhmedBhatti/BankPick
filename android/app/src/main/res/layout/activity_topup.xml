@@ -5,28 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_topup_screen">
-
-    <!-- Blur Orbs (Visual Only) -->
-    <View
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="-150dp"
-        android:layout_marginStart="-150dp"
-        android:background="@drawable/bg_circle_blue_light"
-        android:alpha="0.2" />
-
-    <View
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="-200dp"
-        android:layout_marginEnd="-200dp"
-        android:background="@drawable/bg_circle_purple"
-        android:alpha="0.1" />
+    android:background="#F8FAFF">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -52,7 +31,7 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@drawable/bg_circle_white_solid"
-                    android:elevation="4dp"
+                    android:elevation="8dp"
                     android:src="@drawable/ic_chevron_left"
                     android:padding="12dp"
                     android:tint="@color/black"
@@ -65,250 +44,272 @@
                     android:layout_height="wrap_content"
                     android:text="Card Transfer"
                     android:textSize="20sp"
-                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
                     android:textColor="@color/text_primary"
                     android:layout_centerInParent="true" />
             </RelativeLayout>
 
-            <!-- From Card Section -->
-            <LinearLayout
+            <!-- Card Containers with Interchange -->
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="20dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-                    
-                    <View
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_rounded_rect"
-                        android:backgroundTint="@color/blue_600"
-                        android:layout_marginEnd="8dp" />
-                    
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="From Card"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_secondary" />
-                </LinearLayout>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="24dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
-                        <RelativeLayout
-                            android:id="@+id/cardFromView"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:background="@drawable/bg_card_gradient"
-                            android:padding="16dp"
-                            android:layout_marginBottom="12dp">
-
-                            <TextView
-                                android:id="@+id/tvFromCardType"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Mastercard"
-                                android:textColor="@color/text_A0FFFFFF"
-                                android:textSize="12sp" />
-
-                            <TextView
-                                android:id="@+id/tvFromCardNumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="1234 5678 9876 5432"
-                                android:textColor="@color/white"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:layout_below="@id/tvFromCardType"
-                                android:layout_marginTop="4dp" />
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_arrow_down"
-                                android:tint="@color/white"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true" />
-                            
-                            <!-- Hidden Spinner to handle selection -->
-                            <Spinner
-                                android:id="@+id/spinnerFromCard"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:popupBackground="@drawable/bg_surface_rounded"
-                                android:alpha="0" />
-                        </RelativeLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:paddingHorizontal="4dp">
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Available Balance"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="13sp" />
-                            <TextView
-                                android:id="@+id/tvFromBalance"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="$8,545.00"
-                                android:textColor="@color/text_primary"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <!-- Transfer Icon -->
-            <FrameLayout
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:background="@drawable/bg_exchange_gradient"
-                android:layout_marginBottom="20dp"
-                android:elevation="4dp">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_arrow_right_left"
-                    android:tint="@color/white" />
-            </FrameLayout>
-
-            <!-- To Card Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginBottom="24dp">
 
+                <!-- From Card Section -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-                    
-                    <View
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_rounded_rect"
-                        android:backgroundTint="@color/purple_600"
-                        android:layout_marginEnd="8dp" />
-                    
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="To Card"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_secondary" />
-                </LinearLayout>
-
-                <androidx.cardview.widget.CardView
+                    android:id="@+id/sectionFrom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="24dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white">
+                    android:orientation="vertical">
 
                     <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginStart="4dp">
+                        
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="@drawable/bg_rounded_rect"
+                            android:backgroundTint="@color/blue_600"
+                            android:src="@drawable/ic_credit_card"
+                            android:padding="6dp"
+                            android:tint="@color/white"
+                            android:layout_marginEnd="10dp" />
+                        
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="From Card"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary" />
+                    </LinearLayout>
+
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="20dp">
-
-                        <RelativeLayout
-                            android:id="@+id/cardToView"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:background="@drawable/bg_card_dark"
-                            android:padding="16dp"
-                            android:layout_marginBottom="12dp">
-
-                            <TextView
-                                android:id="@+id/tvToCardType"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Visa Premium"
-                                android:textColor="@color/text_A0FFFFFF"
-                                android:textSize="12sp" />
-
-                            <TextView
-                                android:id="@+id/tvToCardNumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="1234 5678 9876 5432"
-                                android:textColor="@color/white"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:layout_below="@id/tvToCardType"
-                                android:layout_marginTop="4dp" />
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_arrow_down"
-                                android:tint="@color/white"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true" />
-
-                            <!-- Hidden Spinner -->
-                            <Spinner
-                                android:id="@+id/spinnerToCard"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:popupBackground="@drawable/bg_surface_rounded"
-                                android:alpha="0" />
-                        </RelativeLayout>
+                        app:cardCornerRadius="28dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/white"
+                        android:layout_marginBottom="12dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:paddingHorizontal="4dp">
-                            <TextView
-                                android:layout_width="0dp"
+                            android:orientation="vertical"
+                            android:padding="20dp">
+
+                            <RelativeLayout
+                                android:id="@+id/cardFromView"
+                                android:layout_width="match_parent"
+                                android:layout_height="90dp"
+                                android:background="@drawable/bg_card_dark"
+                                android:padding="16dp"
+                                android:layout_marginBottom="16dp">
+
+                                <TextView
+                                    android:id="@+id/tvFromCardType"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Mastercard"
+                                    android:textColor="@color/text_A0FFFFFF"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tvFromCardNumber"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="•••• 7852"
+                                    android:textColor="@color/white"
+                                    android:textSize="20sp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:layout_below="@id/tvFromCardType"
+                                    android:layout_marginTop="4dp"
+                                    android:layout_toStartOf="@+id/ivFromArrow"
+                                    android:singleLine="true"
+                                    android:ellipsize="end" />
+
+                                <ImageView
+                                    android:id="@+id/ivFromArrow"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_arrow_down"
+                                    android:tint="@color/white"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true" />
+                                
+                                <Spinner
+                                    android:id="@+id/spinnerFromCard"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:alpha="0" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Current Balance"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="13sp" />
-                            <TextView
-                                android:id="@+id/tvToBalance"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="$3,090.50"
-                                android:textColor="@color/text_primary"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:paddingHorizontal="4dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Available Balance"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp" />
+                                <TextView
+                                    android:id="@+id/tvFromBalance"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="$8545.00"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:layout_alignParentEnd="true" />
+                            </RelativeLayout>
                         </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- To Card Section -->
+                <LinearLayout
+                    android:id="@+id/sectionTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_below="@id/sectionFrom"
+                    android:layout_marginTop="12dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginStart="4dp">
+                        
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="@drawable/bg_rounded_rect"
+                            android:backgroundTint="@color/purple_600"
+                            android:src="@drawable/ic_credit_card"
+                            android:padding="6dp"
+                            android:tint="@color/white"
+                            android:layout_marginEnd="10dp" />
+                        
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="To Card"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_primary" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="28dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/white">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="20dp">
+
+                            <RelativeLayout
+                                android:id="@+id/cardToView"
+                                android:layout_width="match_parent"
+                                android:layout_height="90dp"
+                                android:background="@drawable/bg_card_blue"
+                                android:padding="16dp"
+                                android:layout_marginBottom="16dp">
+
+                                <TextView
+                                    android:id="@+id/tvToCardType"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Visa"
+                                    android:textColor="@color/text_A0FFFFFF"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tvToCardNumber"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="•••• 3421"
+                                    android:textColor="@color/white"
+                                    android:textSize="20sp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:layout_below="@id/tvToCardType"
+                                    android:layout_marginTop="4dp"
+                                    android:layout_toStartOf="@+id/ivToArrow"
+                                    android:singleLine="true"
+                                    android:ellipsize="end" />
+
+                                <ImageView
+                                    android:id="@+id/ivToArrow"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_arrow_down"
+                                    android:tint="@color/white"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true" />
+
+                                <Spinner
+                                    android:id="@+id/spinnerToCard"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:alpha="0" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="4dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Current Balance"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp" />
+                                <TextView
+                                    android:id="@+id/tvToBalance"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="$3090.50"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:layout_alignParentEnd="true" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- Interchange Button Centered -->
+                <FrameLayout
+                    android:id="@+id/btnInterchange"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/bg_exchange_gradient"
+                    android:elevation="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_arrow_right_left"
+                        android:tint="@color/white" />
+                </FrameLayout>
+
+            </RelativeLayout>
 
             <!-- Quick Amounts -->
             <TextView
@@ -317,13 +318,14 @@
                 android:text="Quick Select Amount"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="4dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="28dp">
                 
                 <Button
                     android:id="@+id/btnAmt50"
@@ -348,8 +350,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="0dp">
+                app:cardCornerRadius="28dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -369,15 +371,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="bottom">
+                        android:gravity="center_vertical">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="$"
-                            android:textSize="24sp"
+                            android:textSize="28sp"
                             android:textColor="@color/gray_400"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp" />
+                            android:layout_marginEnd="12dp" />
                         <EditText
                             android:id="@+id/etAmount"
                             android:layout_width="match_parent"
@@ -385,7 +386,7 @@
                             android:background="@android:color/transparent"
                             android:text="100.00"
                             android:textSize="40sp"
-                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-medium"
                             android:textColor="@color/text_primary"
                             android:inputType="numberDecimal" />
                     </LinearLayout>
@@ -397,16 +398,17 @@
                 android:id="@+id/btnTransfer"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
-                android:background="@drawable/bg_btn_gradient_blue"
+                android:background="@drawable/bg_button_blue"
                 android:text="Transfer Now"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
                 android:elevation="8dp"
-                android:layout_marginBottom="24dp" />
+                android:layout_marginBottom="32dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>
+

@@ -44,6 +44,8 @@ public class TopupActivity extends BaseActivity {
     // Quick amount buttons
     private Button btnAmt50, btnAmt100, btnAmt200, btnAmt500;
 
+    private View btnInterchange;
+
     private List<Card> allCards = new ArrayList<>();
     private List<Card> toCards = new ArrayList<>();
     private String currentUserId;
@@ -71,6 +73,8 @@ public class TopupActivity extends BaseActivity {
 
         btnTransfer.setOnClickListener(v -> handleTransfer());
 
+        btnInterchange.setOnClickListener(v -> interchangeCards());
+
         // Visual card click handlers -> Open hidden spinners
         cardFromView.setOnClickListener(v -> spinnerFromCard.performClick());
         cardToView.setOnClickListener(v -> spinnerToCard.performClick());
@@ -93,6 +97,10 @@ public class TopupActivity extends BaseActivity {
         });
 
         setupQuickAmounts();
+        
+        // Initial highlight for $100
+        btnAmt100.setBackgroundResource(R.drawable.bg_quick_amount_selected);
+        btnAmt100.setTextColor(getResources().getColor(R.color.blue_600));
     }
 
     private void init() {
@@ -116,6 +124,8 @@ public class TopupActivity extends BaseActivity {
         btnAmt100 = findViewById(R.id.btnAmt100);
         btnAmt200 = findViewById(R.id.btnAmt200);
         btnAmt500 = findViewById(R.id.btnAmt500);
+
+        btnInterchange = findViewById(R.id.btnInterchange);
     }
 
     private void setupQuickAmounts() {
@@ -246,6 +256,41 @@ public class TopupActivity extends BaseActivity {
         
         if (!toCards.isEmpty()) {
             updateToCardUI(0);
+        }
+    }
+
+    private void interchangeCards() {
+        if (allCards.isEmpty() || toCards.isEmpty()) return;
+
+        int fromPos = spinnerFromCard.getSelectedItemPosition();
+        int toPos = spinnerToCard.getSelectedItemPosition();
+
+        if (fromPos == -1 || toPos == -1) return;
+
+        Card cardTo = toCards.get(toPos);
+        final String cardFromId = allCards.get(fromPos).getCardId();
+
+        // Find index of cardTo in allCards
+        int newFromPos = -1;
+        for (int i = 0; i < allCards.size(); i++) {
+            if (allCards.get(i).getCardId().equals(cardTo.getCardId())) {
+                newFromPos = i;
+                break;
+            }
+        }
+
+        if (newFromPos != -1) {
+            spinnerFromCard.setSelection(newFromPos);
+            
+            // Use post to wait for updateToCardSpinner to complete
+            spinnerToCard.post(() -> {
+                for (int i = 0; i < toCards.size(); i++) {
+                    if (toCards.get(i).getCardId().equals(cardFromId)) {
+                        spinnerToCard.setSelection(i);
+                        break;
+                    }
+                }
+            });
         }
     }
 

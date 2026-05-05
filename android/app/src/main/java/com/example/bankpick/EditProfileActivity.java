@@ -23,8 +23,10 @@ import java.util.Map;
 public class EditProfileActivity extends BaseActivity {
     private EditText etFullName, etEmail, etPhone, etDay, etMonth, etYear;
     private android.widget.TextView tvProfileName;
-    private ImageView ivBack;
+    private ImageView ivBack, ivProfilePhoto, ivEditPhoto;
     private Button btnSave;
+    private android.net.Uri imageUri;
+    private androidx.activity.result.ActivityResultLauncher<android.content.Intent> imagePickerLauncher;
 
     private String currentUserId;
     private ValueEventListener userListener;
@@ -57,6 +59,47 @@ public class EditProfileActivity extends BaseActivity {
         if (btnSave != null) {
             btnSave.setOnClickListener((v) -> saveProfile());
         }
+
+        setupImagePicker();
+        
+        if (ivEditPhoto != null) {
+            ivEditPhoto.setOnClickListener(v -> {
+                android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_PICK);
+                intent.setType("image/*");
+                imagePickerLauncher.launch(intent);
+            });
+        }
+    }
+
+    private void setupImagePicker() {
+        imagePickerLauncher = registerForActivityResult(
+                new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        imageUri = result.getData().getData();
+                        if (imageUri != null && ivProfilePhoto != null) {
+                            ivProfilePhoto.setImageURI(imageUri);
+                            uploadImageToStorage();
+                        }
+                    }
+                }
+        );
+    }
+
+    private void uploadImageToStorage() {
+        if (imageUri == null || currentUserId == null) return;
+
+        Toast.makeText(this, "Uploading image...", Toast.LENGTH_SHORT).show();
+        com.google.firebase.storage.StorageReference ref = DatabaseHelper.getInstance()
+                .profileStorageRef().child(currentUserId + ".jpg");
+
+        ref.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageUrl = uri.toString();
+                    DatabaseHelper.getInstance().userRef(currentUserId).child("profileImage").setValue(imageUrl);
+                    Toast.makeText(EditProfileActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+                }))
+                .addOnFailureListener(e -> Toast.makeText(EditProfileActivity.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void loadUserData() {
@@ -80,6 +123,14 @@ public class EditProfileActivity extends BaseActivity {
                     etEmail.setText(email);
                 if (phone != null && etPhone != null)
                     etPhone.setText(phone);
+
+                String imageUrl = snapshot.child("profileImage").getValue(String.class);
+                if (imageUrl != null && !imageUrl.isEmpty() && ivProfilePhoto != null) {
+                    com.bumptech.glide.Glide.with(EditProfileActivity.this)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.ic_profile_placeholder)
+                            .into(ivProfilePhoto);
+                }
             }
 
             @Override
@@ -128,5 +179,7 @@ public class EditProfileActivity extends BaseActivity {
         etYear = findViewById(R.id.etYear);
         tvProfileName = findViewById(R.id.tvProfileName);
         btnSave = findViewById(R.id.btnSave);
+        ivProfilePhoto = findViewById(R.id.ivProfilePhoto);
+        ivEditPhoto = findViewById(R.id.ivEditPhoto);
     }
 }

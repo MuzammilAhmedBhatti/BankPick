@@ -69,12 +69,14 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
 
     // CircleImageView
     implementation(libs.circleimageview)
 
     // Glide
     implementation(libs.glide)
+    implementation(libs.google.firebase.storage)
     annotationProcessor(libs.glide.compiler)
 
     // MPAndroidChart

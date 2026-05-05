@@ -13,6 +13,7 @@ glide = "4.16.0"
 mpandroidchart = "v3.1.0"
 javaxMail = "1.6.7"
 dotenv = "3.0.0"
+firebaseStorage = "22.0.1"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -25,6 +26,7 @@ cardview = { group = "androidx.cardview", name = "cardview", version.ref = "card
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 
 circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
@@ -34,6 +36,7 @@ mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", versio
 javax-mail = { group = "com.sun.mail", name = "android-mail", version.ref = "javaxMail" }
 javax-activation = { group = "com.sun.mail", name = "android-activation", version.ref = "javaxMail" }
 dotenv = { group = "io.github.cdimascio", name = "dotenv-java", version.ref = "dotenv" }
+google-firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

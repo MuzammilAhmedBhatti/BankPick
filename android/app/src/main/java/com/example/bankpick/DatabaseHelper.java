@@ -10,6 +10,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class DatabaseHelper {
 
     private static DatabaseHelper instance;
     private final FirebaseDatabase firebaseDb;
+    private final FirebaseStorage firebaseStorage;
     private final MailService mailService;
 
     public static synchronized DatabaseHelper getInstance() {
@@ -49,6 +52,7 @@ public class DatabaseHelper {
 
     private DatabaseHelper() {
         firebaseDb = FirebaseDatabase.getInstance();
+        firebaseStorage = FirebaseStorage.getInstance();
         mailService = new MailService();
     }
 
@@ -68,6 +72,8 @@ public class DatabaseHelper {
     public DatabaseReference cardRef(String cardId)   { return cardsRef().child(cardId); }
     public DatabaseReference transactionRef(String txnId) { return transactionsRef().child(txnId); }
     public DatabaseReference loanRef(String loanId)   { return loansRef().child(loanId); }
+    public StorageReference storageRef()           { return firebaseStorage.getReference(); }
+    public StorageReference profileStorageRef()    { return storageRef().child("profile_images"); }
 
     // ─── User Creation ─────────────────────────────────────────────────────────
     public void createNewUser(String uid, String fullName, String email, String phone) {

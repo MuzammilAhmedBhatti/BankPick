@@ -20,7 +20,7 @@ import java.util.List;
 
 public class ProfileActivity extends BaseActivity {
 
-    ImageView ivBack, btnEdit;
+    ImageView ivBack, btnEdit, ivProfilePhoto;
     TextView tvUserName, tvUserTitle, tvJoinedDate;
     TextView tvStatBalance, tvStatCards, tvStatTransactions;
     TextView tvNotifBadge;
@@ -83,6 +83,14 @@ public class ProfileActivity extends BaseActivity {
                 if (email != null && tvUserTitle   != null) tvUserTitle.setText(email);
                 if (joined != null && tvJoinedDate != null)
                     tvJoinedDate.setText("Member since " + joined);
+
+                String imageUrl = snapshot.child("profileImage").getValue(String.class);
+                if (imageUrl != null && !imageUrl.isEmpty() && ivProfilePhoto != null) {
+                    com.bumptech.glide.Glide.with(ProfileActivity.this)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.ic_profile_placeholder)
+                            .into(ivProfilePhoto);
+                }
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}
         };
@@ -192,5 +200,6 @@ public class ProfileActivity extends BaseActivity {
         tvStatCards         = findViewById(R.id.tvStatCards);
         tvStatTransactions  = findViewById(R.id.tvStatTransactions);
         tvNotifBadge        = findViewById(R.id.tvNotifBadge);
+        ivProfilePhoto      = findViewById(R.id.ivProfilePhoto);
     }
 }

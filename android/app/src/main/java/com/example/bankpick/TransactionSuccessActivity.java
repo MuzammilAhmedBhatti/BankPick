@@ -13,6 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class TransactionSuccessActivity extends BaseActivity {
 
@@ -69,8 +80,21 @@ public class TransactionSuccessActivity extends BaseActivity {
         if (amount    != null && tvAmount    != null) tvAmount.setText("$" + amount);
         if (recipient != null && tvRecipient != null) tvRecipient.setText(recipient);
         if (txnId     != null && tvTxnId     != null) tvTxnId.setText(txnId);
-        if (date      != null && tvDate      != null) tvDate.setText(date);
-        if (time      != null && tvTime      != null) tvTime.setText(time);
+
+        // Date and Time
+        if (date != null && !date.isEmpty()) {
+            tvDate.setText(date);
+        } else {
+            String currentDate = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(new Date());
+            tvDate.setText(currentDate);
+        }
+
+        if (time != null && !time.isEmpty()) {
+            tvTime.setText(time);
+        } else {
+            String currentTime = new SimpleDateFormat("h:mm a", Locale.getDefault()).format(new Date());
+            tvTime.setText(currentTime);
+        }
     }
 
     private void animateCheckCircle() {
@@ -86,10 +110,47 @@ public class TransactionSuccessActivity extends BaseActivity {
                 .start();
     }
 
+    private void saveReceiptAsImage(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+
+        String filename = "BankPick_Receipt_" + System.currentTimeMillis() + ".png";
+        OutputStream fos;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, filename);
+                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
+                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/BankPick");
+                Uri imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                fos = getContentResolver().openOutputStream(imageUri);
+            } else {
+                String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/BankPick";
+                java.io.File file = new java.io.File(imagesDir);
+                if (!file.exists()) file.mkdir();
+                java.io.File image = new java.io.File(imagesDir, filename);
+                fos = new java.io.FileOutputStream(image);
+            }
+
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            if (fos != null) fos.close();
+            Toast.makeText(this, "Receipt saved to Pictures/BankPick", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error saving receipt: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void setupButtons() {
         if (btnDownload != null) {
-            btnDownload.setOnClickListener((v) ->
-                    Toast.makeText(this, "Receipt saved to your device", Toast.LENGTH_SHORT).show());
+            btnDownload.setOnClickListener((v) -> {
+                View receiptCard = findViewById(R.id.receiptCard);
+                if (receiptCard != null) {
+                    saveReceiptAsImage(receiptCard);
+                } else {
+                    Toast.makeText(this, "Could not find receipt to download", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         if (btnShare != null) {

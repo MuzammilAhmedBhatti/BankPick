@@ -6,4 +6,5 @@
         android:endColor="@color/pink_500"
         android:angle="315"
         android:type="linear" />
+    <stroke android:width="3dp" android:color="@color/white" />
 </shape>

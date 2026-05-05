@@ -31,7 +31,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@drawable/bg_circle_white_solid"
-                    android:elevation="8dp"
                     android:src="@drawable/ic_chevron_left"
                     android:padding="12dp"
                     android:tint="@color/black"
@@ -92,7 +91,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="28dp"
-                        app:cardElevation="4dp"
+                        app:cardElevation="0dp"
+                        android:background="@drawable/bg_card_outline"
                         app:cardBackgroundColor="@color/white"
                         android:layout_marginBottom="12dp">
 
@@ -105,9 +105,9 @@
                             <RelativeLayout
                                 android:id="@+id/cardFromView"
                                 android:layout_width="match_parent"
-                                android:layout_height="90dp"
+                                android:layout_height="100dp"
                                 android:background="@drawable/bg_card_dark"
-                                android:padding="16dp"
+                                android:padding="20dp"
                                 android:layout_marginBottom="16dp">
 
                                 <TextView
@@ -211,7 +211,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="28dp"
-                        app:cardElevation="4dp"
+                        app:cardElevation="0dp"
+                        android:background="@drawable/bg_card_outline"
                         app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
@@ -223,9 +224,9 @@
                             <RelativeLayout
                                 android:id="@+id/cardToView"
                                 android:layout_width="match_parent"
-                                android:layout_height="90dp"
+                                android:layout_height="100dp"
                                 android:background="@drawable/bg_card_blue"
-                                android:padding="16dp"
+                                android:padding="20dp"
                                 android:layout_marginBottom="16dp">
 
                                 <TextView
@@ -297,7 +298,6 @@
                     android:layout_height="56dp"
                     android:layout_centerInParent="true"
                     android:background="@drawable/bg_exchange_gradient"
-                    android:elevation="12dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?attr/selectableItemBackgroundBorderless">
@@ -351,7 +351,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 app:cardCornerRadius="28dp"
-                app:cardElevation="4dp">
+                app:cardElevation="0dp"
+                android:background="@drawable/bg_card_outline">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -404,7 +405,6 @@
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:fontFamily="sans-serif-medium"
-                android:elevation="8dp"
                 android:layout_marginBottom="32dp" />
 
         </LinearLayout>

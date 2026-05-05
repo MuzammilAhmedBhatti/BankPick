@@ -80,6 +80,32 @@
                     android:src="@drawable/ic_bell" />
             </LinearLayout>
 
+            <!-- Prominent Balance Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current Balance"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvTotalBalanceProminent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$8,545.00"
+                    android:textColor="@color/text_primary"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
             <!-- Card widget -->
             <FrameLayout
                 android:layout_width="match_parent"
@@ -111,30 +137,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="end"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:alpha="0.7"
-                                android:text="Total Balance"
-                                android:textColor="@color/white"
-                                android:textSize="11sp" />
-
-                            <TextView
-                                android:id="@+id/tvBalance"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="$8,545.00"
-                                android:textColor="@color/white"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
+                        
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_upload"
+                            android:tint="@color/white"
+                            android:alpha="0.7"
+                            android:contentDescription="Wireless" />
                     </LinearLayout>
 
                     <TextView

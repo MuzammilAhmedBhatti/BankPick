@@ -112,8 +112,8 @@ public class HomeFragment extends Fragment {
                     if (tvCardHolder != null && holder != null)  tvCardHolder.setText(holder);
                     if (tvExpiry     != null && expiry != null)  tvExpiry.setText(expiry);
                     if (tvCvv        != null && cvv    != null)  tvCvv.setText(cvv);
-                    if (tvBalance    != null && balance != null)
-                        tvBalance.setText(String.format("$%.2f", balance));
+                    if (tvBalance != null && balance != null)
+                        tvBalance.setText(String.format("$%,.2f", balance));
 
                     // If card changed, reload transactions
                     if (newCardId != null && !newCardId.equals(currentCardId)) {
@@ -184,7 +184,7 @@ public class HomeFragment extends Fragment {
         tvCardHolder   = rootView.findViewById(R.id.tvCardHolder);
         tvExpiry       = rootView.findViewById(R.id.tvExpiry);
         tvCvv          = rootView.findViewById(R.id.tvCvv);
-        tvBalance      = rootView.findViewById(R.id.tvBalance);
+        tvBalance      = rootView.findViewById(R.id.tvTotalBalanceProminent);
         ivNotification   = rootView.findViewById(R.id.ivNotification);
         ivMenuHamburger  = rootView.findViewById(R.id.ivMenuHamburger);
         rvTransactions = rootView.findViewById(R.id.rvTransactions);

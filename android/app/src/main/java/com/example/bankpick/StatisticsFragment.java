@@ -37,7 +37,7 @@ import java.util.Map;
 public class StatisticsFragment extends Fragment {
 
     View rootView;
-    TextView tvBalance, tvSeeAll;
+    TextView tvBalance, tvSeeAll, tvIncome, tvExpense;
     RecyclerView rvTransactions;
     ArrayList<Transaction> transactions;
     ArrayList<Transaction> allTransactions = new ArrayList<>();
@@ -190,6 +190,8 @@ public class StatisticsFragment extends Fragment {
         tvSeeAll = rootView.findViewById(R.id.tvSeeAll);
         rvTransactions = rootView.findViewById(R.id.rvTransactions);
         lineChart = rootView.findViewById(R.id.lineChart);
+        tvIncome = rootView.findViewById(R.id.tvIncome);
+        tvExpense = rootView.findViewById(R.id.tvExpense);
         
         // Setup chart appearance
         lineChart.setNoDataText("Loading statistics...");
@@ -284,5 +286,17 @@ public class StatisticsFragment extends Fragment {
         transactions.clear();
         transactions.addAll(filtered);
         adapter.notifyDataSetChanged();
+
+        // Calculate Income/Expense for the filtered list
+        double incomeTotal = 0;
+        double expenseTotal = 0;
+        for (Transaction t : filtered) {
+            double amt = t.getAmount();
+            if (amt > 0) incomeTotal += amt;
+            else expenseTotal += Math.abs(amt);
+        }
+
+        if (tvIncome != null) tvIncome.setText(String.format(Locale.getDefault(), "$%,.2f", incomeTotal));
+        if (tvExpense != null) tvExpense.setText(String.format(Locale.getDefault(), "$%,.2f", expenseTotal));
     }
 }

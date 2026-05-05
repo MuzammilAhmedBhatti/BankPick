@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 public class AdminDashboardActivity extends BaseActivity {
 
     private TextView tvTotalUsers, tvPendingLoans, tvBlockedUsers, tvApprovedLoans;
-    private Button btnAdminUsers, btnAdminLoans, btnAdminBlocked, btnAdminSignOut;
+    private Button btnAdminUsers, btnAdminLoans, btnAdminBlocked, btnAdminSignOut, btnAdminBroadcast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class AdminDashboardActivity extends BaseActivity {
         btnAdminUsers   = findViewById(R.id.btnAdminUsers);
         btnAdminLoans   = findViewById(R.id.btnAdminLoans);
         btnAdminBlocked = findViewById(R.id.btnAdminBlocked);
+        btnAdminBroadcast = findViewById(R.id.btnAdminBroadcast);
         btnAdminSignOut = findViewById(R.id.btnAdminSignOut);
 
         loadStats();
@@ -41,6 +45,8 @@ public class AdminDashboardActivity extends BaseActivity {
 
         btnAdminBlocked.setOnClickListener(v ->
                 startActivity(new Intent(this, AdminBlockedUsersActivity.class)));
+
+        btnAdminBroadcast.setOnClickListener(v -> showBroadcastDialog());
 
         btnAdminSignOut.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
@@ -55,6 +61,38 @@ public class AdminDashboardActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         loadStats();
+    }
+
+    private void showBroadcastDialog() {
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setPadding(50, 40, 50, 10);
+
+        final EditText titleBox = new EditText(this);
+        titleBox.setHint("Notification Title");
+        layout.addView(titleBox);
+
+        final EditText messageBox = new EditText(this);
+        messageBox.setHint("Notification Message");
+        layout.addView(messageBox);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Broadcast Notification")
+                .setMessage("Send a notification to all active users.")
+                .setView(layout)
+                .setPositiveButton("Send", (dialog, which) -> {
+                    String title = titleBox.getText().toString().trim();
+                    String msg = messageBox.getText().toString().trim();
+                    if (title.isEmpty() || msg.isEmpty()) {
+                        Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    DatabaseHelper.getInstance().broadcastNotification(title, msg, (success, resultMsg) -> {
+                        Toast.makeText(this, resultMsg, Toast.LENGTH_SHORT).show();
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void loadStats() {

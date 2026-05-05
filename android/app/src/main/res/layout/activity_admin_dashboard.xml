@@ -245,6 +245,19 @@
                 android:layout_marginBottom="12dp" />
 
             <Button
+                android:id="@+id/btnAdminBroadcast"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_icon_green"
+                android:text="📢  Broadcast Notification"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:elevation="0dp"
+                android:layout_marginBottom="12dp" />
+
+            <Button
                 android:id="@+id/btnAdminSignOut"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"

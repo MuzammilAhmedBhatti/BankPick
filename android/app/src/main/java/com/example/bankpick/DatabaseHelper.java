@@ -439,6 +439,35 @@ public class DatabaseHelper {
         userNotificationsRef(uid).child(notifId).setValue(notif);
     }
 
+    public void broadcastNotification(String title, String message, SimpleCallback callback) {
+        usersRef().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int count = 0;
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    Boolean deleted = ds.child("isDeleted").getValue(Boolean.class);
+                    if (Boolean.TRUE.equals(deleted)) continue;
+                    
+                    String uid = ds.getKey();
+                    if (uid != null) {
+                        writeNotification(uid, title, message, "📢", "bg-blue-100");
+                        count++;
+                    }
+                }
+                callback.onResult(true, "Broadcast sent to " + count + " users");
+            }
+            @Override public void onCancelled(@NonNull DatabaseError error) {
+                callback.onResult(false, error.getMessage());
+            }
+        });
+    }
+
+    public void deleteCard(String cardId, SimpleCallback callback) {
+        cardRef(cardId).removeValue()
+                .addOnSuccessListener(v -> callback.onResult(true, "Card deleted successfully"))
+                .addOnFailureListener(e -> callback.onResult(false, e.getMessage()));
+    }
+
     // ─── OTP ──────────────────────────────────────────────────────────────────
     public void sendOtp(String email, OtpCallback callback) {
         String otp = String.format(Locale.getDefault(), "%04d", new Random().nextInt(10000));

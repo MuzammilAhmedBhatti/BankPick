@@ -107,10 +107,32 @@ public class AdminUserDetailActivity extends BaseActivity {
                     tv.setTextSize(14f);
                     tv.setPadding(20, 16, 20, 16);
                     tv.setBackgroundResource(R.drawable.bg_surface_rounded);
+                    tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_close, 0);
+                    tv.setCompoundDrawableTintList(android.content.res.ColorStateList.valueOf(
+                        androidx.core.content.ContextCompat.getColor(AdminUserDetailActivity.this, R.color.text_EF4444)
+                    ));
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     lp.setMargins(0, 0, 0, 8);
                     tv.setLayoutParams(lp);
+                    
+                    String finalCardId = ds.getKey();
+                    tv.setOnClickListener(v -> {
+                        new AlertDialog.Builder(AdminUserDetailActivity.this)
+                            .setTitle("Delete Card")
+                            .setMessage("Are you sure you want to delete this card (" + (num != null ? num : "—") + ")? This action cannot be undone.")
+                            .setPositiveButton("Delete", (dialog, which) -> {
+                                DatabaseHelper.getInstance().deleteCard(finalCardId, (success, msg) -> {
+                                    Toast.makeText(AdminUserDetailActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                    if (success) {
+                                        loadUserCards(); // Refresh cards
+                                    }
+                                });
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                    });
+
                     llCards.addView(tv);
                 }
                 if (llCards.getChildCount() == 0) {

@@ -77,7 +77,7 @@
                         android:layout_height="wrap_content"
                         android:text="Loan will be credited to"
                         android:textSize="12sp"
-                        android:textColor="#A0FFFFFF" />
+                        android:textColor="@color/text_A0FFFFFF" />
 
                     <TextView
                         android:id="@+id/tvLoanCardNumber"
@@ -101,13 +101,13 @@
                             android:layout_weight="1"
                             android:text="Mastercard"
                             android:textSize="13sp"
-                            android:textColor="#A0FFFFFF" />
+                            android:textColor="@color/text_A0FFFFFF" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Current Balance"
                             android:textSize="12sp"
-                            android:textColor="#A0FFFFFF" />
+                            android:textColor="@color/text_A0FFFFFF" />
                     </LinearLayout>
                     <TextView
                         android:id="@+id/tvLoanCardBalance"

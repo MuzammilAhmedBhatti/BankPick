@@ -125,7 +125,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Mastercard"
-                                android:textColor="#A0FFFFFF"
+                                android:textColor="@color/text_A0FFFFFF"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -253,7 +253,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Visa Premium"
-                                android:textColor="#A0FFFFFF"
+                                android:textColor="@color/text_A0FFFFFF"
                                 android:textSize="12sp" />
 
                             <TextView

@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
-public class AllCardsActivity extends AppCompatActivity {
+public class AllCardsActivity extends BaseActivity {
     RecyclerView rvCards;
     ImageView ivBack;
     Button btnAddCard;

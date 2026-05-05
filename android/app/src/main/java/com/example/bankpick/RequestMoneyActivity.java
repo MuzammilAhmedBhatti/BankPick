@@ -11,7 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class RequestMoneyActivity extends AppCompatActivity {
+public class RequestMoneyActivity extends BaseActivity {
     EditText etAmount, etPayerName, etEmail, etDescription, etDay, etMonth, etYear;
     Button btnRequest;
     ImageView ivBack;

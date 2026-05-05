@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
 
     ImageView ivBack, btnEdit;
     TextView tvUserName, tvUserTitle, tvJoinedDate;
@@ -55,9 +55,12 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(this, AllCardsActivity.class)));
         findViewById(R.id.btnNotifications).setOnClickListener(v ->
                 startActivity(new Intent(this, NotificationsActivity.class)));
-        findViewById(R.id.btnSettings).setOnClickListener(v ->
-                startActivity(new Intent(this, SettingsFragment.class.getName().equals("") ?
-                        NotificationsActivity.class : NotificationsActivity.class)));
+        findViewById(R.id.btnSettings).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("navigate_to", "settings");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        });
 
         currentUserId = DatabaseHelper.getInstance().getCurrentUserId();
         if (currentUserId != null) {

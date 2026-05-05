@@ -16,7 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-public class AddNewCardActivity extends AppCompatActivity {
+public class AddNewCardActivity extends BaseActivity {
     EditText etCardNumber, etHolderName, etExpiry, etCvv;
     TextView tvPreviewCardNumber, tvPreviewHolder, tvPreviewExpiry, tvPreviewCvv;
     Button btnAdd;

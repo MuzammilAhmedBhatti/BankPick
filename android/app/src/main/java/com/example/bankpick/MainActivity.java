@@ -23,7 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     FrameLayout fragmentContainer;
     DrawerLayout drawerLayout;
@@ -75,8 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Load default fragment
         if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
-            setActiveTab(0);
+            if (getIntent() != null && "settings".equals(getIntent().getStringExtra("navigate_to"))) {
+                loadFragment(new SettingsFragment());
+                setActiveTab(-1);
+            } else {
+                loadFragment(new HomeFragment());
+                setActiveTab(0);
+            }
         }
 
         // Custom Nav listeners
@@ -109,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         wireDrawerItem(R.id.drawerTopup, () -> startActivity(new Intent(this, TopupActivity.class)));
         wireDrawerItem(R.id.drawerNotifications, () -> startActivity(new Intent(this, NotificationsActivity.class)));
         wireDrawerItem(R.id.drawerProfile, () -> startActivity(new Intent(this, ProfileActivity.class)));
-        wireDrawerItem(R.id.drawerSettings, () -> loadFragment(new SettingsFragment()));
+        wireDrawerItem(R.id.drawerSettings, () -> { loadFragment(new SettingsFragment()); setActiveTab(-1); });
 
         // Logout
         View drawerLogout = drawerLayout.findViewById(R.id.drawerLogout);
@@ -266,6 +271,16 @@ public class MainActivity extends AppCompatActivity {
             closeDrawer();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (intent != null && "settings".equals(intent.getStringExtra("navigate_to"))) {
+            loadFragment(new SettingsFragment());
+            setActiveTab(-1);
         }
     }
 

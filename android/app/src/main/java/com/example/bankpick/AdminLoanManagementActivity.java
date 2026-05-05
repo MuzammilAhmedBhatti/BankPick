@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminLoanManagementActivity extends AppCompatActivity {
+public class AdminLoanManagementActivity extends BaseActivity {
 
     private RecyclerView rvLoans;
     private AdminLoanAdapter adapter;

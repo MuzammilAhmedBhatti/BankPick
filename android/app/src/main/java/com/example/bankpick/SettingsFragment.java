@@ -30,17 +30,12 @@ public class SettingsFragment extends Fragment {
         Switch switchSound = rootView.findViewById(R.id.switchSound);
 
         // Load saved states
-        switchDarkMode.setChecked(prefs.getBoolean("dark_mode", false));
+        switchDarkMode.setChecked(SettingsManager.isDarkMode(requireContext()));
         switchNotifications.setChecked(prefs.getBoolean("notifications", true));
         switchSound.setChecked(prefs.getBoolean("sound_effects", true));
 
         switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            prefs.edit().putBoolean("dark_mode", isChecked).apply();
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
+            SettingsManager.setDarkMode(requireContext(), isChecked);
         });
 
         switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {

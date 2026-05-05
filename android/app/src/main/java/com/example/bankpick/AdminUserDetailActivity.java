@@ -16,7 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-public class AdminUserDetailActivity extends AppCompatActivity {
+public class AdminUserDetailActivity extends BaseActivity {
 
     private String userId;
     private boolean isBlocked = false;

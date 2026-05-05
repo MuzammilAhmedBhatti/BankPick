@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Locale;
 
-public class LoanRequestActivity extends AppCompatActivity {
+public class LoanRequestActivity extends BaseActivity {
 
     private TextView tvLoanCardNumber, tvLoanCardType, tvLoanCardBalance;
     private EditText etLoanAmount, etLoanReason;

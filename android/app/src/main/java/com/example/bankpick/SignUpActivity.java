@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends BaseActivity {
 
     EditText etFullName, etPhone, etEmail, etPassword, etConfirmPassword;
     Button btnSignUp;

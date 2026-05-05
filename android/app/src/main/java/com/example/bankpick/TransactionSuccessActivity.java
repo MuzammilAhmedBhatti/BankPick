@@ -14,7 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class TransactionSuccessActivity extends AppCompatActivity {
+public class TransactionSuccessActivity extends BaseActivity {
 
     FrameLayout checkCircle;
     TextView tvSubtitle, tvAmount, tvRecipient, tvTxnId, tvDate, tvTime;

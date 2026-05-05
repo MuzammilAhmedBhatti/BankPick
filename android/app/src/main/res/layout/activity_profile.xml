@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F0F4FF">
+    android:background="@color/bg_F0F4FF">
 
     <!-- Blue Gradient Header -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="#2563EB">
+        android:background="@color/bg_2563EB">
 
         <!-- Subtle gradient overlay -->
         <View
@@ -87,7 +87,7 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="24dp"
                 app:cardElevation="8dp"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="@color/surface"
                 xmlns:app="http://schemas.android.com/apk/res-auto">
 
                 <LinearLayout
@@ -177,7 +177,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#F3F4F6"
+                        android:background="@color/bg_F3F4F6"
                         android:layout_marginBottom="20dp" />
 
                     <!-- Stats Grid -->
@@ -207,7 +207,7 @@
                                     android:layout_height="24dp"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_wallet"
-                                    android:tint="#2563EB"
+                                    android:tint="@color/tint_2563EB"
                                     android:contentDescription="Balance" />
                             </FrameLayout>
 
@@ -249,7 +249,7 @@
                                     android:layout_height="24dp"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_credit_card"
-                                    android:tint="#7C3AED"
+                                    android:tint="@color/tint_7C3AED"
                                     android:contentDescription="Cards" />
                             </FrameLayout>
 
@@ -291,7 +291,7 @@
                                     android:layout_height="24dp"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_trending_up"
-                                    android:tint="#059669"
+                                    android:tint="@color/tint_059669"
                                     android:contentDescription="Transactions" />
                             </FrameLayout>
 
@@ -332,7 +332,7 @@
                     android:layout_height="48dp"
                     android:layout_marginEnd="16dp">
                     <View android:layout_width="48dp" android:layout_height="48dp" android:background="@drawable/bg_stat_blue" />
-                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_person" android:tint="#2563EB" android:contentDescription="Personal Info" />
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_person" android:tint="@color/tint_2563EB" android:contentDescription="Personal Info" />
                 </FrameLayout>
 
                 <TextView
@@ -348,7 +348,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_chevron_right"
-                    android:tint="#9CA3AF"
+                    android:tint="@color/tint_9CA3AF"
                     android:contentDescription="Arrow" />
             </LinearLayout>
 
@@ -369,7 +369,7 @@
                     android:layout_height="48dp"
                     android:layout_marginEnd="16dp">
                     <View android:layout_width="48dp" android:layout_height="48dp" android:background="@drawable/bg_stat_purple" />
-                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_credit_card" android:tint="#7C3AED" android:contentDescription="Cards" />
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_credit_card" android:tint="@color/tint_7C3AED" android:contentDescription="Cards" />
                 </FrameLayout>
 
                 <TextView
@@ -385,7 +385,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_chevron_right"
-                    android:tint="#9CA3AF"
+                    android:tint="@color/tint_9CA3AF"
                     android:contentDescription="Arrow" />
             </LinearLayout>
 
@@ -406,7 +406,7 @@
                     android:layout_height="48dp"
                     android:layout_marginEnd="16dp">
                     <View android:layout_width="48dp" android:layout_height="48dp" android:background="@drawable/bg_stat_orange" />
-                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_bell" android:tint="#EA580C" android:contentDescription="Notifications" />
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_bell" android:tint="@color/tint_EA580C" android:contentDescription="Notifications" />
                 </FrameLayout>
 
                 <TextView
@@ -435,7 +435,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_chevron_right"
-                    android:tint="#9CA3AF"
+                    android:tint="@color/tint_9CA3AF"
                     android:contentDescription="Arrow" />
             </LinearLayout>
 
@@ -456,7 +456,7 @@
                     android:layout_height="48dp"
                     android:layout_marginEnd="16dp">
                     <View android:layout_width="48dp" android:layout_height="48dp" android:background="@drawable/bg_stat_gray" />
-                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_settings" android:tint="#6B7280" android:contentDescription="Settings" />
+                    <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_gravity="center" android:src="@drawable/ic_settings" android:tint="@color/tint_6B7280" android:contentDescription="Settings" />
                 </FrameLayout>
 
                 <TextView
@@ -472,7 +472,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_chevron_right"
-                    android:tint="#9CA3AF"
+                    android:tint="@color/tint_9CA3AF"
                     android:contentDescription="Arrow" />
             </LinearLayout>
 

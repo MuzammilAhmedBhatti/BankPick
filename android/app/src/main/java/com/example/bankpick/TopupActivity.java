@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class TopupActivity extends AppCompatActivity {
+public class TopupActivity extends BaseActivity {
 
     private ImageView btnBack;
     private Spinner spinnerFromCard, spinnerToCard;

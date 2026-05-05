@@ -20,7 +20,7 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_white_20"
             android:src="@drawable/ic_chevron_left"
-            android:tint="#374151"
+            android:tint="@color/tint_374151"
             android:padding="12dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="32dp"
@@ -34,7 +34,7 @@
             android:text="Create Account"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="#1D4ED8"
+            android:textColor="@color/text_1D4ED8"
             android:layout_marginBottom="8dp" />
 
         <TextView
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:text="Join BankPick today"
             android:textSize="18sp"
-            android:textColor="#6B7280"
+            android:textColor="@color/text_6B7280"
             android:layout_marginBottom="32dp" />
 
         <!-- Full Name -->
@@ -52,7 +52,7 @@
             android:text="Full Name"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#374151"
+            android:textColor="@color/text_374151"
             android:layout_marginBottom="8dp" />
 
         <FrameLayout
@@ -66,8 +66,8 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
                 android:hint="Enter your full name"
-                android:textColorHint="#9CA3AF"
-                android:textColor="#111827"
+                android:textColorHint="@color/text_9CA3AF"
+                android:textColor="@color/text_111827"
                 android:textSize="16sp"
                 android:paddingStart="64dp"
                 android:paddingEnd="16dp"
@@ -84,7 +84,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_person"
-                    android:tint="#2563EB" />
+                    android:tint="@color/tint_2563EB" />
             </FrameLayout>
         </FrameLayout>
 
@@ -95,7 +95,7 @@
             android:text="Phone Number"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#374151"
+            android:textColor="@color/text_374151"
             android:layout_marginBottom="8dp" />
 
         <FrameLayout
@@ -109,8 +109,8 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
                 android:hint="Enter your phone number"
-                android:textColorHint="#9CA3AF"
-                android:textColor="#111827"
+                android:textColorHint="@color/text_9CA3AF"
+                android:textColor="@color/text_111827"
                 android:textSize="16sp"
                 android:paddingStart="64dp"
                 android:paddingEnd="16dp"
@@ -127,7 +127,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_phone"
-                    android:tint="#2563EB" />
+                    android:tint="@color/tint_2563EB" />
             </FrameLayout>
         </FrameLayout>
 
@@ -138,7 +138,7 @@
             android:text="Email Address"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#374151"
+            android:textColor="@color/text_374151"
             android:layout_marginBottom="8dp" />
 
         <FrameLayout
@@ -152,8 +152,8 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
                 android:hint="Enter your email"
-                android:textColorHint="#9CA3AF"
-                android:textColor="#111827"
+                android:textColorHint="@color/text_9CA3AF"
+                android:textColor="@color/text_111827"
                 android:textSize="16sp"
                 android:paddingStart="64dp"
                 android:paddingEnd="16dp"
@@ -170,7 +170,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_mail"
-                    android:tint="#2563EB" />
+                    android:tint="@color/tint_2563EB" />
             </FrameLayout>
         </FrameLayout>
 
@@ -181,7 +181,7 @@
             android:text="Password"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#374151"
+            android:textColor="@color/text_374151"
             android:layout_marginBottom="8dp" />
 
         <FrameLayout
@@ -195,8 +195,8 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
                 android:hint="Create a password"
-                android:textColorHint="#9CA3AF"
-                android:textColor="#111827"
+                android:textColorHint="@color/text_9CA3AF"
+                android:textColor="@color/text_111827"
                 android:textSize="16sp"
                 android:paddingStart="64dp"
                 android:paddingEnd="56dp"
@@ -213,7 +213,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_lock"
-                    android:tint="#2563EB" />
+                    android:tint="@color/tint_2563EB" />
             </FrameLayout>
 
             <ImageView
@@ -223,7 +223,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_eye"
-                android:tint="#6B7280"
+                android:tint="@color/tint_6B7280"
                 android:padding="8dp" />
         </FrameLayout>
 
@@ -234,7 +234,7 @@
             android:text="Confirm Password"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#374151"
+            android:textColor="@color/text_374151"
             android:layout_marginBottom="8dp" />
 
         <FrameLayout
@@ -248,8 +248,8 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
                 android:hint="Confirm your password"
-                android:textColorHint="#9CA3AF"
-                android:textColor="#111827"
+                android:textColorHint="@color/text_9CA3AF"
+                android:textColor="@color/text_111827"
                 android:textSize="16sp"
                 android:paddingStart="64dp"
                 android:paddingEnd="56dp"
@@ -266,7 +266,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_lock"
-                    android:tint="#2563EB" />
+                    android:tint="@color/tint_2563EB" />
             </FrameLayout>
         </FrameLayout>
 
@@ -275,7 +275,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#EFF6FF"
+            android:background="@color/bg_EFF6FF"
             android:padding="16dp"
             android:layout_marginBottom="24dp"
             android:layout_marginTop="8dp">
@@ -289,7 +289,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="i"
-                    android:textColor="#2563EB"
+                    android:textColor="@color/text_2563EB"
                     android:textStyle="bold"
                     android:textSize="12sp"
                     android:layout_gravity="center" />
@@ -299,7 +299,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="By creating an account, you agree to our Terms of Service and Privacy Policy"
-                android:textColor="#4B5563"
+                android:textColor="@color/text_4B5563"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -318,7 +318,7 @@
             android:layout_height="56dp"
             android:background="@drawable/bg_btn_gradient_blue"
             android:text="Create Account"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAllCaps="false"
@@ -330,7 +330,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Already have an account?"
-            android:textColor="#6B7280"
+            android:textColor="@color/text_6B7280"
             android:textSize="14sp"
             android:layout_marginBottom="24dp" />
 
@@ -341,7 +341,7 @@
             android:layout_height="56dp"
             android:background="@drawable/bg_btn_gradient_blue"
             android:text="Sign In"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAllCaps="false" />

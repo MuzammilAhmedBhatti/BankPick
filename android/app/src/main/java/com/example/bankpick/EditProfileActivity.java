@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends BaseActivity {
     private EditText etFullName, etEmail, etPhone, etDay, etMonth, etYear;
     private android.widget.TextView tvProfileName;
     private ImageView ivBack;

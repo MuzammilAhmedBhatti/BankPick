@@ -16,7 +16,7 @@ import com.example.bankpick.adapters.TransactionAdapter;
 import com.example.bankpick.models.Transaction;
 import java.util.ArrayList;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends BaseActivity {
     EditText etSearch;
     ImageView ivBack, ivClearSearch;
     RecyclerView rvTransactions;

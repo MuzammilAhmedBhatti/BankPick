@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminUsersListActivity extends AppCompatActivity {
+public class AdminUsersListActivity extends BaseActivity {
 
     private RecyclerView rvUsers;
     private AdminUserAdapter adapter;

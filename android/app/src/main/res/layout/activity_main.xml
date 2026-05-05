@@ -56,7 +56,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_home"
-                            android:tint="#FFFFFF" />
+                            android:tint="@color/tint_FFFFFF" />
                         <TextView
                             android:id="@+id/navTextHome"
                             android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
                             android:layout_marginTop="2dp"
                             android:text="Home"
                             android:textSize="10sp"
-                            android:textColor="#FFFFFF"
+                            android:textColor="@color/text_FFFFFF"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -84,7 +84,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_credit_card"
-                            android:tint="#9CA3AF" />
+                            android:tint="@color/tint_9CA3AF" />
                         <TextView
                             android:id="@+id/navTextCards"
                             android:layout_width="wrap_content"
@@ -92,7 +92,7 @@
                             android:layout_marginTop="2dp"
                             android:text="Cards"
                             android:textSize="10sp"
-                            android:textColor="#6B7280"
+                            android:textColor="@color/text_6B7280"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -112,7 +112,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_pie_chart"
-                            android:tint="#9CA3AF" />
+                            android:tint="@color/tint_9CA3AF" />
                         <TextView
                             android:id="@+id/navTextStats"
                             android:layout_width="wrap_content"
@@ -120,7 +120,7 @@
                             android:layout_marginTop="2dp"
                             android:text="Stats"
                             android:textSize="10sp"
-                            android:textColor="#6B7280"
+                            android:textColor="@color/text_6B7280"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -140,7 +140,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_person"
-                            android:tint="#9CA3AF" />
+                            android:tint="@color/tint_9CA3AF" />
                         <TextView
                             android:id="@+id/navTextProfile"
                             android:layout_width="wrap_content"
@@ -148,7 +148,7 @@
                             android:layout_marginTop="2dp"
                             android:text="Profile"
                             android:textSize="10sp"
-                            android:textColor="#6B7280"
+                            android:textColor="@color/text_6B7280"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
@@ -162,7 +162,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="#CC000000"
+            android:background="@color/bg_CC000000"
             android:visibility="gone"
             android:padding="32dp">
 
@@ -187,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:text="Your account has been suspended. Please contact support to resolve this issue."
                 android:textSize="15sp"
-                android:textColor="#CCFFFFFF"
+                android:textColor="@color/text_CCFFFFFF"
                 android:gravity="center"
                 android:layout_marginBottom="32dp" />
 

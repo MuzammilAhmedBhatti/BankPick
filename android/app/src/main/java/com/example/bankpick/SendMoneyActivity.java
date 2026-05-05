@@ -28,7 +28,7 @@ import androidx.annotation.NonNull;
 
 import java.util.Map;
 
-public class SendMoneyActivity extends AppCompatActivity {
+public class SendMoneyActivity extends BaseActivity {
 
     EditText etAmount, etRecipientEmail;
     Button btnSend;

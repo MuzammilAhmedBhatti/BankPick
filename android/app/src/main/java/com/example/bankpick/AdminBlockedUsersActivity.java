@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminBlockedUsersActivity extends AppCompatActivity {
+public class AdminBlockedUsersActivity extends BaseActivity {
 
     private RecyclerView rvBlockedUsers;
     private BlockedAdapter adapter;

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:background="#F9FAFB">
+    android:background="@color/bg_F9FAFB">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                     android:layout_marginTop="-40dp"
                     android:layout_marginEnd="-40dp"
                     android:background="@drawable/bg_circle"
-                    android:backgroundTint="#1AFFFFFF" />
+                    android:backgroundTint="@color/bg_1AFFFFFF" />
 
                 <View
                     android:layout_width="120dp"
@@ -48,7 +48,7 @@
                     android:layout_marginBottom="-30dp"
                     android:layout_marginStart="-30dp"
                     android:background="@drawable/bg_circle"
-                    android:backgroundTint="#0CFFFFFF" />
+                    android:backgroundTint="@color/bg_0CFFFFFF" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:background="@drawable/bg_tint_base"
-                        android:backgroundTint="#1AFFFFFF"
+                        android:backgroundTint="@color/bg_1AFFFFFF"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true">
                         <ImageView
@@ -72,7 +72,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_chevron_left"
-                            android:tint="#FFFFFF" />
+                            android:tint="@color/tint_FFFFFF" />
                     </FrameLayout>
 
                     <TextView
@@ -80,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:text="Settings"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/text_FFFFFF"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -88,7 +88,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:background="@drawable/bg_tint_base"
-                        android:backgroundTint="#3B82F6"
+                        android:backgroundTint="@color/bg_3B82F6"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:elevation="8dp">
@@ -97,7 +97,7 @@
                             android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_settings"
-                            android:tint="#FFFFFF" />
+                            android:tint="@color/tint_FFFFFF" />
                     </FrameLayout>
 
                 </RelativeLayout>
@@ -141,7 +141,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/ic_security"
-                                android:tint="#FFFFFF"
+                                android:tint="@color/tint_FFFFFF"
                                 android:layout_gravity="center" />
                         </FrameLayout>
 
@@ -151,7 +151,7 @@
                             android:text="Preferences"
                             android:textSize="18sp"
                             android:textStyle="bold"
-                            android:textColor="#1F2937" />
+                            android:textColor="@color/text_1F2937" />
                     </LinearLayout>
 
                     <!-- Dark Mode -->
@@ -168,13 +168,13 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_tint_base"
-                            android:backgroundTint="#E0E7FF"
+                            android:backgroundTint="@color/bg_E0E7FF"
                             android:layout_marginEnd="16dp">
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_moon"
-                                android:tint="#4F46E5"
+                                android:tint="@color/tint_4F46E5"
                                 android:layout_gravity="center" />
                         </FrameLayout>
 
@@ -187,14 +187,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Dark Mode"
-                                android:textColor="#111827"
+                                android:textColor="@color/text_111827"
                                 android:textStyle="bold"
                                 android:textSize="16sp" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Enable dark theme"
-                                android:textColor="#6B7280"
+                                android:textColor="@color/text_6B7280"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -218,13 +218,13 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_tint_base"
-                            android:backgroundTint="#FEE2E2"
+                            android:backgroundTint="@color/bg_FEE2E2"
                             android:layout_marginEnd="16dp">
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_bell"
-                                android:tint="#DC2626"
+                                android:tint="@color/tint_DC2626"
                                 android:layout_gravity="center" />
                         </FrameLayout>
 
@@ -237,14 +237,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Notifications"
-                                android:textColor="#111827"
+                                android:textColor="@color/text_111827"
                                 android:textStyle="bold"
                                 android:textSize="16sp" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Receive push notifications"
-                                android:textColor="#6B7280"
+                                android:textColor="@color/text_6B7280"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -267,13 +267,13 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_tint_base"
-                            android:backgroundTint="#FCE7F3"
+                            android:backgroundTint="@color/bg_FCE7F3"
                             android:layout_marginEnd="16dp">
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_volume"
-                                android:tint="#DB2777"
+                                android:tint="@color/tint_DB2777"
                                 android:layout_gravity="center" />
                         </FrameLayout>
 
@@ -286,14 +286,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Sound Effects"
-                                android:textColor="#111827"
+                                android:textColor="@color/text_111827"
                                 android:textStyle="bold"
                                 android:textSize="16sp" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Enable app sounds"
-                                android:textColor="#6B7280"
+                                android:textColor="@color/text_6B7280"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -320,7 +320,7 @@
                         android:text="Account"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_1F2937"
                         android:layout_marginBottom="16dp" />
 
                     <!-- My Profile -->
@@ -338,13 +338,13 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_tint_base"
-                            android:backgroundTint="#DBEAFE"
+                            android:backgroundTint="@color/bg_DBEAFE"
                             android:layout_marginEnd="16dp">
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_person"
-                                android:tint="#2563EB"
+                                android:tint="@color/tint_2563EB"
                                 android:layout_gravity="center" />
                         </FrameLayout>
 
@@ -353,7 +353,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="My Profile"
-                            android:textColor="#111827"
+                            android:textColor="@color/text_111827"
                             android:textStyle="bold"
                             android:textSize="16sp" />
 
@@ -361,7 +361,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_chevron_right"
-                            android:tint="#9CA3AF" />
+                            android:tint="@color/tint_9CA3AF" />
                     </LinearLayout>
 
                     <!-- Contact Us -->
@@ -378,13 +378,13 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_tint_base"
-                            android:backgroundTint="#DCFCE7"
+                            android:backgroundTint="@color/bg_DCFCE7"
                             android:layout_marginEnd="16dp">
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_phone"
-                                android:tint="#16A34A"
+                                android:tint="@color/tint_16A34A"
                                 android:layout_gravity="center" />
                         </FrameLayout>
 
@@ -393,7 +393,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Contact Us"
-                            android:textColor="#111827"
+                            android:textColor="@color/text_111827"
                             android:textStyle="bold"
                             android:textSize="16sp" />
 
@@ -401,7 +401,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_chevron_right"
-                            android:tint="#9CA3AF" />
+                            android:tint="@color/tint_9CA3AF" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -421,7 +421,7 @@
                         android:text="Security &amp; Privacy"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="#1F2937"
+                        android:textColor="@color/text_1F2937"
                         android:layout_marginBottom="16dp" />
 
                     <!-- Change Password -->
@@ -439,13 +439,13 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_tint_base"
-                            android:backgroundTint="#F3E8FF"
+                            android:backgroundTint="@color/bg_F3E8FF"
                             android:layout_marginEnd="16dp">
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_lock"
-                                android:tint="#9333EA"
+                                android:tint="@color/tint_9333EA"
                                 android:layout_gravity="center" />
                         </FrameLayout>
 
@@ -454,7 +454,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Change Password"
-                            android:textColor="#111827"
+                            android:textColor="@color/text_111827"
                             android:textStyle="bold"
                             android:textSize="16sp" />
 
@@ -462,7 +462,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_chevron_right"
-                            android:tint="#9CA3AF" />
+                            android:tint="@color/tint_9CA3AF" />
                     </LinearLayout>
 
                     <!-- Terms & Conditions -->
@@ -480,13 +480,13 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_tint_base"
-                            android:backgroundTint="#FFEDD5"
+                            android:backgroundTint="@color/bg_FFEDD5"
                             android:layout_marginEnd="16dp">
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_document"
-                                android:tint="#EA580C"
+                                android:tint="@color/tint_EA580C"
                                 android:layout_gravity="center" />
                         </FrameLayout>
 
@@ -495,7 +495,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Terms &amp; Conditions"
-                            android:textColor="#111827"
+                            android:textColor="@color/text_111827"
                             android:textStyle="bold"
                             android:textSize="16sp" />
 
@@ -503,7 +503,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_chevron_right"
-                            android:tint="#9CA3AF" />
+                            android:tint="@color/tint_9CA3AF" />
                     </LinearLayout>
 
                     <!-- Logout -->
@@ -520,13 +520,13 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/bg_tint_base"
-                            android:backgroundTint="#FEE2E2"
+                            android:backgroundTint="@color/bg_FEE2E2"
                             android:layout_marginEnd="16dp">
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_logout"
-                                android:tint="#DC2626"
+                                android:tint="@color/tint_DC2626"
                                 android:layout_gravity="center" />
                         </FrameLayout>
 
@@ -535,7 +535,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Log Out"
-                            android:textColor="#DC2626"
+                            android:textColor="@color/text_DC2626"
                             android:textStyle="bold"
                             android:textSize="16sp" />
 
@@ -543,7 +543,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_chevron_right"
-                            android:tint="#9CA3AF" />
+                            android:tint="@color/tint_9CA3AF" />
                     </LinearLayout>
                 </LinearLayout>
 

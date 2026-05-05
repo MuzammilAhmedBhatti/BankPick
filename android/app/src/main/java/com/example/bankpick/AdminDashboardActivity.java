@@ -11,7 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-public class AdminDashboardActivity extends AppCompatActivity {
+public class AdminDashboardActivity extends BaseActivity {
 
     private TextView tvTotalUsers, tvPendingLoans, tvBlockedUsers, tvApprovedLoans;
     private Button btnAdminUsers, btnAdminLoans, btnAdminBlocked, btnAdminSignOut;

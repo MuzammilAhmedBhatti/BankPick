@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F8FAFC">
+    android:background="@color/bg_F8FAFC">
 
     <!-- Header -->
     <RelativeLayout
@@ -174,7 +174,7 @@
                 android:layout_height="56dp"
                 android:text="🗑️  Delete User"
                 android:textAllCaps="false"
-                android:textColor="#EF4444"
+                android:textColor="@color/text_EF4444"
                 android:textSize="15sp"
                 android:background="@drawable/bg_btn_white_border"
                 android:elevation="0dp"

@@ -58,6 +58,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             default: bgShape.setColor(Color.WHITE); break;
         }
         holder.tvIcon.setBackground(bgShape);
+
+        holder.itemView.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(context, com.example.bankpick.NotificationDetailActivity.class);
+            intent.putExtra("id", n.getId());
+            intent.putExtra("title", n.getTitle());
+            intent.putExtra("message", n.getMessage());
+            intent.putExtra("time", n.getTime());
+            intent.putExtra("icon", n.getIcon());
+            intent.putExtra("color", n.getColor());
+            context.startActivity(intent);
+        });
     }
 
     @Override public int getItemCount() { return notifications.size(); }

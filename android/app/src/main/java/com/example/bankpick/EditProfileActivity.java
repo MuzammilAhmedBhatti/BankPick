@@ -22,9 +22,9 @@ import java.util.Map;
 
 public class EditProfileActivity extends BaseActivity {
     private EditText etFullName, etEmail, etPhone, etDay, etMonth, etYear;
-    private android.widget.TextView tvProfileName;
+    private TextView tvProfileName, tvProfileTitle, tvMemberSince;
     private ImageView ivBack, ivProfilePhoto, ivEditPhoto;
-    private Button btnSave;
+    private Button btnSave, btnCancel;
     private android.net.Uri imageUri;
     private androidx.activity.result.ActivityResultLauncher<android.content.Intent> imagePickerLauncher;
 
@@ -58,6 +58,10 @@ public class EditProfileActivity extends BaseActivity {
 
         if (btnSave != null) {
             btnSave.setOnClickListener((v) -> saveProfile());
+        }
+
+        if (btnCancel != null) {
+            btnCancel.setOnClickListener((v) -> finish());
         }
 
         setupImagePicker();
@@ -131,6 +135,11 @@ public class EditProfileActivity extends BaseActivity {
                             .placeholder(R.drawable.ic_profile_placeholder)
                             .into(ivProfilePhoto);
                 }
+
+                String joined = snapshot.child("joinedDate").getValue(String.class);
+                if (joined != null && tvMemberSince != null) {
+                    tvMemberSince.setText("Member since " + joined);
+                }
             }
 
             @Override
@@ -178,7 +187,10 @@ public class EditProfileActivity extends BaseActivity {
         etMonth = findViewById(R.id.etMonth);
         etYear = findViewById(R.id.etYear);
         tvProfileName = findViewById(R.id.tvProfileName);
+        tvProfileTitle = findViewById(R.id.tvProfileTitle);
+        tvMemberSince = findViewById(R.id.tvMemberSince);
         btnSave = findViewById(R.id.btnSave);
+        btnCancel = findViewById(R.id.btnCancel);
         ivProfilePhoto = findViewById(R.id.ivProfilePhoto);
         ivEditPhoto = findViewById(R.id.ivEditPhoto);
     }

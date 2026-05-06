@@ -138,13 +138,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
                         
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_upload"
-                            android:tint="@color/white"
-                            android:alpha="0.7"
-                            android:contentDescription="Wireless" />
                     </LinearLayout>
 
                     <TextView

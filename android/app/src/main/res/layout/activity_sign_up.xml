@@ -324,16 +324,6 @@
             android:textAllCaps="false"
             android:layout_marginBottom="24dp" />
 
-        <!-- Divider text -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Already have an account?"
-            android:textColor="@color/text_6B7280"
-            android:textSize="14sp"
-            android:layout_marginBottom="24dp" />
-
         <!-- Sign In Button -->
         <Button
             android:id="@+id/tvSignIn"
@@ -344,7 +334,17 @@
             android:textColor="@color/text_FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Already have an account? text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Already have an account?"
+            android:textColor="@color/text_6B7280"
+            android:textSize="14sp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

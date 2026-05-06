@@ -177,6 +177,14 @@ public class TopupActivity extends BaseActivity {
                     }
                 }
 
+                if (allCards.size() > 1) {
+                    findViewById(R.id.sectionTo).setVisibility(View.VISIBLE);
+                    findViewById(R.id.btnInterchange).setVisibility(View.VISIBLE);
+                } else {
+                    findViewById(R.id.sectionTo).setVisibility(View.GONE);
+                    findViewById(R.id.btnInterchange).setVisibility(View.GONE);
+                }
+
                 ArrayAdapter<Card> adapter = new ArrayAdapter<Card>(TopupActivity.this,
                         R.layout.item_spinner_card, allCards) {
                     @NonNull @Override
@@ -255,7 +263,12 @@ public class TopupActivity extends BaseActivity {
         spinnerToCard.setAdapter(adapter);
         
         if (!toCards.isEmpty()) {
+            findViewById(R.id.sectionTo).setVisibility(View.VISIBLE);
+            findViewById(R.id.btnInterchange).setVisibility(View.VISIBLE);
             updateToCardUI(0);
+        } else {
+            findViewById(R.id.sectionTo).setVisibility(View.GONE);
+            findViewById(R.id.btnInterchange).setVisibility(View.GONE);
         }
     }
 

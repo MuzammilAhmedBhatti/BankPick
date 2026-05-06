@@ -3,7 +3,6 @@ package com.example.bankpick.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -60,9 +59,11 @@ public class AdminLoanAdapter extends RecyclerView.Adapter<AdminLoanAdapter.View
             h.tvStatus.setVisibility(View.VISIBLE);
             h.tvStatus.setText(status != null ? status.toUpperCase() : "—");
             if (DatabaseHelper.LOAN_APPROVED.equals(status)) {
-                h.tvStatus.setBackgroundResource(R.drawable.bg_circle_green);
+                h.tvStatus.setBackgroundResource(R.drawable.bg_badge_green_pill);
+                h.tvStatus.setTextColor(0xFF065f46);
             } else {
-                h.tvStatus.setBackgroundResource(R.drawable.bg_badge_red);
+                h.tvStatus.setBackgroundResource(R.drawable.bg_badge_red_pill);
+                h.tvStatus.setTextColor(0xFF991b1b);
             }
         }
     }
@@ -71,8 +72,7 @@ public class AdminLoanAdapter extends RecyclerView.Adapter<AdminLoanAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvUserName, tvCardNumber, tvAmount, tvReason, tvTimestamp, tvStatus;
-        LinearLayout llActions;
-        Button btnApprove, btnReject;
+        LinearLayout llActions, btnApprove, btnReject;
 
         ViewHolder(View v) {
             super(v);

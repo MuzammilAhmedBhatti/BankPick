@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Green Approve button — rounded 12dp, solid #10b981 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#10b981" />
+    <corners android:radius="12dp" />
+</shape>

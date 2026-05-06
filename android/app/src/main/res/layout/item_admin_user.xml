@@ -1,63 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<!--
+    Row item in the Admin → All Users list.
+    No card elevation/margin – rows are stacked inside a single rounded
+    white card in the activity layout, separated by 1 dp dividers.
+    The RecyclerView adapter is responsible for adding dividers or the
+    card wrapper; this item represents one full-width row.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
-    app:cardBackgroundColor="@color/white">
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp"
+    android:background="@drawable/bg_user_list_item"
+    android:clickable="true"
+    android:focusable="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+    <!-- ── Avatar circle with gradient + initials ── -->
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp">
 
-        <!-- Avatar Circle -->
+        <!-- Gradient oval background -->
         <View
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/bg_circle_blue"
-            android:layout_marginEnd="14dp" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_avatar_blue_gradient" />
 
-        <!-- Name + Email -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="John Doe"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary" />
-
-            <TextView
-                android:id="@+id/tvUserEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="john@example.com"
-                android:textSize="13sp"
-                android:textColor="@color/text_secondary" />
-        </LinearLayout>
-
-        <!-- Status Badge -->
+        <!-- Initials text centred over the oval -->
         <TextView
-            android:id="@+id/tvUserStatus"
+            android:id="@+id/tvUserInitials"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="MA"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#1e3a8a" />
+    </FrameLayout>
+
+    <!-- ── Name & Email ── -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Active"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_dot_green"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="4dp" />
+            android:text="John Doe"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A2E"
+            android:layout_marginBottom="2dp" />
 
+        <TextView
+            android:id="@+id/tvUserEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="john@example.com"
+            android:textSize="12sp"
+            android:textColor="#6B7280" />
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+
+    <!-- ── Status pill badge ── -->
+    <TextView
+        android:id="@+id/tvUserStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Active"
+        android:textSize="11sp"
+        android:textColor="#065f46"
+        android:background="@drawable/bg_badge_green_pill"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp" />
+
+</LinearLayout>

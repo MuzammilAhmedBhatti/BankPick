@@ -1,132 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
-    app:cardBackgroundColor="@color/white">
+    android:orientation="vertical"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/bg_admin_metric_card"
+    android:padding="20dp">
 
+    <!-- ── Top row: Name + Amount ── -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="18dp">
+        android:orientation="horizontal"
+        android:gravity="top"
+        android:layout_marginBottom="12dp">
 
-        <!-- Top Row: User + Amount -->
+        <!-- Name + Card number -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvLoanUserName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="John Doe"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
-
-                <TextView
-                    android:id="@+id/tvLoanCardNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Card: •••• 7852"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary" />
-            </LinearLayout>
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvLoanAmount"
+                android:id="@+id/tvLoanUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$500.00"
-                android:textSize="20sp"
+                android:text="John Doe"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/blue_600" />
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvLoanCardNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Card: •••• 7852"
+                android:textSize="12sp"
+                android:textColor="#6B7280" />
         </LinearLayout>
 
-        <!-- Reason -->
+        <!-- Amount -->
         <TextView
-            android:id="@+id/tvLoanReason"
+            android:id="@+id/tvLoanAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reason: Medical expenses"
-            android:textSize="13sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginBottom="4dp" />
+            android:text="$500.00"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#1e3a8a" />
+    </LinearLayout>
 
-        <!-- Timestamp -->
-        <TextView
-            android:id="@+id/tvLoanTimestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="May 7, 2026 12:00 AM"
-            android:textSize="12sp"
-            android:textColor="@color/text_hint"
-            android:layout_marginBottom="14dp" />
+    <!-- ── Reason ── -->
+    <TextView
+        android:id="@+id/tvLoanReason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reason: —"
+        android:textSize="13sp"
+        android:textColor="#6B7280"
+        android:layout_marginBottom="6dp" />
 
-        <!-- Action Buttons (shown only for pending) -->
+    <!-- ── Timestamp ── -->
+    <TextView
+        android:id="@+id/tvLoanTimestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="May 7, 2026 8:25 am"
+        android:textSize="11sp"
+        android:textColor="#9CA3AF"
+        android:layout_marginBottom="16dp" />
+
+    <!-- ── Action buttons (Pending only) ── -->
+    <LinearLayout
+        android:id="@+id/llLoanActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <!-- Approve -->
         <LinearLayout
-            android:id="@+id/llLoanActions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/btnApproveLoan"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:gravity="center"
+            android:background="@drawable/bg_btn_approve"
+            android:clickable="true"
+            android:focusable="true">
 
-            <Button
-                android:id="@+id/btnApproveLoan"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:background="@drawable/bg_icon_green"
-                android:text="✓ Approve"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:elevation="0dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp" />
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_check_approve"
+                android:importantForAccessibility="no"
+                android:layout_marginEnd="6dp" />
 
-            <Button
-                android:id="@+id/btnRejectLoan"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                android:background="@drawable/bg_badge_red"
-                android:text="✗ Reject"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Approve"
                 android:textSize="14sp"
-                android:elevation="0dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp" />
+                android:textColor="#FFFFFF" />
         </LinearLayout>
 
-        <!-- Status Badge (shown for non-pending) -->
-        <TextView
-            android:id="@+id/tvLoanStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="APPROVED"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_circle_green"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="4dp"
-            android:visibility="gone" />
+        <!-- Reject -->
+        <LinearLayout
+            android:id="@+id/btnRejectLoan"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="0dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/bg_btn_reject"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_x_reject"
+                android:importantForAccessibility="no"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reject"
+                android:textSize="14sp"
+                android:textColor="#ef4444" />
+        </LinearLayout>
 
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+
+    <!-- ── Status pill (Approved / Rejected, non-pending) ── -->
+    <TextView
+        android:id="@+id/tvLoanStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="APPROVED"
+        android:textSize="12sp"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="gone" />
+
+</LinearLayout>

@@ -39,19 +39,32 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DataSnapshot ds = users.get(position);
 
-        String name  = ds.child("fullName").getValue(String.class);
-        String email = ds.child("email").getValue(String.class);
+        String name    = ds.child("fullName").getValue(String.class);
+        String email   = ds.child("email").getValue(String.class);
         Boolean blocked = ds.child("isBlocked").getValue(Boolean.class);
 
-        holder.tvName.setText(name != null ? name : "Unknown");
+        String displayName = name != null ? name : "Unknown";
+        holder.tvName.setText(displayName);
         holder.tvEmail.setText(email != null ? email : "—");
 
+        // Compute initials (up to 2 chars)
+        String[] parts = displayName.trim().split("\\s+");
+        StringBuilder initials = new StringBuilder();
+        for (String p : parts) {
+            if (!p.isEmpty()) initials.append(Character.toUpperCase(p.charAt(0)));
+            if (initials.length() == 2) break;
+        }
+        holder.tvInitials.setText(initials.toString());
+
+        // Status badge
         if (Boolean.TRUE.equals(blocked)) {
             holder.tvStatus.setText("Blocked");
-            holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_red);
+            holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_red_pill);
+            holder.tvStatus.setTextColor(0xFF991b1b);
         } else {
             holder.tvStatus.setText("Active");
-            holder.tvStatus.setBackgroundResource(R.drawable.bg_circle_green);
+            holder.tvStatus.setBackgroundResource(R.drawable.bg_badge_green_pill);
+            holder.tvStatus.setTextColor(0xFF065f46);
         }
 
         holder.itemView.setOnClickListener(v -> listener.onUserClick(ds));
@@ -60,12 +73,13 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.View
     @Override public int getItemCount() { return users.size(); }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvEmail, tvStatus;
+        TextView tvName, tvEmail, tvStatus, tvInitials;
         ViewHolder(View v) {
             super(v);
-            tvName   = v.findViewById(R.id.tvUserName);
-            tvEmail  = v.findViewById(R.id.tvUserEmail);
-            tvStatus = v.findViewById(R.id.tvUserStatus);
+            tvName     = v.findViewById(R.id.tvUserName);
+            tvEmail    = v.findViewById(R.id.tvUserEmail);
+            tvStatus   = v.findViewById(R.id.tvUserStatus);
+            tvInitials = v.findViewById(R.id.tvUserInitials);
         }
     }
 }

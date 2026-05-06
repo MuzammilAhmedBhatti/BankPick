@@ -67,19 +67,25 @@ public class AdminLoanManagementActivity extends BaseActivity {
     }
 
     private void updateFilterButtons() {
-        int activeRes  = R.drawable.bg_btn_gradient_blue;
-        int defaultRes = R.drawable.bg_quick_amount;
-        int activeColor  = getResources().getColor(R.color.white);
-        int defaultColor = getResources().getColor(R.color.text_primary);
+        // Active chip: solid white pill, blue text
+        // Inactive chip: semi-transparent white pill, white text
+        int activeRes   = R.drawable.bg_filter_chip_active;
+        int inactiveRes = R.drawable.bg_filter_chip_inactive;
+        int activeColor   = 0xFF1e3a8a; // dark blue
+        int inactiveColor = 0xFFFFFFFF; // white
 
-        btnFilterPending.setBackgroundResource(DatabaseHelper.LOAN_PENDING.equals(currentFilter) ? activeRes : defaultRes);
-        btnFilterPending.setTextColor(DatabaseHelper.LOAN_PENDING.equals(currentFilter) ? activeColor : defaultColor);
+        boolean isPending  = DatabaseHelper.LOAN_PENDING.equals(currentFilter);
+        boolean isApproved = DatabaseHelper.LOAN_APPROVED.equals(currentFilter);
+        boolean isRejected = DatabaseHelper.LOAN_REJECTED.equals(currentFilter);
 
-        btnFilterApproved.setBackgroundResource(DatabaseHelper.LOAN_APPROVED.equals(currentFilter) ? activeRes : defaultRes);
-        btnFilterApproved.setTextColor(DatabaseHelper.LOAN_APPROVED.equals(currentFilter) ? activeColor : defaultColor);
+        btnFilterPending.setBackgroundResource(isPending  ? activeRes : inactiveRes);
+        btnFilterPending.setTextColor(isPending  ? activeColor : inactiveColor);
 
-        btnFilterRejected.setBackgroundResource(DatabaseHelper.LOAN_REJECTED.equals(currentFilter) ? activeRes : defaultRes);
-        btnFilterRejected.setTextColor(DatabaseHelper.LOAN_REJECTED.equals(currentFilter) ? activeColor : defaultColor);
+        btnFilterApproved.setBackgroundResource(isApproved ? activeRes : inactiveRes);
+        btnFilterApproved.setTextColor(isApproved ? activeColor : inactiveColor);
+
+        btnFilterRejected.setBackgroundResource(isRejected ? activeRes : inactiveRes);
+        btnFilterRejected.setTextColor(isRejected ? activeColor : inactiveColor);
     }
 
     private void applyFilter() {

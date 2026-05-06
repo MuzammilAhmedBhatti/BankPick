@@ -1,50 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_F8FAFC">
+    android:background="#F9FAFB">
 
-    <!-- Header -->
-    <RelativeLayout
+    <!-- ═══════════════════════════════════════════
+         HEADER  –  blue gradient + filter chips
+         ═══════════════════════════════════════════ -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_btn_gradient_blue"
-        android:paddingHorizontal="20dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_admin_header"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:paddingTop="48dp"
-        android:paddingBottom="20dp">
+        android:paddingBottom="24dp">
 
-        <ImageView
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_circle_white_solid"
-            android:src="@drawable/ic_chevron_left"
-            android:padding="8dp"
-            android:tint="@color/black"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- ← Loan Requests title row -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Loan Requests"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
 
-    <!-- Filter Chips -->
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:background="@color/white"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp">
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_chevron_left"
+                android:padding="6dp"
+                android:layout_marginEnd="12dp"
+                android:importantForAccessibility="no"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="#FFFFFF"
+                xmlns:app="http://schemas.android.com/apk/res-auto" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loan Requests"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- Filter chips: Pending / Approved / Rejected -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,13 +61,14 @@
                 android:text="Pending"
                 android:textAllCaps="false"
                 android:textSize="13sp"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_btn_gradient_blue"
+                android:textColor="#1e3a8a"
+                android:background="@drawable/bg_filter_chip_active"
                 android:elevation="0dp"
-                android:paddingHorizontal="20dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="10dp" />
 
             <Button
                 android:id="@+id/btnFilterApproved"
@@ -72,13 +77,14 @@
                 android:text="Approved"
                 android:textAllCaps="false"
                 android:textSize="13sp"
-                android:textColor="@color/text_primary"
-                android:background="@drawable/bg_quick_amount"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_filter_chip_inactive"
                 android:elevation="0dp"
-                android:paddingHorizontal="20dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="10dp" />
 
             <Button
                 android:id="@+id/btnFilterRejected"
@@ -87,19 +93,30 @@
                 android:text="Rejected"
                 android:textAllCaps="false"
                 android:textSize="13sp"
-                android:textColor="@color/text_primary"
-                android:background="@drawable/bg_quick_amount"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_filter_chip_inactive"
                 android:elevation="0dp"
-                android:paddingHorizontal="20dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp" />
-        </LinearLayout>
-    </HorizontalScrollView>
 
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ═══════════════════════════════════════════
+         LOAN CARDS LIST
+         ═══════════════════════════════════════════ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLoans"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:clipToPadding="false" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:clipToPadding="false"
+        android:scrollbars="none" />
+
 </LinearLayout>

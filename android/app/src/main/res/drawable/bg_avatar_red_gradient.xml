@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Red-toned gradient oval for blocked user avatars -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:startColor="#fecaca"
+        android:endColor="#fca5a5"
+        android:angle="135"
+        android:type="linear" />
+</shape>

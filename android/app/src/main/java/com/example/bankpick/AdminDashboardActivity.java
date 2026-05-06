@@ -64,35 +64,37 @@ public class AdminDashboardActivity extends BaseActivity {
     }
 
     private void showBroadcastDialog() {
-        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
-        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
-        layout.setPadding(50, 40, 50, 10);
+        android.view.View dialogView = android.view.LayoutInflater.from(this)
+                .inflate(R.layout.dialog_broadcast, null);
 
-        final EditText titleBox = new EditText(this);
-        titleBox.setHint("Notification Title");
-        layout.addView(titleBox);
+        final EditText titleBox   = dialogView.findViewById(R.id.etBroadcastTitle);
+        final EditText messageBox = dialogView.findViewById(R.id.etBroadcastMessage);
 
-        final EditText messageBox = new EditText(this);
-        messageBox.setHint("Notification Message");
-        layout.addView(messageBox);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
 
-        new AlertDialog.Builder(this)
-                .setTitle("Broadcast Notification")
-                .setMessage("Send a notification to all active users.")
-                .setView(layout)
-                .setPositiveButton("Send", (dialog, which) -> {
-                    String title = titleBox.getText().toString().trim();
-                    String msg = messageBox.getText().toString().trim();
-                    if (title.isEmpty() || msg.isEmpty()) {
-                        Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    DatabaseHelper.getInstance().broadcastNotification(title, msg, (success, resultMsg) -> {
-                        Toast.makeText(this, resultMsg, Toast.LENGTH_SHORT).show();
-                    });
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+        // Transparent window so the card's rounded corners show
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+
+        dialogView.findViewById(R.id.btnCloseDialog).setOnClickListener(v -> dialog.dismiss());
+        dialogView.findViewById(R.id.btnCancelBroadcast).setOnClickListener(v -> dialog.dismiss());
+        dialogView.findViewById(R.id.btnSendBroadcast).setOnClickListener(v -> {
+            String title = titleBox.getText().toString().trim();
+            String msg   = messageBox.getText().toString().trim();
+            if (title.isEmpty() || msg.isEmpty()) {
+                Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            DatabaseHelper.getInstance().broadcastNotification(title, msg,
+                    (success, resultMsg) -> Toast.makeText(this, resultMsg, Toast.LENGTH_SHORT).show());
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private void loadStats() {

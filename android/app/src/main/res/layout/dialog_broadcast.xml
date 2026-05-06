@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_admin_metric_card"
+    android:padding="24dp">
+
+    <!-- ── Title row + X close button ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="top">
+
+        <!-- Title + subtitle -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginEnd="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Broadcast Notification"
+                android:textSize="19sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send a notification to all active users."
+                android:textSize="13sp"
+                android:textColor="#6B7280" />
+        </LinearLayout>
+
+        <!-- X close -->
+        <ImageView
+            android:id="@+id/btnCloseDialog"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_close"
+            android:padding="4dp"
+            android:background="@drawable/bg_circle_gray"
+            android:importantForAccessibility="no"
+            android:clickable="true"
+            android:focusable="true"
+            app:tint="#6B7280" />
+    </LinearLayout>
+
+    <!-- ── Notification Title input ── -->
+    <EditText
+        android:id="@+id/etBroadcastTitle"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_dialog_input"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:hint="Notification Title"
+        android:textColorHint="#9CA3AF"
+        android:textColor="#1A1A2E"
+        android:textSize="14sp"
+        android:inputType="text"
+        android:singleLine="true" />
+
+    <!-- ── Notification Message input ── -->
+    <EditText
+        android:id="@+id/etBroadcastMessage"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_dialog_input"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:hint="Notification Message"
+        android:textColorHint="#9CA3AF"
+        android:textColor="#1A1A2E"
+        android:textSize="14sp"
+        android:inputType="textMultiLine"
+        android:gravity="top|start"
+        android:minLines="3" />
+
+    <!-- ── Cancel / Send buttons ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="24dp">
+
+        <Button
+            android:id="@+id/btnCancelBroadcast"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textColor="#6B7280"
+            android:background="@drawable/bg_btn_cancel"
+            android:elevation="0dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnSendBroadcast"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:text="Send"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_btn_send_blue"
+            android:elevation="0dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
+    </LinearLayout>
+
+</LinearLayout>

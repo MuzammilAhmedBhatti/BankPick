@@ -83,20 +83,32 @@ public class AdminBlockedUsersActivity extends BaseActivity {
             DataSnapshot ds = list.get(pos);
             String name  = ds.child("fullName").getValue(String.class);
             String email = ds.child("email").getValue(String.class);
-            h.tvName.setText(name != null ? name : "Unknown");
+            String displayName = name != null ? name : "Unknown";
+            h.tvName.setText(displayName);
             h.tvEmail.setText(email != null ? email : "—");
+
+            // Compute initials (up to 2 chars)
+            String[] parts = displayName.trim().split("\\s+");
+            StringBuilder initials = new StringBuilder();
+            for (String p : parts) {
+                if (!p.isEmpty()) initials.append(Character.toUpperCase(p.charAt(0)));
+                if (initials.length() == 2) break;
+            }
+            h.tvInitials.setText(initials.toString());
+
             h.btnUnblock.setOnClickListener(v -> cb.onUnblock(ds));
         }
 
         @Override public int getItemCount() { return list.size(); }
 
         static class VH extends RecyclerView.ViewHolder {
-            TextView tvName, tvEmail;
+            TextView tvName, tvEmail, tvInitials;
             Button btnUnblock;
             VH(View v) {
                 super(v);
-                tvName    = v.findViewById(R.id.tvBlockedUserName);
-                tvEmail   = v.findViewById(R.id.tvBlockedUserEmail);
+                tvName     = v.findViewById(R.id.tvBlockedUserName);
+                tvEmail    = v.findViewById(R.id.tvBlockedUserEmail);
+                tvInitials = v.findViewById(R.id.tvBlockedInitials);
                 btnUnblock = v.findViewById(R.id.btnUnblockUser);
             }
         }

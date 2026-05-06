@@ -18,11 +18,14 @@ public class SettingsFragment extends Fragment {
 
     View rootView;
 
-    @Nullable @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        SharedPreferences prefs = requireContext().getSharedPreferences("BankPickPrefs", android.content.Context.MODE_PRIVATE);
+        SharedPreferences prefs = requireContext().getSharedPreferences("BankPickPrefs",
+                android.content.Context.MODE_PRIVATE);
 
         // Switches
         Switch switchDarkMode = rootView.findViewById(R.id.switchDarkMode);
@@ -48,12 +51,24 @@ public class SettingsFragment extends Fragment {
 
         // Navigation
         View btnBack = rootView.findViewById(R.id.btnBack);
-        if (btnBack != null) btnBack.setOnClickListener(v -> requireActivity().onBackPressed());
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> {
+                if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                    getParentFragmentManager().popBackStack();
+                } else {
+                    requireActivity().onBackPressed();
+                }
+            });
+        }
 
-        rootView.findViewById(R.id.btnMyProfile).setOnClickListener(v -> startActivity(new Intent(requireContext(), ProfileActivity.class)));
-        rootView.findViewById(R.id.btnContactUs).setOnClickListener(v -> startActivity(new Intent(requireContext(), ContactUsActivity.class)));
-        rootView.findViewById(R.id.btnChangePassword).setOnClickListener(v -> startActivity(new Intent(requireContext(), ChangePasswordActivity.class)));
-        rootView.findViewById(R.id.btnTerms).setOnClickListener(v -> startActivity(new Intent(requireContext(), TermsConditionActivity.class)));
+        rootView.findViewById(R.id.btnMyProfile)
+                .setOnClickListener(v -> startActivity(new Intent(requireContext(), ProfileActivity.class)));
+        rootView.findViewById(R.id.btnContactUs)
+                .setOnClickListener(v -> startActivity(new Intent(requireContext(), ContactUsActivity.class)));
+        rootView.findViewById(R.id.btnChangePassword)
+                .setOnClickListener(v -> startActivity(new Intent(requireContext(), ChangePasswordActivity.class)));
+        rootView.findViewById(R.id.btnTerms)
+                .setOnClickListener(v -> startActivity(new Intent(requireContext(), TermsConditionActivity.class)));
 
         // Logout
         rootView.findViewById(R.id.btnLogout).setOnClickListener(v -> {

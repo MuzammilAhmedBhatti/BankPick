@@ -6,13 +6,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class RequestMoneyActivity extends BaseActivity {
-    EditText etAmount, etPayerName, etEmail, etDescription, etDay, etMonth, etYear;
+    EditText etAmount, etEmail, etDescription;
     Button btnRequest;
     ImageView ivBack;
 
@@ -21,7 +20,7 @@ public class RequestMoneyActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_request_money);
-        
+
         init();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -34,33 +33,68 @@ public class RequestMoneyActivity extends BaseActivity {
 
         btnRequest.setOnClickListener((v) -> {
             String amountStr = etAmount.getText().toString().trim();
-            if (amountStr.isEmpty()) { amountStr = "26.00"; }
-            
-            String payerName = etPayerName.getText().toString().trim();
-            if (payerName.isEmpty()) payerName = "Unknown";
+            String email = etEmail.getText().toString().trim();
+            String description = etDescription.getText().toString().trim();
 
-            Intent intent = new Intent(this, TransactionSuccessActivity.class);
-            intent.putExtra("type", "Request Money");
-            intent.putExtra("amount", amountStr);
-            intent.putExtra("recipient", payerName);
+            if (email.isEmpty()) {
+                etEmail.setError("Email is required");
+                return;
+            }
 
-            intent.putExtra("date", java.text.DateFormat.getDateInstance(java.text.DateFormat.LONG).format(new java.util.Date()));
-            intent.putExtra("time", java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(new java.util.Date()));
-            intent.putExtra("transactionId", "TRX" + System.currentTimeMillis());
+            if (amountStr.isEmpty()) {
+                etAmount.setError("Amount is required");
+                return;
+            }
 
-            startActivity(intent);
+            double amount;
+            try {
+                amount = Double.parseDouble(amountStr);
+            } catch (NumberFormatException e) {
+                etAmount.setError("Enter a valid amount");
+                return;
+            }
+
+            if (amount <= 0) {
+                etAmount.setError("Amount must be greater than 0");
+                return;
+            }
+
+            btnRequest.setEnabled(false);
+            DatabaseHelper.getInstance().createPaymentRequestByEmail(email, amount, description,
+                    (success, requestId, receiverName, errorMessage) -> runOnUiThread(() -> {
+                        btnRequest.setEnabled(true);
+                        if (success) {
+                            Intent intent = new Intent(this, TransactionSuccessActivity.class);
+                            intent.putExtra("type", "Request Money");
+                            intent.putExtra("amount", String.format(java.util.Locale.getDefault(), "%.2f", amount));
+                            intent.putExtra("recipient", receiverName != null ? receiverName : email);
+                            intent.putExtra("transactionId",
+                                    requestId != null ? requestId : "REQ" + System.currentTimeMillis());
+                            intent.putExtra("date", java.text.DateFormat.getDateInstance(java.text.DateFormat.LONG)
+                                    .format(new java.util.Date()));
+                            intent.putExtra("time", java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT)
+                                    .format(new java.util.Date()));
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            if (errorMessage != null && !errorMessage.isEmpty()) {
+                                if (errorMessage.toLowerCase().contains("email")
+                                        || errorMessage.toLowerCase().contains("user")) {
+                                    etEmail.setError(errorMessage);
+                                }
+                                android.widget.Toast.makeText(this, errorMessage, android.widget.Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        }
+                    }));
         });
     }
 
     private void init() {
         ivBack = findViewById(R.id.btnBack);
         etAmount = findViewById(R.id.etAmount);
-        etPayerName = findViewById(R.id.etPayerName);
         etEmail = findViewById(R.id.etEmail);
         etDescription = findViewById(R.id.etDescription);
-        etDay = findViewById(R.id.etDay);
-        etMonth = findViewById(R.id.etMonth);
-        etYear = findViewById(R.id.etYear);
         btnRequest = findViewById(R.id.btnRequestMoney);
 
         etAmount.setText("26.00");

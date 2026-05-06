@@ -23,6 +23,7 @@ public class NotificationsActivity extends BaseActivity {
     RecyclerView rvNotifications;
     ImageView ivBack;
     TextView tvMarkAllRead, tvEmpty;
+    android.widget.Button btnPaymentRequests;
     ArrayList<BankNotification> notifications;
     NotificationAdapter adapter;
 
@@ -35,10 +36,11 @@ public class NotificationsActivity extends BaseActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_notifications);
 
-        ivBack          = findViewById(R.id.btnBack);
+        ivBack = findViewById(R.id.btnBack);
         rvNotifications = findViewById(R.id.rvNotifications);
-        tvMarkAllRead   = findViewById(R.id.tvMarkAllRead);
-        tvEmpty         = findViewById(R.id.tvEmpty);
+        tvMarkAllRead = findViewById(R.id.tvMarkAllRead);
+        tvEmpty = findViewById(R.id.tvEmpty);
+        btnPaymentRequests = findViewById(R.id.btnPaymentRequests);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -47,6 +49,11 @@ public class NotificationsActivity extends BaseActivity {
         });
 
         ivBack.setOnClickListener(v -> finish());
+
+        if (btnPaymentRequests != null) {
+            btnPaymentRequests.setOnClickListener(
+                    v -> startActivity(new android.content.Intent(this, PaymentRequestsActivity.class)));
+        }
 
         notifications = new ArrayList<>();
         adapter = new NotificationAdapter(this, notifications);
@@ -68,13 +75,13 @@ public class NotificationsActivity extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 notifications.clear();
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    String id      = child.child("id").getValue(String.class);
-                    String title   = child.child("title").getValue(String.class);
+                    String id = child.child("id").getValue(String.class);
+                    String title = child.child("title").getValue(String.class);
                     String message = child.child("message").getValue(String.class);
-                    String time    = child.child("time").getValue(String.class);
+                    String time = child.child("time").getValue(String.class);
                     Boolean unread = child.child("unread").getValue(Boolean.class);
-                    String icon    = child.child("icon").getValue(String.class);
-                    String color   = child.child("color").getValue(String.class);
+                    String icon = child.child("icon").getValue(String.class);
+                    String color = child.child("color").getValue(String.class);
                     if (id != null) {
                         notifications.add(0, new BankNotification(
                                 id,
@@ -83,8 +90,7 @@ public class NotificationsActivity extends BaseActivity {
                                 time != null ? time : "",
                                 Boolean.TRUE.equals(unread),
                                 icon != null ? icon : "🔔",
-                                color != null ? color : "bg-blue-100"
-                        ));
+                                color != null ? color : "bg-blue-100"));
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -92,8 +98,10 @@ public class NotificationsActivity extends BaseActivity {
                     tvEmpty.setVisibility(notifications.isEmpty() ? View.VISIBLE : View.GONE);
                 }
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         };
         DatabaseHelper.getInstance()
                 .userNotificationsRef(currentUserId)
@@ -101,7 +109,8 @@ public class NotificationsActivity extends BaseActivity {
     }
 
     private void markAllRead() {
-        if (currentUserId == null) return;
+        if (currentUserId == null)
+            return;
         DatabaseHelper.getInstance()
                 .userNotificationsRef(currentUserId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -111,7 +120,10 @@ public class NotificationsActivity extends BaseActivity {
                             child.getRef().child("unread").setValue(false);
                         }
                     }
-                    @Override public void onCancelled(@NonNull DatabaseError error) {}
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
                 });
     }
 

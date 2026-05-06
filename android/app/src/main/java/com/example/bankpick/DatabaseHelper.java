@@ -26,15 +26,20 @@ import androidx.annotation.NonNull;
 
 public class DatabaseHelper {
 
-    public static final String NODE_USERS          = "users";
-    public static final String NODE_CARDS          = "cards";
-    public static final String NODE_TRANSACTIONS   = "transactions";
-    public static final String NODE_NOTIFICATIONS  = "notifications";
-    public static final String NODE_LOANS          = "loans";
+    public static final String NODE_USERS = "users";
+    public static final String NODE_CARDS = "cards";
+    public static final String NODE_TRANSACTIONS = "transactions";
+    public static final String NODE_NOTIFICATIONS = "notifications";
+    public static final String NODE_LOANS = "loans";
+    public static final String NODE_PAYMENT_REQUESTS = "payment_requests";
 
-    public static final String LOAN_PENDING  = "pending";
+    public static final String LOAN_PENDING = "pending";
     public static final String LOAN_APPROVED = "approved";
     public static final String LOAN_REJECTED = "rejected";
+
+    public static final String PAYMENT_PENDING = "pending";
+    public static final String PAYMENT_APPROVED = "approved";
+    public static final String PAYMENT_DECLINED = "declined";
 
     public static final String ADMIN_EMAIL = "admin@gmail.com";
 
@@ -62,48 +67,92 @@ public class DatabaseHelper {
         return user != null ? user.getUid() : null;
     }
 
-    public DatabaseReference usersRef()            { return firebaseDb.getReference(NODE_USERS); }
-    public DatabaseReference cardsRef()            { return firebaseDb.getReference(NODE_CARDS); }
-    public DatabaseReference transactionsRef()     { return firebaseDb.getReference(NODE_TRANSACTIONS); }
-    public DatabaseReference notificationsRef()    { return firebaseDb.getReference(NODE_NOTIFICATIONS); }
-    public DatabaseReference loansRef()            { return firebaseDb.getReference(NODE_LOANS); }
-    public DatabaseReference userNotificationsRef(String uid) { return notificationsRef().child(uid); }
-    public DatabaseReference userRef(String userId)   { return usersRef().child(userId); }
-    public DatabaseReference cardRef(String cardId)   { return cardsRef().child(cardId); }
-    public DatabaseReference transactionRef(String txnId) { return transactionsRef().child(txnId); }
-    public DatabaseReference loanRef(String loanId)   { return loansRef().child(loanId); }
-    public StorageReference storageRef()           { return firebaseStorage.getReference(); }
-    public StorageReference profileStorageRef()    { return storageRef().child("profile_images"); }
+    public DatabaseReference usersRef() {
+        return firebaseDb.getReference(NODE_USERS);
+    }
+
+    public DatabaseReference cardsRef() {
+        return firebaseDb.getReference(NODE_CARDS);
+    }
+
+    public DatabaseReference transactionsRef() {
+        return firebaseDb.getReference(NODE_TRANSACTIONS);
+    }
+
+    public DatabaseReference notificationsRef() {
+        return firebaseDb.getReference(NODE_NOTIFICATIONS);
+    }
+
+    public DatabaseReference loansRef() {
+        return firebaseDb.getReference(NODE_LOANS);
+    }
+
+    public DatabaseReference paymentRequestsRef() {
+        return firebaseDb.getReference(NODE_PAYMENT_REQUESTS);
+    }
+
+    public DatabaseReference userNotificationsRef(String uid) {
+        return notificationsRef().child(uid);
+    }
+
+    public DatabaseReference userRef(String userId) {
+        return usersRef().child(userId);
+    }
+
+    public DatabaseReference cardRef(String cardId) {
+        return cardsRef().child(cardId);
+    }
+
+    public DatabaseReference transactionRef(String txnId) {
+        return transactionsRef().child(txnId);
+    }
+
+    public DatabaseReference loanRef(String loanId) {
+        return loansRef().child(loanId);
+    }
+
+    public DatabaseReference paymentRequestRef(String requestId) {
+        return paymentRequestsRef().child(requestId);
+    }
+
+    public StorageReference storageRef() {
+        return firebaseStorage.getReference();
+    }
+
+    public StorageReference profileStorageRef() {
+        return storageRef().child("profile_images");
+    }
 
     // ─── User Creation ─────────────────────────────────────────────────────────
     public void createNewUser(String uid, String fullName, String email, String phone) {
         Map<String, Object> user = new HashMap<>();
-        user.put("userId",       uid);
-        user.put("fullName",     fullName);
-        user.put("email",        email.toLowerCase().trim());
-        user.put("phone",        phone);
-        user.put("birthDate",    "");
-        user.put("joinedDate",   new SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(new Date()));
+        user.put("userId", uid);
+        user.put("fullName", fullName);
+        user.put("email", email.toLowerCase().trim());
+        user.put("phone", phone);
+        user.put("birthDate", "");
+        user.put("joinedDate", new SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(new Date()));
         user.put("profileImage", "");
-        user.put("isBlocked",    false);
-        user.put("isDeleted",    false);
+        user.put("isBlocked", false);
+        user.put("isDeleted", false);
         userRef(uid).setValue(user);
 
         // Initial card: $5000
         String cardId = uid + "_card_001";
         Map<String, Object> card = new HashMap<>();
-        card.put("cardId",     cardId);
-        card.put("userId",     uid);
+        card.put("cardId", cardId);
+        card.put("userId", uid);
         card.put("cardNumber", generateCardNumber());
         card.put("holderName", fullName);
         card.put("expiryDate", generateExpiry());
-        card.put("cvv",        String.valueOf(100 + new Random().nextInt(900)));
-        card.put("type",       "Mastercard");
-        card.put("balance",    5000.0);
-        card.put("isPrimary",  true);
+        card.put("cvv", String.valueOf(100 + new Random().nextInt(900)));
+        card.put("type", "Mastercard");
+        card.put("balance", 5000.0);
+        card.put("isPrimary", true);
         cardRef(cardId).setValue(card);
 
-        writeSeedTransaction("txn_" + uid + "_001", cardId, "Welcome Bonus", "Reward", 500.0, "transfer", "Today", "12:00 PM");
+        writeSeedTransaction("txn_" + uid + "_001", cardId, "Welcome Bonus", "Reward", 500.0, "transfer", "Today",
+                "12:00 PM");
     }
 
     // ─── User Status ───────────────────────────────────────────────────────────
@@ -114,7 +163,11 @@ public class DatabaseHelper {
                 Boolean blocked = snapshot.getValue(Boolean.class);
                 callback.onResult(Boolean.TRUE.equals(blocked));
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) { callback.onResult(false); }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onResult(false);
+            }
         });
     }
 
@@ -143,46 +196,51 @@ public class DatabaseHelper {
     public void getUserActiveLoan(String userId, LoanCallback callback) {
         loansRef().orderByChild("userId").equalTo(userId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    String status = ds.child("status").getValue(String.class);
-                    if (LOAN_PENDING.equals(status)) {
-                        // Return the pending loan
-                        String loanId = ds.getKey();
-                        callback.onResult(loanId, status);
-                        return;
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            String status = ds.child("status").getValue(String.class);
+                            if (LOAN_PENDING.equals(status)) {
+                                // Return the pending loan
+                                String loanId = ds.getKey();
+                                callback.onResult(loanId, status);
+                                return;
+                            }
+                        }
+                        callback.onResult(null, null);
                     }
-                }
-                callback.onResult(null, null);
-            }
-            @Override public void onCancelled(@NonNull DatabaseError error) { callback.onResult(null, null); }
-        });
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onResult(null, null);
+                    }
+                });
     }
 
     /**
      * Creates a new loan request linked to the user's active card.
      */
     public void requestLoan(String userId, String cardId, double amount, String reason,
-                            String userName, String cardNumber, SimpleCallback callback) {
+            String userName, String cardNumber, SimpleCallback callback) {
         String loanId = "LOAN_" + System.currentTimeMillis();
         String timestamp = new SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault()).format(new Date());
 
         Map<String, Object> loan = new HashMap<>();
-        loan.put("loanId",     loanId);
-        loan.put("userId",     userId);
-        loan.put("cardId",     cardId);
-        loan.put("amount",     amount);
-        loan.put("reason",     reason);
-        loan.put("status",     LOAN_PENDING);
-        loan.put("timestamp",  timestamp);
-        loan.put("userName",   userName);
+        loan.put("loanId", loanId);
+        loan.put("userId", userId);
+        loan.put("cardId", cardId);
+        loan.put("amount", amount);
+        loan.put("reason", reason);
+        loan.put("status", LOAN_PENDING);
+        loan.put("timestamp", timestamp);
+        loan.put("userName", userName);
         loan.put("cardNumber", cardNumber);
 
         loanRef(loanId).setValue(loan)
                 .addOnSuccessListener(v -> {
                     writeNotification(userId, "Loan Request Submitted",
-                            "Your loan request of $" + String.format(Locale.getDefault(), "%.2f", amount) + " is under review.",
+                            "Your loan request of $" + String.format(Locale.getDefault(), "%.2f", amount)
+                                    + " is under review.",
                             "💰", "bg-blue-100");
                     callback.onResult(true, loanId);
                 })
@@ -190,17 +248,20 @@ public class DatabaseHelper {
     }
 
     /**
-     * Admin: Approve loan — atomically credits card balance and marks status approved.
+     * Admin: Approve loan — atomically credits card balance and marks status
+     * approved.
      */
     public void approveLoan(String loanId, String cardId, String userId, double amount, SimpleCallback callback) {
         DatabaseReference balanceRef = cardRef(cardId).child("balance");
         balanceRef.runTransaction(new Transaction.Handler() {
-            @NonNull @Override
+            @NonNull
+            @Override
             public Transaction.Result doTransaction(@NonNull MutableData currentData) {
                 Double bal = currentData.getValue(Double.class);
                 currentData.setValue((bal == null ? 0 : bal) + amount);
                 return Transaction.success(currentData);
             }
+
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
                 if (committed) {
@@ -208,11 +269,14 @@ public class DatabaseHelper {
                             .addOnSuccessListener(v -> {
                                 // Record loan credit as transaction
                                 String id = "TXN" + System.currentTimeMillis();
-                                String date = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(new Date());
+                                String date = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                                        .format(new Date());
                                 String time = new SimpleDateFormat("h:mm a", Locale.getDefault()).format(new Date());
-                                writeSeedTransaction(id, cardId, "Loan Disbursement", "Loan", amount, "loan", date, time);
+                                writeSeedTransaction(id, cardId, "Loan Disbursement", "Loan", amount, "loan", date,
+                                        time);
                                 writeNotification(userId, "Loan Approved! 🎉",
-                                        "$" + String.format(Locale.getDefault(), "%.2f", amount) + " has been credited to your card.",
+                                        "$" + String.format(Locale.getDefault(), "%.2f", amount)
+                                                + " has been credited to your card.",
                                         "✅", "bg-green-100");
                                 callback.onResult(true, "Loan approved");
                             })
@@ -238,6 +302,102 @@ public class DatabaseHelper {
                 .addOnFailureListener(e -> callback.onResult(false, e.getMessage()));
     }
 
+    // ─── Payment Requests ─────────────────────────────────────────────────────
+    public void createPaymentRequestByEmail(String receiverEmail, double amount, String description,
+            PaymentRequestCreateCallback callback) {
+        String currentUid = getCurrentUserId();
+        if (currentUid == null) {
+            callback.onResult(false, null, null, "User not authenticated");
+            return;
+        }
+
+        findUserByEmail(receiverEmail, (receiverUid, receiverName) -> {
+            if (receiverUid == null) {
+                callback.onResult(false, null, null, "No user found for this email");
+                return;
+            }
+            if (receiverUid.equals(currentUid)) {
+                callback.onResult(false, null, null, "You cannot request money from yourself");
+                return;
+            }
+
+            userRef(currentUid).child("fullName").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String senderName = snapshot.getValue(String.class);
+                    if (senderName == null)
+                        senderName = "Unknown";
+                    final String finalSenderName = senderName;
+
+                    String requestId = "REQ_" + System.currentTimeMillis();
+                    String timestamp = new SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault())
+                            .format(new Date());
+                    long timestampMs = System.currentTimeMillis();
+
+                    Map<String, Object> request = new HashMap<>();
+                    request.put("requestId", requestId);
+                    request.put("senderUid", currentUid);
+                    request.put("receiverUid", receiverUid);
+                    request.put("senderName", senderName);
+                    request.put("receiverName", receiverName != null ? receiverName : "");
+                    request.put("amount", amount);
+                    request.put("description", description != null ? description : "");
+                    request.put("status", PAYMENT_PENDING);
+                    request.put("timestamp", timestamp);
+                    request.put("timestampMs", timestampMs);
+
+                    paymentRequestRef(requestId).setValue(request)
+                            .addOnSuccessListener(v -> {
+                                writeNotification(receiverUid, "Payment Request Received",
+                                        finalSenderName + " requested $"
+                                                + String.format(Locale.getDefault(), "%.2f", amount),
+                                        "💸", "bg-blue-100");
+                                callback.onResult(true, requestId, receiverName, null);
+                            })
+                            .addOnFailureListener(e -> callback.onResult(false, null, null, e.getMessage()));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    callback.onResult(false, null, null, error.getMessage());
+                }
+            });
+        });
+    }
+
+    public void updatePaymentRequestStatus(String requestId, String status, SimpleCallback callback) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("status", status);
+        updates.put("responseTimestamp",
+                new SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault()).format(new Date()));
+        updates.put("responseTimestampMs", System.currentTimeMillis());
+        paymentRequestRef(requestId).updateChildren(updates)
+                .addOnSuccessListener(v -> callback.onResult(true, "Request updated"))
+                .addOnFailureListener(e -> callback.onResult(false, e.getMessage()));
+    }
+
+    public void getPrimaryCardId(String userId, CardIdCallback callback) {
+        cardsRef().orderByChild("userId").equalTo(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String cardId = null;
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            cardId = ds.getKey();
+                            if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) {
+                                break;
+                            }
+                        }
+                        callback.onResult(cardId);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onResult(null);
+                    }
+                });
+    }
+
     // ─── Contacts ─────────────────────────────────────────────────────────────
     public void findUserByEmail(String email, FindUserCallback callback) {
         String searchEmail = email.toLowerCase().trim();
@@ -254,7 +414,11 @@ public class DatabaseHelper {
                 }
                 callback.onResult(null, null);
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) { callback.onResult(null, null); }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onResult(null, null);
+            }
         });
     }
 
@@ -267,7 +431,10 @@ public class DatabaseHelper {
                     ds.getRef().child("isPrimary").setValue(isTargetCard);
                 }
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
     }
 
@@ -291,12 +458,17 @@ public class DatabaseHelper {
                 }
                 callback.onResult(contacts);
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) { callback.onResult(new ArrayList<>()); }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onResult(new ArrayList<>());
+            }
         });
     }
 
     // ─── Money Transfer ────────────────────────────────────────────────────────
-    public void sendMoney(String senderCardId, String recipientUid, String recipientName, double amount, SendMoneyCallback callback) {
+    public void sendMoney(String senderCardId, String recipientUid, String recipientName, double amount,
+            SendMoneyCallback callback) {
         String currentUid = getCurrentUserId();
         if (currentUid == null) {
             callback.onResult(false, "User not authenticated");
@@ -309,66 +481,91 @@ public class DatabaseHelper {
                 String rawName = senderSnapshot.getValue(String.class);
                 final String finalSenderName = (rawName == null) ? "Unknown" : rawName;
 
-                cardsRef().orderByChild("userId").equalTo(recipientUid).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String rCardId = null;
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            rCardId = ds.getKey();
-                            if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class))) break;
-                        }
-                        if (rCardId == null) { callback.onResult(false, "Recipient card not found"); return; }
-
-                        final String finalRCardId = rCardId;
-                        DatabaseReference sRef = cardRef(senderCardId).child("balance");
-                        sRef.runTransaction(new Transaction.Handler() {
+                cardsRef().orderByChild("userId").equalTo(recipientUid)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public Transaction.Result doTransaction(MutableData currentData) {
-                                Double bal = currentData.getValue(Double.class);
-                                if (bal == null || bal < amount) return Transaction.abort();
-                                currentData.setValue(bal - amount);
-                                return Transaction.success(currentData);
-                            }
-                            @Override
-                            public void onComplete(DatabaseError e, boolean committed, DataSnapshot snap) {
-                                if (committed) {
-                                    DatabaseReference rRef = cardRef(finalRCardId).child("balance");
-                                    rRef.runTransaction(new Transaction.Handler() {
-                                        @Override
-                                        public Transaction.Result doTransaction(MutableData data) {
-                                            Double b = data.getValue(Double.class);
-                                            data.setValue((b == null ? 0 : b) + amount);
-                                            return Transaction.success(data);
-                                        }
-                                        @Override
-                                        public void onComplete(DatabaseError e, boolean committed, DataSnapshot s) {
-                                            String id = "TXN" + System.currentTimeMillis();
-                                            String date = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(new Date());
-                                            String time = new SimpleDateFormat("h:mm a", Locale.getDefault()).format(new Date());
-                                            writeSeedTransaction(id + "_S", senderCardId, recipientName, "Transfer", -amount, "transfer", date, time);
-                                            writeSeedTransaction(id + "_R", finalRCardId, finalSenderName, "Transfer", amount, "transfer", date, time);
-
-                                            String senderUid = senderCardId.replace("_card_001", "");
-                                            writeNotification(senderUid, "Transfer Sent",
-                                                    "You sent $" + String.format(Locale.getDefault(), "%.2f", amount) + " to " + recipientName,
-                                                    "💸", "bg-blue-100");
-                                            writeNotification(recipientUid, "Money Received",
-                                                    "You received $" + String.format(Locale.getDefault(), "%.2f", amount) + " from " + finalSenderName,
-                                                    "💰", "bg-green-100");
-
-                                            callback.onResult(true, id + "_S");
-                                        }
-                                    });
-                                } else {
-                                    callback.onResult(false, "Transaction failed or insufficient funds");
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String rCardId = null;
+                                for (DataSnapshot ds : snapshot.getChildren()) {
+                                    rCardId = ds.getKey();
+                                    if (Boolean.TRUE.equals(ds.child("isPrimary").getValue(Boolean.class)))
+                                        break;
                                 }
+                                if (rCardId == null) {
+                                    callback.onResult(false, "Recipient card not found");
+                                    return;
+                                }
+
+                                final String finalRCardId = rCardId;
+                                DatabaseReference sRef = cardRef(senderCardId).child("balance");
+                                sRef.runTransaction(new Transaction.Handler() {
+                                    @Override
+                                    public Transaction.Result doTransaction(MutableData currentData) {
+                                        Double bal = currentData.getValue(Double.class);
+                                        if (bal == null || bal < amount)
+                                            return Transaction.abort();
+                                        currentData.setValue(bal - amount);
+                                        return Transaction.success(currentData);
+                                    }
+
+                                    @Override
+                                    public void onComplete(DatabaseError e, boolean committed, DataSnapshot snap) {
+                                        if (committed) {
+                                            DatabaseReference rRef = cardRef(finalRCardId).child("balance");
+                                            rRef.runTransaction(new Transaction.Handler() {
+                                                @Override
+                                                public Transaction.Result doTransaction(MutableData data) {
+                                                    Double b = data.getValue(Double.class);
+                                                    data.setValue((b == null ? 0 : b) + amount);
+                                                    return Transaction.success(data);
+                                                }
+
+                                                @Override
+                                                public void onComplete(DatabaseError e, boolean committed,
+                                                        DataSnapshot s) {
+                                                    String id = "TXN" + System.currentTimeMillis();
+                                                    String date = new SimpleDateFormat("MMM d, yyyy",
+                                                            Locale.getDefault()).format(new Date());
+                                                    String time = new SimpleDateFormat("h:mm a", Locale.getDefault())
+                                                            .format(new Date());
+                                                    writeSeedTransaction(id + "_S", senderCardId, recipientName,
+                                                            "Transfer", -amount, "transfer", date, time);
+                                                    writeSeedTransaction(id + "_R", finalRCardId, finalSenderName,
+                                                            "Transfer", amount, "transfer", date, time);
+
+                                                    String senderUid = senderCardId.replace("_card_001", "");
+                                                    writeNotification(senderUid, "Transfer Sent",
+                                                            "You sent $"
+                                                                    + String.format(Locale.getDefault(), "%.2f", amount)
+                                                                    + " to " + recipientName,
+                                                            "💸", "bg-blue-100");
+                                                    writeNotification(recipientUid, "Money Received",
+                                                            "You received $"
+                                                                    + String.format(Locale.getDefault(), "%.2f", amount)
+                                                                    + " from " + finalSenderName,
+                                                            "💰", "bg-green-100");
+
+                                                    callback.onResult(true, id + "_S");
+                                                }
+                                            });
+                                        } else {
+                                            callback.onResult(false, "Transaction failed or insufficient funds");
+                                        }
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                callback.onResult(false, "Network error");
                             }
                         });
-                    }
-                    @Override public void onCancelled(@NonNull DatabaseError error) { callback.onResult(false, "Network error"); }
-                });
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) { callback.onResult(false, "Network error"); }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onResult(false, "Network error");
+            }
         });
     }
 
@@ -378,31 +575,39 @@ public class DatabaseHelper {
         DatabaseReference toRef = cardRef(toCardId).child("balance");
 
         fromRef.runTransaction(new Transaction.Handler() {
-            @NonNull @Override
+            @NonNull
+            @Override
             public Transaction.Result doTransaction(@NonNull MutableData currentData) {
                 Double bal = currentData.getValue(Double.class);
-                if (bal == null || bal < amount) return Transaction.abort();
+                if (bal == null || bal < amount)
+                    return Transaction.abort();
                 currentData.setValue(bal - amount);
                 return Transaction.success(currentData);
             }
+
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
                 if (committed) {
                     toRef.runTransaction(new Transaction.Handler() {
-                        @NonNull @Override
+                        @NonNull
+                        @Override
                         public Transaction.Result doTransaction(@NonNull MutableData currentData) {
                             Double bal = currentData.getValue(Double.class);
                             currentData.setValue((bal == null ? 0 : bal) + amount);
                             return Transaction.success(currentData);
                         }
+
                         @Override
                         public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
                             if (committed) {
                                 String id = "TXN" + System.currentTimeMillis();
-                                String date = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(new Date());
+                                String date = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                                        .format(new Date());
                                 String time = new SimpleDateFormat("h:mm a", Locale.getDefault()).format(new Date());
-                                writeSeedTransaction(id + "_D", fromCardId, "Self Transfer Out", "Transfer", -amount, "transfer", date, time);
-                                writeSeedTransaction(id + "_C", toCardId, "Self Transfer In", "Transfer", amount, "transfer", date, time);
+                                writeSeedTransaction(id + "_D", fromCardId, "Self Transfer Out", "Transfer", -amount,
+                                        "transfer", date, time);
+                                writeSeedTransaction(id + "_C", toCardId, "Self Transfer In", "Transfer", amount,
+                                        "transfer", date, time);
                                 callback.onResult(true, "Transfer successful");
                             } else {
                                 callback.onResult(false, "Credit failed");
@@ -417,7 +622,8 @@ public class DatabaseHelper {
     }
 
     // ─── Shared Utilities ─────────────────────────────────────────────────────
-    private void writeSeedTransaction(String id, String cardId, String name, String category, double amount, String icon, String date, String time) {
+    private void writeSeedTransaction(String id, String cardId, String name, String category, double amount,
+            String icon, String date, String time) {
         Map<String, Object> txn = new HashMap<>();
         txn.put("transactionId", id);
         txn.put("cardId", cardId);
@@ -435,14 +641,14 @@ public class DatabaseHelper {
         String notifId = "notif_" + System.currentTimeMillis();
         String timestamp = new SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault()).format(new Date());
         Map<String, Object> notif = new HashMap<>();
-        notif.put("id",      notifId);
-        notif.put("uid",     uid);
-        notif.put("title",   title);
+        notif.put("id", notifId);
+        notif.put("uid", uid);
+        notif.put("title", title);
         notif.put("message", message);
-        notif.put("time",    timestamp);
-        notif.put("unread",  true);
-        notif.put("icon",    icon);
-        notif.put("color",   color);
+        notif.put("time", timestamp);
+        notif.put("unread", true);
+        notif.put("icon", icon);
+        notif.put("color", color);
         userNotificationsRef(uid).child(notifId).setValue(notif);
     }
 
@@ -453,8 +659,9 @@ public class DatabaseHelper {
                 int count = 0;
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Boolean deleted = ds.child("isDeleted").getValue(Boolean.class);
-                    if (Boolean.TRUE.equals(deleted)) continue;
-                    
+                    if (Boolean.TRUE.equals(deleted))
+                        continue;
+
                     String uid = ds.getKey();
                     if (uid != null) {
                         writeNotification(uid, title, message, "📢", "bg-blue-100");
@@ -463,7 +670,9 @@ public class DatabaseHelper {
                 }
                 callback.onResult(true, "Broadcast sent to " + count + " users");
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) {
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
                 callback.onResult(false, error.getMessage());
             }
         });
@@ -479,7 +688,10 @@ public class DatabaseHelper {
     public void sendOtp(String email, OtpCallback callback) {
         String otp = String.format(Locale.getDefault(), "%04d", new Random().nextInt(10000));
         String uid = getCurrentUserId();
-        if (uid == null) { callback.onFailure("User not logged in"); return; }
+        if (uid == null) {
+            callback.onFailure("User not logged in");
+            return;
+        }
         userRef(uid).child("currentOtp").setValue(otp)
                 .addOnSuccessListener(aVoid -> callback.onSuccess(otp))
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
@@ -488,7 +700,10 @@ public class DatabaseHelper {
 
     public void verifyOtp(String enteredOtp, OtpVerifyCallback callback) {
         String uid = getCurrentUserId();
-        if (uid == null) { callback.onResult(false); return; }
+        if (uid == null) {
+            callback.onResult(false);
+            return;
+        }
         userRef(uid).child("currentOtp").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -500,13 +715,18 @@ public class DatabaseHelper {
                     callback.onResult(false);
                 }
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) { callback.onResult(false); }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onResult(false);
+            }
         });
     }
 
     private String generateCardNumber() {
         Random r = new Random();
-        return String.format("%04d %04d %04d %04d", 4000 + r.nextInt(999), r.nextInt(10000), r.nextInt(10000), r.nextInt(10000));
+        return String.format("%04d %04d %04d %04d", 4000 + r.nextInt(999), r.nextInt(10000), r.nextInt(10000),
+                r.nextInt(10000));
     }
 
     private String generateExpiry() {
@@ -514,12 +734,45 @@ public class DatabaseHelper {
     }
 
     // ─── Callbacks ────────────────────────────────────────────────────────────
-    public interface SimpleCallback    { void onResult(boolean success, String message); }
-    public interface OtpCallback       { void onSuccess(String otp); void onFailure(String error); }
-    public interface OtpVerifyCallback { void onResult(boolean isCorrect); }
-    public interface SendMoneyCallback { void onResult(boolean success, String info); }
-    public interface FindUserCallback  { void onResult(String uid, String name); }
-    public interface ContactsCallback  { void onResult(List<Map<String, String>> contacts); }
-    public interface LoanCallback      { void onResult(String loanId, String status); }
-    public interface BooleanCallback   { void onResult(boolean value); }
+    public interface SimpleCallback {
+        void onResult(boolean success, String message);
+    }
+
+    public interface OtpCallback {
+        void onSuccess(String otp);
+
+        void onFailure(String error);
+    }
+
+    public interface OtpVerifyCallback {
+        void onResult(boolean isCorrect);
+    }
+
+    public interface SendMoneyCallback {
+        void onResult(boolean success, String info);
+    }
+
+    public interface CardIdCallback {
+        void onResult(String cardId);
+    }
+
+    public interface PaymentRequestCreateCallback {
+        void onResult(boolean success, String requestId, String receiverName, String errorMessage);
+    }
+
+    public interface FindUserCallback {
+        void onResult(String uid, String name);
+    }
+
+    public interface ContactsCallback {
+        void onResult(List<Map<String, String>> contacts);
+    }
+
+    public interface LoanCallback {
+        void onResult(String loanId, String status);
+    }
+
+    public interface BooleanCallback {
+        void onResult(boolean value);
+    }
 }

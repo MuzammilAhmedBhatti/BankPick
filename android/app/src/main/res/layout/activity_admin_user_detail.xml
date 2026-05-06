@@ -4,181 +4,260 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bg_F8FAFC">
+    android:background="#F9FAFB">
 
-    <!-- Header -->
-    <RelativeLayout
+    <!-- ═══════════════════════════════════════════
+         HEADER  – blue gradient with rounded bottom
+         ═══════════════════════════════════════════ -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_btn_gradient_blue"
-        android:paddingHorizontal="20dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_admin_header"
+        android:paddingStart="16dp"
+        android:paddingEnd="20dp"
         android:paddingTop="48dp"
         android:paddingBottom="20dp">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_circle_white_solid"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:src="@drawable/ic_chevron_left"
-            android:padding="8dp"
-            android:tint="@color/black"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true" />
+            android:padding="6dp"
+            android:layout_marginEnd="12dp"
+            android:importantForAccessibility="no"
+            android:clickable="true"
+            android:focusable="true"
+            app:tint="#FFFFFF" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="User Details"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
 
+    <!-- ═══════════════════════════════════════════
+         SCROLLABLE BODY
+         ═══════════════════════════════════════════ -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="28dp">
 
-            <!-- User Info Card -->
-            <androidx.cardview.widget.CardView
+            <!-- ─────────────────────────────────
+                 USER INFO CARD
+                 ───────────────────────────────── -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/white">
+                android:orientation="vertical"
+                android:background="@drawable/bg_admin_metric_card"
+                android:padding="20dp"
+                android:layout_marginBottom="22dp">
+
+                <!-- Section label -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Information"
+                    android:textSize="13sp"
+                    android:textColor="#6B7280"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Avatar + name/email/phone/joined row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:orientation="horizontal"
+                    android:gravity="top"
+                    android:layout_marginBottom="14dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="User Information"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginBottom="12dp" />
+                    <!-- Blue gradient avatar + initials -->
+                    <FrameLayout
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginEnd="16dp">
 
-                    <TextView
-                        android:id="@+id/tvDetailName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="—"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_avatar_blue_gradient" />
 
-                    <TextView
-                        android:id="@+id/tvDetailEmail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="—"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginTop="4dp" />
+                        <TextView
+                            android:id="@+id/tvDetailInitials"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="MA"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#1e3a8a" />
+                    </FrameLayout>
 
-                    <TextView
-                        android:id="@+id/tvDetailPhone"
-                        android:layout_width="wrap_content"
+                    <!-- Text info -->
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="—"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginTop="2dp" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvDetailJoined"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="—"
-                        android:textSize="13sp"
-                        android:textColor="@color/text_hint"
-                        android:layout_marginTop="2dp" />
+                        <TextView
+                            android:id="@+id/tvDetailName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="#1A1A2E"
+                            android:layout_marginBottom="6dp" />
 
-                    <TextView
-                        android:id="@+id/tvDetailStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Active"
-                        android:textSize="12sp"
-                        android:textColor="@color/white"
-                        android:background="@drawable/bg_circle_green"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="4dp"
-                        android:layout_marginTop="10dp" />
+                        <TextView
+                            android:id="@+id/tvDetailEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="13sp"
+                            android:textColor="#6B7280"
+                            android:layout_marginBottom="2dp" />
+
+                        <TextView
+                            android:id="@+id/tvDetailPhone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="13sp"
+                            android:textColor="#6B7280"
+                            android:layout_marginBottom="2dp" />
+
+                        <TextView
+                            android:id="@+id/tvDetailJoined"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="13sp"
+                            android:textColor="#6B7280" />
+                    </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-            <!-- Cards Section -->
+                <!-- Status pill -->
+                <TextView
+                    android:id="@+id/tvDetailStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Active"
+                    android:textSize="11sp"
+                    android:textColor="#065f46"
+                    android:background="@drawable/bg_status_green_pill"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
+            </LinearLayout>
+
+            <!-- ─────────────────────────────────
+                 CARDS & BALANCES
+                 ───────────────────────────────── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cards &amp; Balances"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="10dp" />
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="12dp" />
 
+            <!-- Cards container – populated by Java -->
             <LinearLayout
                 android:id="@+id/llCards"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="16dp" />
+                android:background="@drawable/bg_admin_metric_card"
+                android:divider="@drawable/divider_user_detail"
+                android:showDividers="middle"
+                android:clipToOutline="true"
+                android:layout_marginBottom="24dp" />
 
-            <!-- Loan Section -->
+            <!-- ─────────────────────────────────
+                 LOAN HISTORY
+                 ───────────────────────────────── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Loan History"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="10dp" />
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="12dp" />
 
+            <!-- Loans container – populated by Java -->
             <LinearLayout
                 android:id="@+id/llLoans"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="24dp" />
+                android:background="@drawable/bg_admin_metric_card"
+                android:minHeight="96dp"
+                android:gravity="center"
+                android:divider="@drawable/divider_user_detail"
+                android:showDividers="middle"
+                android:clipToOutline="true"
+                android:layout_marginBottom="28dp" />
 
-            <!-- Action Buttons -->
+            <!-- ─────────────────────────────────
+                 ACTION BUTTONS
+                 ───────────────────────────────── -->
             <Button
                 android:id="@+id/btnBlockUnblock"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="54dp"
                 android:text="Block User"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="#FFFFFF"
                 android:textSize="15sp"
-                android:background="@drawable/bg_btn_gradient_blue"
+                android:textStyle="bold"
+                android:background="@drawable/bg_btn_block"
                 android:elevation="0dp"
-                android:layout_marginBottom="10dp" />
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginBottom="12dp" />
 
+            <!-- Delete button with trash icon -->
             <Button
                 android:id="@+id/btnDeleteUser"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="🗑️  Delete User"
+                android:layout_height="54dp"
+                android:gravity="center"
+                android:background="@drawable/bg_btn_delete_red"
+                android:text="Delete User"
                 android:textAllCaps="false"
-                android:textColor="@color/text_EF4444"
                 android:textSize="15sp"
-                android:background="@drawable/bg_btn_white_border"
+                android:textStyle="bold"
+                android:textColor="#ef4444"
+                android:drawableStart="@drawable/ic_trash"
+                android:drawablePadding="8dp"
+                android:drawableTint="#ef4444"
                 android:elevation="0dp"
-                android:layout_marginBottom="24dp" />
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
 </LinearLayout>

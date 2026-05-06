@@ -63,7 +63,8 @@ public class MainActivity extends BaseActivity {
             return insets;
         });
 
-        // Apply insets to drawer content so it doesn't get hidden behind the navigation bar
+        // Apply insets to drawer content so it doesn't get hidden behind the navigation
+        // bar
         View drawerContent = drawerLayout.findViewById(R.id.drawerContent);
         if (drawerContent != null) {
             ViewCompat.setOnApplyWindowInsetsListener(drawerContent, (v, insets) -> {
@@ -85,10 +86,21 @@ public class MainActivity extends BaseActivity {
         }
 
         // Custom Nav listeners
-        navItemHome.setOnClickListener(v -> { loadFragment(new HomeFragment()); setActiveTab(0); });
-        navItemCards.setOnClickListener(v -> { loadFragment(new MyCardsFragment()); setActiveTab(1); });
-        navItemStats.setOnClickListener(v -> { loadFragment(new StatisticsFragment()); setActiveTab(2); });
-        navItemProfile.setOnClickListener(v -> { startActivity(new Intent(this, ProfileActivity.class)); });
+        navItemHome.setOnClickListener(v -> {
+            loadFragment(new HomeFragment());
+            setActiveTab(0);
+        });
+        navItemCards.setOnClickListener(v -> {
+            loadFragment(new MyCardsFragment());
+            setActiveTab(1);
+        });
+        navItemStats.setOnClickListener(v -> {
+            loadFragment(new StatisticsFragment());
+            setActiveTab(2);
+        });
+        navItemProfile.setOnClickListener(v -> {
+            startActivity(new Intent(this, ProfileActivity.class));
+        });
 
         // Blocked overlay sign-out
         View btnBlockedSignOut = findViewById(R.id.btnBlockedSignOut);
@@ -104,17 +116,30 @@ public class MainActivity extends BaseActivity {
 
         // Drawer close button
         View ivClose = drawerLayout.findViewById(R.id.ivDrawerClose);
-        if (ivClose != null) ivClose.setOnClickListener(v -> closeDrawer());
+        if (ivClose != null)
+            ivClose.setOnClickListener(v -> closeDrawer());
 
         // Wire drawer nav items
-        wireDrawerItem(R.id.drawerHome, () -> { loadFragment(new HomeFragment()); setActiveTab(0); });
-        wireDrawerItem(R.id.drawerMyCards, () -> { loadFragment(new MyCardsFragment()); setActiveTab(1); });
-        wireDrawerItem(R.id.drawerStatistics, () -> { loadFragment(new StatisticsFragment()); setActiveTab(2); });
+        wireDrawerItem(R.id.drawerHome, () -> {
+            loadFragment(new HomeFragment());
+            setActiveTab(0);
+        });
+        wireDrawerItem(R.id.drawerMyCards, () -> {
+            loadFragment(new MyCardsFragment());
+            setActiveTab(1);
+        });
+        wireDrawerItem(R.id.drawerStatistics, () -> {
+            loadFragment(new StatisticsFragment());
+            setActiveTab(2);
+        });
         wireDrawerItem(R.id.drawerSendMoney, () -> startActivity(new Intent(this, SendMoneyActivity.class)));
         wireDrawerItem(R.id.drawerTopup, () -> startActivity(new Intent(this, TopupActivity.class)));
         wireDrawerItem(R.id.drawerNotifications, () -> startActivity(new Intent(this, NotificationsActivity.class)));
         wireDrawerItem(R.id.drawerProfile, () -> startActivity(new Intent(this, ProfileActivity.class)));
-        wireDrawerItem(R.id.drawerSettings, () -> { loadFragment(new SettingsFragment()); setActiveTab(-1); });
+        wireDrawerItem(R.id.drawerSettings, () -> {
+            loadFragment(new SettingsFragment(), true);
+            setActiveTab(-1);
+        });
 
         // Logout
         View drawerLogout = drawerLayout.findViewById(R.id.drawerLogout);
@@ -139,25 +164,35 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    /** Monitors the user's isBlocked flag in real-time and shows an overlay if blocked. */
+    /**
+     * Monitors the user's isBlocked flag in real-time and shows an overlay if
+     * blocked.
+     */
     private void listenForBlockStatus() {
         DatabaseHelper.getInstance().userRef(currentUserId).child("isBlocked")
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Boolean blocked = snapshot.getValue(Boolean.class);
-                View blockedOverlay = findViewById(R.id.blockedOverlay);
-                if (blockedOverlay != null) {
-                    blockedOverlay.setVisibility(Boolean.TRUE.equals(blocked) ? View.VISIBLE : View.GONE);
-                }
-            }
-            @Override public void onCancelled(@NonNull DatabaseError error) {}
-        });
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Boolean blocked = snapshot.getValue(Boolean.class);
+                        View blockedOverlay = findViewById(R.id.blockedOverlay);
+                        if (blockedOverlay != null) {
+                            blockedOverlay.setVisibility(Boolean.TRUE.equals(blocked) ? View.VISIBLE : View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
     private void wireDrawerItem(int viewId, Runnable action) {
         View v = drawerLayout.findViewById(viewId);
-        if (v != null) v.setOnClickListener(view -> { closeDrawer(); action.run(); });
+        if (v != null)
+            v.setOnClickListener(view -> {
+                closeDrawer();
+                action.run();
+            });
     }
 
     /** Called by HomeFragment's hamburger button */
@@ -173,12 +208,17 @@ public class MainActivity extends BaseActivity {
         userListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String name  = snapshot.child("fullName").getValue(String.class);
+                String name = snapshot.child("fullName").getValue(String.class);
                 String email = snapshot.child("email").getValue(String.class);
-                if (tvDrawerName  != null && name  != null) tvDrawerName.setText(name);
-                if (tvDrawerEmail != null && email != null) tvDrawerEmail.setText(email);
+                if (tvDrawerName != null && name != null)
+                    tvDrawerName.setText(name);
+                if (tvDrawerEmail != null && email != null)
+                    tvDrawerEmail.setText(email);
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         };
         DatabaseHelper.getInstance().userRef(currentUserId).addValueEventListener(userListener);
     }
@@ -208,7 +248,10 @@ public class MainActivity extends BaseActivity {
                     }
                 }
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         };
         db.cardsRef().orderByChild("userId").equalTo(currentUserId).addValueEventListener(cardListener);
     }
@@ -224,12 +267,16 @@ public class MainActivity extends BaseActivity {
                 long count = 0;
                 for (DataSnapshot child : snapshot.getChildren()) {
                     String cId = child.child("cardId").getValue(String.class);
-                    if (cardId.equals(cId)) count++;
+                    if (cardId.equals(cId))
+                        count++;
                 }
                 if (tvDrawerTransactions != null)
                     tvDrawerTransactions.setText(String.valueOf(count));
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         };
         DatabaseHelper.getInstance().transactionsRef().addValueEventListener(txnListener);
     }
@@ -241,7 +288,8 @@ public class MainActivity extends BaseActivity {
                 long unread = 0;
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Boolean isUnread = child.child("unread").getValue(Boolean.class);
-                    if (Boolean.TRUE.equals(isUnread)) unread++;
+                    if (Boolean.TRUE.equals(isUnread))
+                        unread++;
                 }
                 if (tvDrawerNotifBadge != null) {
                     if (unread > 0) {
@@ -252,7 +300,10 @@ public class MainActivity extends BaseActivity {
                     }
                 }
             }
-            @Override public void onCancelled(@NonNull DatabaseError error) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         };
         DatabaseHelper.getInstance()
                 .userNotificationsRef(currentUserId)
@@ -260,9 +311,17 @@ public class MainActivity extends BaseActivity {
     }
 
     public void loadFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+        loadFragment(fragment, false);
+    }
+
+    public void loadFragment(Fragment fragment, boolean addToBackStack) {
+        androidx.fragment.app.FragmentTransaction tx = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment);
+        if (addToBackStack) {
+            tx.addToBackStack(null);
+        }
+        tx.commit();
     }
 
     @Override
@@ -334,7 +393,7 @@ public class MainActivity extends BaseActivity {
 
     private void init() {
         fragmentContainer = findViewById(R.id.fragment_container);
-        drawerLayout      = findViewById(R.id.drawerLayout);
+        drawerLayout = findViewById(R.id.drawerLayout);
 
         // Bind custom nav views
         navItemHome = findViewById(R.id.navItemHome);
@@ -352,10 +411,10 @@ public class MainActivity extends BaseActivity {
         navTextStats = findViewById(R.id.navTextStats);
         navTextProfile = findViewById(R.id.navTextProfile);
 
-        tvDrawerName         = drawerLayout.findViewById(R.id.tvDrawerName);
-        tvDrawerEmail        = drawerLayout.findViewById(R.id.tvDrawerEmail);
-        tvDrawerBalance      = drawerLayout.findViewById(R.id.tvDrawerBalance);
+        tvDrawerName = drawerLayout.findViewById(R.id.tvDrawerName);
+        tvDrawerEmail = drawerLayout.findViewById(R.id.tvDrawerEmail);
+        tvDrawerBalance = drawerLayout.findViewById(R.id.tvDrawerBalance);
         tvDrawerTransactions = drawerLayout.findViewById(R.id.tvDrawerTransactions);
-        tvDrawerNotifBadge   = drawerLayout.findViewById(R.id.tvDrawerNotifBadge);
+        tvDrawerNotifBadge = drawerLayout.findViewById(R.id.tvDrawerNotifBadge);
     }
 }

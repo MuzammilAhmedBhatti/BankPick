@@ -49,43 +49,6 @@
             android:paddingEnd="24dp"
             android:paddingBottom="32dp">
 
-            <!-- Payer Name -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Payer Name"
-                android:textSize="13sp"
-                android:textColor="@color/text_hint"
-                android:layout_marginBottom="8dp" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
-
-                <EditText
-                    android:id="@+id/etPayerName"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_input_field"
-                    android:paddingStart="48dp"
-                    android:paddingEnd="16dp"
-                    android:inputType="textPersonName"
-                    android:hint="Tanya Myroniuk"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="15sp"
-                    android:importantForAutofill="no" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="14dp"
-                    android:src="@drawable/ic_person"
-                    android:contentDescription="Person icon" />
-            </FrameLayout>
-
             <!-- Email -->
             <TextView
                 android:layout_width="wrap_content"
@@ -159,64 +122,6 @@
                     android:src="@drawable/ic_person"
                     android:contentDescription="Person icon" />
             </FrameLayout>
-
-            <!-- Monthly Due By -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Monthly Due By"
-                android:textSize="13sp"
-                android:textColor="@color/text_hint"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="24dp">
-
-                <EditText
-                    android:id="@+id/etDay"
-                    android:layout_width="72dp"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_input_field"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:hint="28"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="15sp"
-                    android:layout_marginEnd="8dp"
-                    android:importantForAutofill="no" />
-
-                <EditText
-                    android:id="@+id/etMonth"
-                    android:layout_width="72dp"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_input_field"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:hint="09"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="15sp"
-                    android:layout_marginEnd="8dp"
-                    android:importantForAutofill="no" />
-
-                <EditText
-                    android:id="@+id/etYear"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_input_field"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:hint="2000"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="15sp"
-                    android:importantForAutofill="no" />
-            </LinearLayout>
 
             <!-- Amount Box -->
             <LinearLayout

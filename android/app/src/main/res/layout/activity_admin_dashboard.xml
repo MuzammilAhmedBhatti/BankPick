@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_F8FAFC">
+    android:orientation="vertical"
+    android:background="#F9FAFB">
 
-    <!-- Header -->
+    <!-- ═══════════════════════════════════════════
+         HEADER  – blue gradient, rounded bottom
+         ═══════════════════════════════════════════ -->
     <LinearLayout
-        android:id="@+id/adminHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_btn_gradient_blue"
-        android:padding="24dp"
+        android:background="@drawable/bg_admin_header"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
         android:paddingTop="48dp"
         android:paddingBottom="32dp">
 
@@ -21,16 +24,16 @@
             android:layout_height="wrap_content"
             android:text="Admin Panel"
             android:textSize="13sp"
-            android:textColor="@color/text_90CAF9"
-            android:letterSpacing="0.1" />
+            android:textColor="#CCffffff"
+            android:letterSpacing="0.05" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="BankPick Admin"
-            android:textSize="26sp"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="#FFFFFF"
             android:layout_marginTop="4dp" />
 
         <TextView
@@ -38,238 +41,422 @@
             android:layout_height="wrap_content"
             android:text="admin@gmail.com"
             android:textSize="13sp"
-            android:textColor="@color/text_90CAF9"
+            android:textColor="#B3ffffff"
             android:layout_marginTop="2dp" />
     </LinearLayout>
 
+    <!-- ═══════════════════════════════════════════
+         SCROLLABLE BODY
+         ═══════════════════════════════════════════ -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/adminHeader"
-        android:scrollbars="none">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none"
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:orientation="vertical">
 
-            <!-- Stat Cards Row 1 -->
+            <!-- ─────────────────────────────────
+                 METRIC CARDS  (2 × 2 grid)
+                 ───────────────────────────────── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="4dp">
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white">
+                <!-- Row 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <!-- Total Users -->
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
                         android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="12dp">
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:background="@drawable/bg_admin_metric_card">
+
                         <TextView
                             android:id="@+id/tvTotalUsers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="28sp"
+                            android:text="6"
+                            android:textSize="34sp"
                             android:textStyle="bold"
-                            android:textColor="@color/blue_600" />
+                            android:textColor="#1e3a8a" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Total Users"
                             android:textSize="12sp"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="#6B7280"
+                            android:layout_marginTop="2dp" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white">
+                    <!-- Pending Loans -->
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
                         android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="12dp">
+                        android:padding="16dp"
+                        android:background="@drawable/bg_admin_metric_card">
+
                         <TextView
                             android:id="@+id/tvPendingLoans"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
-                            android:textSize="28sp"
+                            android:textSize="34sp"
                             android:textStyle="bold"
-                            android:textColor="@color/text_F59E0B" />
+                            android:textColor="#f59e0b" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Pending Loans"
                             android:textSize="12sp"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="#6B7280"
+                            android:layout_marginTop="2dp" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
+                </LinearLayout>
 
-            <!-- Stat Cards Row 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="28dp">
+                <!-- Row 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="4dp">
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white">
+                    <!-- Blocked Users -->
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
                         android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="12dp">
+                        android:padding="16dp"
+                        android:background="@drawable/bg_admin_metric_card">
+
                         <TextView
                             android:id="@+id/tvBlockedUsers"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
-                            android:textSize="28sp"
+                            android:textSize="34sp"
                             android:textStyle="bold"
-                            android:textColor="@color/text_EF4444" />
+                            android:textColor="#ef4444" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Blocked Users"
                             android:textSize="12sp"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="#6B7280"
+                            android:layout_marginTop="2dp" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/white">
+                    <!-- Approved Loans -->
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
                         android:orientation="vertical"
-                        android:gravity="center"
-                        android:padding="12dp">
+                        android:padding="16dp"
+                        android:background="@drawable/bg_admin_metric_card">
+
                         <TextView
                             android:id="@+id/tvApprovedLoans"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="28sp"
+                            android:text="1"
+                            android:textSize="34sp"
                             android:textStyle="bold"
-                            android:textColor="@color/text_10B981" />
+                            android:textColor="#10b981" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Approved Loans"
                             android:textSize="12sp"
-                            android:textColor="@color/text_secondary" />
+                            android:textColor="#6B7280"
+                            android:layout_marginTop="2dp" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Section Title -->
+            <!-- ─────────────────────────────────
+                 QUICK ACTIONS SECTION
+                 ───────────────────────────────── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Quick Actions"
-                android:textSize="16sp"
+                android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="16dp" />
+                android:textColor="#1A1A2E"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="14dp" />
 
-            <!-- Action Buttons -->
-            <Button
-                android:id="@+id/btnAdminUsers"
+            <!-- Action list card -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_btn_gradient_blue"
-                android:text="👥  Manage Users"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:elevation="0dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_admin_action_list"
+                android:clipToOutline="true">
 
-            <Button
-                android:id="@+id/btnAdminLoans"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_icon_orange"
-                android:text="💰  Loan Requests"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:elevation="0dp"
-                android:layout_marginBottom="12dp" />
+                <!-- ── Manage Users ── -->
+                <LinearLayout
+                    android:id="@+id/btnAdminUsers"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:background="@drawable/bg_admin_action_item"
+                    android:clickable="true"
+                    android:focusable="true">
 
-            <Button
-                android:id="@+id/btnAdminBlocked"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_icon_purple"
-                android:text="🚫  Blocked Users"
-                android:textAllCaps="false"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:elevation="0dp"
-                android:layout_marginBottom="12dp" />
+                    <!-- Icon wrapper -->
+                    <LinearLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_admin_icon_container">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_manage_users"
+                            android:importantForAccessibility="no"
+                            app:tint="#1e3a8a" />
+                    </LinearLayout>
 
-            <Button
-                android:id="@+id/btnAdminBroadcast"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_icon_green"
-                android:text="📢  Broadcast Notification"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:elevation="0dp"
-                android:layout_marginBottom="12dp" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Manage Users"
+                        android:textSize="14sp"
+                        android:textColor="#1A1A2E"
+                        android:layout_marginStart="14dp" />
 
-            <Button
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_chevron_right"
+                        android:importantForAccessibility="no"
+                        app:tint="#9CA3AF" />
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E5E7EB"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp" />
+
+                <!-- ── Loan Requests ── -->
+                <LinearLayout
+                    android:id="@+id/btnAdminLoans"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:background="@drawable/bg_admin_action_item"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_admin_icon_container">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_loan_request"
+                            android:importantForAccessibility="no"
+                            app:tint="#1e3a8a" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Loan Requests"
+                        android:textSize="14sp"
+                        android:textColor="#1A1A2E"
+                        android:layout_marginStart="14dp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_chevron_right"
+                        android:importantForAccessibility="no"
+                        app:tint="#9CA3AF" />
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E5E7EB"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp" />
+
+                <!-- ── Blocked Users ── -->
+                <LinearLayout
+                    android:id="@+id/btnAdminBlocked"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:background="@drawable/bg_admin_action_item"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_admin_icon_container">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_user_x"
+                            android:importantForAccessibility="no"
+                            app:tint="#1e3a8a" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Blocked Users"
+                        android:textSize="14sp"
+                        android:textColor="#1A1A2E"
+                        android:layout_marginStart="14dp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_chevron_right"
+                        android:importantForAccessibility="no"
+                        app:tint="#9CA3AF" />
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E5E7EB"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp" />
+
+                <!-- ── Broadcast Notification ── -->
+                <LinearLayout
+                    android:id="@+id/btnAdminBroadcast"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:background="@drawable/bg_admin_action_item"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_admin_icon_container">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_bell"
+                            android:importantForAccessibility="no"
+                            app:tint="#1e3a8a" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Broadcast Notification"
+                        android:textSize="14sp"
+                        android:textColor="#1A1A2E"
+                        android:layout_marginStart="14dp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_chevron_right"
+                        android:importantForAccessibility="no"
+                        app:tint="#9CA3AF" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ─────────────────────────────────
+                 SIGN OUT
+                 ───────────────────────────────── -->
+            <LinearLayout
                 android:id="@+id/btnAdminSignOut"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_btn_white_border"
-                android:text="Sign Out"
-                android:textAllCaps="false"
-                android:textColor="@color/text_EF4444"
-                android:textSize="16sp"
-                android:elevation="0dp"
-                android:layout_marginBottom="32dp" />
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/bg_admin_signout_btn"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_logout"
+                    android:importantForAccessibility="no"
+                    app:tint="#6B7280" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sign Out"
+                    android:textSize="14sp"
+                    android:textColor="#6B7280"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-</RelativeLayout>
+</LinearLayout>

@@ -2,7 +2,7 @@ package com.example.bankpick;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 public class AdminDashboardActivity extends BaseActivity {
 
     private TextView tvTotalUsers, tvPendingLoans, tvBlockedUsers, tvApprovedLoans;
-    private Button btnAdminUsers, btnAdminLoans, btnAdminBlocked, btnAdminSignOut, btnAdminBroadcast;
+    private LinearLayout btnAdminUsers, btnAdminLoans, btnAdminBlocked, btnAdminSignOut, btnAdminBroadcast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +29,11 @@ public class AdminDashboardActivity extends BaseActivity {
         tvBlockedUsers = findViewById(R.id.tvBlockedUsers);
         tvApprovedLoans = findViewById(R.id.tvApprovedLoans);
 
-        btnAdminUsers   = findViewById(R.id.btnAdminUsers);
-        btnAdminLoans   = findViewById(R.id.btnAdminLoans);
-        btnAdminBlocked = findViewById(R.id.btnAdminBlocked);
-        btnAdminBroadcast = findViewById(R.id.btnAdminBroadcast);
-        btnAdminSignOut = findViewById(R.id.btnAdminSignOut);
+        btnAdminUsers     = (LinearLayout) findViewById(R.id.btnAdminUsers);
+        btnAdminLoans     = (LinearLayout) findViewById(R.id.btnAdminLoans);
+        btnAdminBlocked   = (LinearLayout) findViewById(R.id.btnAdminBlocked);
+        btnAdminBroadcast = (LinearLayout) findViewById(R.id.btnAdminBroadcast);
+        btnAdminSignOut   = (LinearLayout) findViewById(R.id.btnAdminSignOut);
 
         loadStats();
 

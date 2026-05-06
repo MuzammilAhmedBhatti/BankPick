@@ -28,7 +28,7 @@ import java.util.Locale;
 public class TransactionSuccessActivity extends BaseActivity {
 
     FrameLayout checkCircle;
-    TextView tvSubtitle, tvAmount, tvRecipient, tvTxnId, tvDate, tvTime;
+    TextView tvSubtitle, tvAmount, tvRecipient, tvTxnId, tvDate, tvTime, tvPaymentMethod;
     Button btnDownload, btnShare, btnDone;
 
     @Override
@@ -58,6 +58,7 @@ public class TransactionSuccessActivity extends BaseActivity {
         tvTxnId      = findViewById(R.id.tvTransactionId);
         tvDate       = findViewById(R.id.tvDate);
         tvTime       = findViewById(R.id.tvTime);
+        tvPaymentMethod = findViewById(R.id.tvPaymentMethod);
         btnDownload  = findViewById(R.id.btnDownload);
         btnShare     = findViewById(R.id.btnShare);
         btnDone      = findViewById(R.id.btnBackToHome);
@@ -80,6 +81,11 @@ public class TransactionSuccessActivity extends BaseActivity {
         if (amount    != null && tvAmount    != null) tvAmount.setText("$" + amount);
         if (recipient != null && tvRecipient != null) tvRecipient.setText(recipient);
         if (txnId     != null && tvTxnId     != null) tvTxnId.setText(txnId);
+
+        String paymentMethod = i.getStringExtra("paymentMethod");
+        if (paymentMethod != null && tvPaymentMethod != null) {
+            tvPaymentMethod.setText(paymentMethod);
+        }
 
         // Date and Time
         if (date != null && !date.isEmpty()) {

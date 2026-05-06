@@ -69,6 +69,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                     holder.ivAestheticIcon.setImageResource(R.drawable.ic_transfer_out); // Sent
                     holder.vIconBg.setBackgroundResource(R.drawable.bg_icon_purple);
                 }
+            } else if (icon.equals("loan")) {
+                holder.ivAestheticIcon.setVisibility(View.VISIBLE);
+                holder.ivAestheticIcon.setImageResource(R.drawable.ic_dollar);
+                holder.vIconBg.setBackgroundResource(R.drawable.bg_icon_blue);
             } else {
                 holder.tvIcon.setVisibility(View.VISIBLE);
                 switch (icon) {
@@ -98,6 +102,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             intent.putExtra("date", transaction.getDate());
             intent.putExtra("time", transaction.getTime());
             intent.putExtra("icon", transaction.getIcon());
+            intent.putExtra("cardId", transaction.getCardId());
             context.startActivity(intent);
         });
     }

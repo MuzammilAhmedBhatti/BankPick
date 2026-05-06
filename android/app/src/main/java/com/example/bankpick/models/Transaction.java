@@ -8,11 +8,13 @@ public class Transaction {
     private String icon;
     private String date;
     private String time;
+    private String cardId;
+    private long timestamp;
 
     public Transaction() {
     }
 
-    public Transaction(String transactionId, String name, String category, double amount, String icon, String date, String time) {
+    public Transaction(String transactionId, String name, String category, double amount, String icon, String date, String time, String cardId, long timestamp) {
         this.transactionId = transactionId;
         this.name = name;
         this.category = category;
@@ -20,6 +22,8 @@ public class Transaction {
         this.icon = icon;
         this.date = date;
         this.time = time;
+        this.cardId = cardId;
+        this.timestamp = timestamp;
     }
 
     public String getTransactionId() { return transactionId; }
@@ -42,4 +46,10 @@ public class Transaction {
 
     public String getTime() { return time; }
     public void setTime(String time) { this.time = time; }
+
+    public String getCardId() { return cardId; }
+    public void setCardId(String cardId) { this.cardId = cardId; }
+
+    public long getTimestamp() { return timestamp; }
+    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
 }

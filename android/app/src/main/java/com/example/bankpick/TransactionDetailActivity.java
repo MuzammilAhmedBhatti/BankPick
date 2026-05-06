@@ -8,6 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import androidx.annotation.NonNull;
 
 public class TransactionDetailActivity extends BaseActivity {
     @Override
@@ -29,6 +33,7 @@ public class TransactionDetailActivity extends BaseActivity {
         TextView tvDate = findViewById(R.id.tvDate);
         TextView tvTime = findViewById(R.id.tvTime);
         TextView tvTransactionId = findViewById(R.id.tvTransactionId);
+        TextView tvPaymentMethod = findViewById(R.id.tvPaymentMethod);
         android.widget.Button btnDownload = findViewById(R.id.btnDownload);
         android.widget.Button btnShare = findViewById(R.id.btnShare);
 
@@ -39,6 +44,7 @@ public class TransactionDetailActivity extends BaseActivity {
         double tempAmount = getIntent().getDoubleExtra("amount", 0);
         String tempDate = getIntent().getStringExtra("date");
         String tempTime = getIntent().getStringExtra("time");
+        String cardId = getIntent().getStringExtra("cardId");
         
         final String name = (tempName == null) ? "Apple Store" : tempName;
         final String category = (tempCategory == null) ? "Entertainment" : tempCategory;
@@ -58,6 +64,21 @@ public class TransactionDetailActivity extends BaseActivity {
         } else {
             tvAmount.setText(String.format("-$%.2f", Math.abs(amount)));
             tvAmount.setTextColor(getResources().getColor(R.color.text_primary, null));
+        }
+
+        if (cardId != null) {
+            DatabaseHelper.getInstance().cardRef(cardId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String cardNumber = snapshot.child("cardNumber").getValue(String.class);
+                    String type = snapshot.child("type").getValue(String.class);
+                    if (cardNumber != null) {
+                        String lastFour = cardNumber.substring(Math.max(0, cardNumber.length() - 4));
+                        tvPaymentMethod.setText((type != null ? type : "Card") + " •••• " + lastFour);
+                    }
+                }
+                @Override public void onCancelled(@NonNull DatabaseError error) {}
+            });
         }
 
         btnDownload.setOnClickListener(v -> {

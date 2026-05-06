@@ -90,9 +90,26 @@ public class TransactionHistoryActivity extends BaseActivity {
 
                     Transaction t = child.getValue(Transaction.class);
                     if (t != null) {
-                        transactions.add(0, t);
+                        transactions.add(t);
                     }
                 }
+                
+                // Sort by timestamp descending (newest first)
+                java.util.Collections.sort(transactions, (t1, t2) -> {
+                    long ts1 = t1.getTimestamp();
+                    long ts2 = t2.getTimestamp();
+                    
+                    // Fallback for old transactions without timestamp field
+                    if (ts1 == 0 && t1.getTransactionId() != null) {
+                        try { ts1 = Long.parseLong(t1.getTransactionId().replaceAll("[^0-9]", "")); } catch (Exception ignored) {}
+                    }
+                    if (ts2 == 0 && t2.getTransactionId() != null) {
+                        try { ts2 = Long.parseLong(t2.getTransactionId().replaceAll("[^0-9]", "")); } catch (Exception ignored) {}
+                    }
+                    
+                    return Long.compare(ts2, ts1);
+                });
+                
                 adapter.notifyDataSetChanged();
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}

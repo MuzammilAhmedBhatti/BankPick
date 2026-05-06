@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Dollar vertical bar -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#1e3a8a"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M12,2v20"/>
+    <!-- Dollar S shape -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#1e3a8a"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M17,6H9.5a3.5,3.5 0,0 0,0 7h5a3.5,3.5 0,0 1,0 7H6"/>
+</vector>

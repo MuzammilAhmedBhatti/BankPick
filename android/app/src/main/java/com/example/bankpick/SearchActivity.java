@@ -41,14 +41,14 @@ public class SearchActivity extends BaseActivity {
         ivBack.setOnClickListener((v) -> finish());
 
         // Mock Transactions from SearchScreen.tsx
-        transactions.add(new Transaction("1", "Apple Store", "Entertainment", -5.99, "apple", "Today", "10:00 AM"));
-        transactions.add(new Transaction("2", "Spotify", "Music", -12.99, "music", "Yesterday", "11:30 AM"));
-        transactions.add(new Transaction("3", "Money Transfer", "Transaction", 300, "transfer", "Yesterday", "1:00 PM"));
-        transactions.add(new Transaction("4", "Grocery", "Shopping", -88, "grocery", "Yesterday", "4:45 PM"));
-        transactions.add(new Transaction("5", "Apple Store", "Entertainment", -5.99, "apple", "2 Days Ago", "9:00 AM"));
-        transactions.add(new Transaction("6", "Money Transfer", "Transaction", 300, "transfer", "3 Days Ago", "2:00 PM"));
-        transactions.add(new Transaction("7", "Apple Store", "Entertainment", -5.99, "apple", "3 Days Ago", "4:00 PM"));
-        transactions.add(new Transaction("8", "Spotify", "Music", -12.99, "music", "4 Days Ago", "8:00 AM"));
+        transactions.add(new Transaction("1", "Apple Store", "Entertainment", -5.99, "apple", "Today", "10:00 AM", null, 0));
+        transactions.add(new Transaction("2", "Spotify", "Music", -12.99, "music", "Yesterday", "11:30 AM", null, 0));
+        transactions.add(new Transaction("3", "Money Transfer", "Transaction", 300, "transfer", "Yesterday", "1:00 PM", null, 0));
+        transactions.add(new Transaction("4", "Grocery", "Shopping", -88, "grocery", "Yesterday", "4:45 PM", null, 0));
+        transactions.add(new Transaction("5", "Apple Store", "Entertainment", -5.99, "apple", "2 Days Ago", "9:00 AM", null, 0));
+        transactions.add(new Transaction("6", "Money Transfer", "Transaction", 300, "transfer", "3 Days Ago", "2:00 PM", null, 0));
+        transactions.add(new Transaction("7", "Apple Store", "Entertainment", -5.99, "apple", "3 Days Ago", "4:00 PM", null, 0));
+        transactions.add(new Transaction("8", "Spotify", "Music", -12.99, "music", "4 Days Ago", "8:00 AM", null, 0));
 
         filteredTransactions.addAll(transactions);
         adapter.notifyDataSetChanged();

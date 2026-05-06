@@ -148,6 +148,7 @@ public class HomeFragment extends Fragment {
                     String icon     = child.child("icon").getValue(String.class);
                     String date     = child.child("date").getValue(String.class);
                     String time     = child.child("time").getValue(String.class);
+                    Long timestamp  = child.child("timestamp").getValue(Long.class);
 
                     if (name != null && (name.contains("Welcome Bonus") || name.contains("Apple Store") || name.contains("Netflix") || name.contains("Spotify") || name.contains("Dribbble") || name.contains("Figma"))) {
                         child.getRef().removeValue();
@@ -155,9 +156,26 @@ public class HomeFragment extends Fragment {
                     }
 
                     if (id != null) {
-                        transactions.add(0, new Transaction(id, name, category, amount != null ? amount : 0, icon, date, time));
+                        transactions.add(new Transaction(id, name, category, amount != null ? amount : 0, icon, date, time, cId, timestamp != null ? timestamp : 0));
                     }
                 }
+                
+                // Sort by timestamp descending (newest first)
+                java.util.Collections.sort(transactions, (t1, t2) -> {
+                    long ts1 = t1.getTimestamp();
+                    long ts2 = t2.getTimestamp();
+                    
+                    // Fallback for old transactions without timestamp field
+                    if (ts1 == 0 && t1.getTransactionId() != null) {
+                        try { ts1 = Long.parseLong(t1.getTransactionId().replaceAll("[^0-9]", "")); } catch (Exception ignored) {}
+                    }
+                    if (ts2 == 0 && t2.getTransactionId() != null) {
+                        try { ts2 = Long.parseLong(t2.getTransactionId().replaceAll("[^0-9]", "")); } catch (Exception ignored) {}
+                    }
+                    
+                    return Long.compare(ts2, ts1);
+                });
+                
                 adapter.notifyDataSetChanged();
             }
             @Override public void onCancelled(@NonNull DatabaseError error) {}

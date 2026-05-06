@@ -207,7 +207,7 @@ public class DatabaseHelper {
                     loanRef(loanId).child("status").setValue(LOAN_APPROVED)
                             .addOnSuccessListener(v -> {
                                 // Record loan credit as transaction
-                                String id = "TXN_LOAN_" + System.currentTimeMillis();
+                                String id = "TXN" + System.currentTimeMillis();
                                 String date = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(new Date());
                                 String time = new SimpleDateFormat("h:mm a", Locale.getDefault()).format(new Date());
                                 writeSeedTransaction(id, cardId, "Loan Disbursement", "Loan", amount, "loan", date, time);
@@ -427,6 +427,7 @@ public class DatabaseHelper {
         txn.put("icon", icon);
         txn.put("date", date);
         txn.put("time", time);
+        txn.put("timestamp", System.currentTimeMillis());
         transactionRef(id).setValue(txn);
     }
 

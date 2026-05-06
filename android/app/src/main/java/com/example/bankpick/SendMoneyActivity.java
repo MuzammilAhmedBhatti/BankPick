@@ -38,6 +38,7 @@ public class SendMoneyActivity extends BaseActivity {
     LinearLayout llContactsContainer;
 
     String activeCardId;
+    String activeCardFormatted;
     double currentBalance = 0;
 
     String selectedRecipientUid = null;
@@ -161,6 +162,12 @@ public class SendMoneyActivity extends BaseActivity {
                         if (tvCardBalance != null)
                             tvCardBalance.setText(String.format("Balance: $%.2f", balance));
                     }
+
+                    if (number != null) {
+                        String lastFour = number.substring(Math.max(0, number.length() - 4));
+                        activeCardFormatted = (primaryCardSnap.child("type").getValue(String.class) != null ? 
+                            primaryCardSnap.child("type").getValue(String.class) : "Card") + " •••• " + lastFour;
+                    }
                 }
             }
 
@@ -208,6 +215,7 @@ public class SendMoneyActivity extends BaseActivity {
                         intent.putExtra("amount",        String.format("%.2f", pendingAmount));
                         intent.putExtra("recipient",     selectedRecipientName);
                         intent.putExtra("transactionId", info);
+                        intent.putExtra("paymentMethod", activeCardFormatted);
                         startActivity(intent);
                         finish();
                     } else {
